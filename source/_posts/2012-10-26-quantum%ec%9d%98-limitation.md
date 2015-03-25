@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=1047
 permalink: /archives/1047
 dsq_thread_id:
   - 901175188
-categories:
-  - Uncategorized
 tags:
   - OpenStack
   - Quantum
@@ -63,7 +61,7 @@ quantum이 적용되었다고, 설치 후에 horizon을 보고 뭔가 하려고 
   * ZeroMQ is experimental
   * MetaPlugin is experimental
 
-참고: <http://docs.openstack.org/trunk/openstack-network/admin/content/ch_limitations.html>
+참고: http://docs.openstack.org/trunk/openstack-network/admin/content/ch_limitations.html
 
 ps. folsom에 야심차게 quantum이 나왔지만, 지금까지 쭈욱 둘러본 결과론 아직 quantum은 beta 상태인 것 같습니다. 그리고 openvswitch을 사용해 quantum network의 기능을 모두 볼 수는 있겠지만, 이걸 사용 수준으로 사용할 수 없을 것 같고, Nicira NVP, MidoNet 같은 OVS 기반의 SDN 플렛폼을 사용하거나, Cisco NVGRE를 사용해야할 듯 합니다. 물론 내부 개발 인프라 정도로는 큰 무리 없을 것으로 생각합니다.
 

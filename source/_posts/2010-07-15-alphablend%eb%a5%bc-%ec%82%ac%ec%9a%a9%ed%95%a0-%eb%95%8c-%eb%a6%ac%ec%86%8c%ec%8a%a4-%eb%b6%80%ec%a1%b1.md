@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=281
 permalink: /archives/281
 dsq_thread_id:
   - 772598559
-categories:
-  - Uncategorized
 tags:
   - Delphi
 ---
@@ -20,20 +18,17 @@ tags:
 
 결국 SetLayeredWindowAttributes가 실패하면 Dimmer를 표시하지 않도록 변경했습니다.
 
-[code lang="delphi"]  
-procedure TDimmerForm.Display;  
-const  
-cUseAlpha: array [Boolean] of Integer = (0, LWA_ALPHA);  
-cUseColorKey: array [Boolean] of Integer = (0, LWA_COLORKEY);  
-begin  
-BoundsRect := Application.MainForm.BoundsRect;
+    procedure TDimmerForm.Display;
+    const
+      cUseAlpha: array [Boolean] of Integer = (0, LWA_ALPHA);
+      cUseColorKey: array [Boolean] of Integer = (0, LWA_COLORKEY);
+    begin
+      BoundsRect := Application.MainForm.BoundsRect;
 
-// 여기는 TCustom.SetLayeredAttribs에서 가져옮  
-if SetLayeredWindowAttributes(Handle, ColorToRGB(TransparentColorValue), AlphaBlendValue,  
-cUseAlpha[AlphaBlend] or cUseColorKey[TransparentColor]) then  
-Show;  
-end;  
-[/code]
+      // 여기는 TCustom.SetLayeredAttribs에서 가져옮
+      if SetLayeredWindowAttributes(Handle, ColorToRGB(TransparentColorValue), AlphaBlendValue,
+        cUseAlpha[AlphaBlend] or cUseColorKey[TransparentColor]) then
+        Show;
 
 이젠 리소스가 부족하면 차라리 안보이지.. 엉뚱하게 보이지는 않습니다. 아.. 이 리소스 부족에러.. 어떤놈이 리소스를 많이 잡아먹는지 알 수 있거나, 아님 리소스 누스를 만들어 내는 프로그램들을 어떻게 찾을 수 있는 방법 없을까나...
 

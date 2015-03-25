@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=656
 permalink: /archives/656
 dsq_thread_id:
   - 714768598
-categories:
-  - Uncategorized
 tags:
   - python
 ---
@@ -18,13 +16,11 @@ static을 사용하지 않는다면, global을 써야하는데, global을 사용
 
 _static을 잘 보시면 됩니다. 자세한 내용은 생략 ㅋㅋ
 
-[code lang="python"]  
-def get\_connection(\_static = {}):  
-if 'conn' not in _static:  
-conn = MySQLdb.connect(host=DB\_HOST, user=DB\_USER, passwd=DB\_PASS, db=DB\_NAME, use_unicode=True, charset='utf8&')  
-_static['conn'] = conn  
-return _static['conn']
+    def get_connection(_static = {}):
+        if 'conn' not in _static:
+            conn = MySQLdb.connect(host=DB_HOST, user=DB_USER, passwd=DB_PASS, db=DB_NAME, use_unicode=True, charset='utf8')
+            _static['conn'] = conn
+        return _static['conn']
 
-def get_cursor():  
-return get_connection().cursor()  
-[/code]
+    def get_cursor():
+        return get_connection().cursor()

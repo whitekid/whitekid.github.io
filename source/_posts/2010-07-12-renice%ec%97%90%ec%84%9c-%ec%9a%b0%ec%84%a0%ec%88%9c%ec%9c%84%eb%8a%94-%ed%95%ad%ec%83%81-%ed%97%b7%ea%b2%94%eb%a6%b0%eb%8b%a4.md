@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=227
 permalink: /archives/227
 dsq_thread_id:
   - 754978019
-categories:
-  - Uncategorized
 tags:
   - FreeBSD
   - 잡담

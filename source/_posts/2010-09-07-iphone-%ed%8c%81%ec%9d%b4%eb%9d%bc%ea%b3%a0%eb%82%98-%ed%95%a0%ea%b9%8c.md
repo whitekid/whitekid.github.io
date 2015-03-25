@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=399
 permalink: /archives/399
 dsq_thread_id:
   - 1324034581
-categories:
-  - Uncategorized
 tags:
   - iPhone
 ---

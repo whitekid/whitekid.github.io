@@ -5,8 +5,6 @@ author: whitekid
 layout: post
 guid: http://blog.woosum.net/?p=288
 permalink: /archives/288
-categories:
-  - Uncategorized
 tags:
   - Delphi
   - TListView

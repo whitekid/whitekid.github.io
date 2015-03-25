@@ -7,8 +7,6 @@ guid: http://www.woosum.net/?p=609
 permalink: /archives/609
 dsq_thread_id:
   - 884874156
-categories:
-  - Uncategorized
 tags:
   - MacOSX
   - Safari
@@ -18,7 +16,7 @@ tags:
 
 대략 보니 자바스크립트가 많이 돌아가는 곳에서 그럽니다. 이거 참..~ gmail, sf.net... 등등 자주가는 곳에서 이러니 정말 답답합니다. 역시나 구글링 했더니 답을 알려주시는군요.
 
-<http://forums.macrumors.com/showthread.php?t=790540> 를 보면 사파리를 32비트 모드로 설정하면 없어진다고 하네요.
+http://forums.macrumors.com/showthread.php?t=790540 를 보면 사파리를 32비트 모드로 설정하면 없어진다고 하네요.
 
 32비트 모드로 설정하니 아주 나이스하게 문제없이 돌아갑니다. 그리고 Snow Leopard Cache Cleaner를 사용하면 이 현상이 없어진다고 하네요. 이건 한번 시도해봐야겠습니다.
 

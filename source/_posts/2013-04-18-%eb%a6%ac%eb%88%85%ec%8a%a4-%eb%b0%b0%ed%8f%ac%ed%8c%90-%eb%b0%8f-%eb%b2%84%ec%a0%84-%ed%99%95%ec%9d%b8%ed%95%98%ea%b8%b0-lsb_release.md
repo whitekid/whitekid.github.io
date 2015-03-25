@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=1240
 permalink: /archives/1240
 dsq_thread_id:
   - 1219248349
-categories:
-  - Uncategorized
 tags:
   - bash
 ---
@@ -20,43 +18,43 @@ tags:
 
 여기서 주요하게 필요한 것이 -id(CentOS or Ubuntu), -release(5.8, 12.04)이 두가지 인데, CentOS와 Ubuntu에 약간 차이가 있습니다.
 
-CentOS 5.8에서는  
+CentOS 5.8에서는
 
-    $ lsb_release -i -r -s  
-    CentOS 5.8  
+    $ lsb_release -i -r -s
+    CentOS 5.8
 
-Ubuntu 12.04에서는  
+Ubuntu 12.04에서는
 
-    $ lsb_release -i -r -s  
-    Ubuntu  
-    12.04  
+    $ lsb_release -i -r -s
+    Ubuntu
+    12.04
 
-이를 스크립트에서 활용할 수 있게 tr 명령과 섞으면 아래와 같이 됩니다.  
+이를 스크립트에서 활용할 수 있게 tr 명령과 섞으면 아래와 같이 됩니다.
 
-    $ /usr/bin/lsb_release -i -r -s | tr "\\n" " " | sed "s/ *\$//g "  
-    Ubuntu 12.04  
+    $ /usr/bin/lsb_release -i -r -s | tr "\\n" " " | sed "s/ *\$//g "
+    Ubuntu 12.04
 
 
-이제 이를 이용해서 OS에 따른 대응 코드를 만들면..  
+이제 이를 이용해서 OS에 따른 대응 코드를 만들면..
 
-    #!/bin/bash  
-    function get_dist(){  
-      /usr/bin/lsb_release -i -r -s | tr "\\n" " " | sed "s/ *\$//g "  
+    #!/bin/bash
+    function get_dist(){
+      /usr/bin/lsb_release -i -r -s | tr "\\n" " " | sed "s/ *\$//g "
     }
-    
-    case $(get_dist()) in  
-      CentOS*)  
-        SERVICE=/sbin/service  
-        SERVICE_NAME=network  
-        ;;  
-      Ubuntu*)  
-        SERVICE=/user/sbin/service  
-        SERVICE_NAME=networking  
-        ;;  
-      *)  
-        fatal "Not supported platform"  
+
+    case $(get_dist()) in
+      CentOS*)
+        SERVICE=/sbin/service
+        SERVICE_NAME=network
+        ;;
+      Ubuntu*)
+        SERVICE=/user/sbin/service
+        SERVICE_NAME=networking
+        ;;
+      *)
+        fatal "Not supported platform"
     esac
-    
-    $SERVICE $SERVICE_NAME restart  
+
+    $SERVICE $SERVICE_NAME restart
 
 끄읏~

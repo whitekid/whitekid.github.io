@@ -7,14 +7,13 @@ guid: http://blog.woosum.net/?p=507
 permalink: /archives/507
 dsq_thread_id:
   - 733585023
-categories:
-  - Uncategorized
 tags:
   - App
   - iPhone
   - Shazam
 ---
-<img class="alignright" src="http://a1.phobos.apple.com/us/r1000/026/Purple/90/8b/61/mzl.njenhstl.320x480-75.jpg" alt="" width="320" height="480" />아주 낯익은 선율은 흐르는데... 그 노래의 제목이 기억이 안난다면? ㅋㅋ 미칩니다. 미쳐~
+{% img left http://a1.phobos.apple.com/us/r1000/026/Purple/90/8b/61/mzl.njenhstl.320x480-75.jpg %}
+아주 낯익은 선율은 흐르는데... 그 노래의 제목이 기억이 안난다면? ㅋㅋ 미칩니다. 미쳐~
 
 그럴때 사용할 수 있는 iPhone용 앱이 있군요. [Shazam][1]!!!
 

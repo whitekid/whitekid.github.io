@@ -7,19 +7,15 @@ guid: http://blog.woosum.net/?p=1182
 permalink: /archives/1182
 dsq_thread_id:
   - 2043084384
-categories:
-  - Uncategorized
 tags:
   - bridge
   - kvm
   - openvswitch
 ---
-/etc/default/openvswitch-switch  
-[code]  
-BRCOMPAT=yes  
-[/code]
+/etc/default/openvswitch-switch
 
-bridge 호환 모듈, 데몬  
-[code]  
-$ apt-get install openvswitch-brcompat  
-[/code]
+    BRCOMPAT=yes
+
+bridge 호환 모듈, 데몬
+
+    $ apt-get install openvswitch-brcompat

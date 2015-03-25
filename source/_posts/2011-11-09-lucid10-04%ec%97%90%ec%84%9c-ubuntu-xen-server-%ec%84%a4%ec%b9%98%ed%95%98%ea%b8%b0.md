@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=782
 permalink: /archives/782
 dsq_thread_id:
   - 716627974
-categories:
-  - Uncategorized
 tags:
   - Xen
 ---
@@ -18,15 +16,12 @@ Lucid에서는 공식적으로 Xen을 지원하지 않는다.
 
 /etc/apt/sources.list에 PPA 추가
 
-[code lang="plain"]  
-deb <http://ppa.launchpad.net/xtaran/xen-tools/ubuntu> lucid main  
-deb-src <http://ppa.launchpad.net/xtaran/xen-tools/ubuntu> lucid main  
-[/code]  
-[code lang="bash"]  
-sudo apt-get install python-software-properties  
-sudo add-apt-repository ppa:xtaran/xen-tools  
-sudo apt-get update  
-sudo apt-get install ubuntu-xen-server  
-[/code]
+    deb http://ppa.launchpad.net/xtaran/xen-tools/ubuntu lucid main
+    deb-src http://ppa.launchpad.net/xtaran/xen-tools/ubuntu lucid main
 
-<https://help.ubuntu.com/community/Xen#Installation>
+    sudo apt-get install python-software-properties
+    sudo add-apt-repository ppa:xtaran/xen-tools
+    sudo apt-get update
+    sudo apt-get install ubuntu-xen-server
+
+https://help.ubuntu.com/community/Xen#Installation

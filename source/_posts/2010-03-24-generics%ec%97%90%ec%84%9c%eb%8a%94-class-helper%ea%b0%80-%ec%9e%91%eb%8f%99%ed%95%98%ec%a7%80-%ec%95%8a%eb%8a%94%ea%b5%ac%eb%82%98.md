@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=74
 permalink: /archives/74
 dsq_thread_id:
   - 717782466
-categories:
-  - Uncategorized
 tags:
   - Delphi
   - Generics

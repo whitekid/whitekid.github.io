@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=1494
 permalink: /archives/1494
 dsq_thread_id:
   - 2637973380
-categories:
-  - Uncategorized
 tags:
   - neutron
   - OpenStack
@@ -29,10 +27,10 @@ LibvirtGenericVIFDriver에서는 vif.is\_hybrid\_plug_enabled()에서 해당 포
 
 nova.network.mode.VIF 에서 아래처럼 하고 있습니다.
 
-    def is_hybrid_plug_enabled(self):  
-        return self['details'].get(VIF_DETAIL_OVS_HYBRID_PLUG, False) 
+    def is_hybrid_plug_enabled(self):
+        return self['details'].get(VIF_DETAIL_OVS_HYBRID_PLUG, False)
 
-vif의 detail이라는 property로 들어 있는 것이죠.. 그럼 이거는 어디 있을까.. 찾아보면..  
+vif의 detail이라는 property로 들어 있는 것이죠.. 그럼 이거는 어디 있을까.. 찾아보면..
 
     mysql> select * from ml2_port_bindings where port_id = 'e14dbfd5-670e-405f-aaec-3796d1df1c34' \G
     *************************** 1. row ***************************
@@ -46,17 +44,17 @@ vif의 detail이라는 property로 들어 있는 것이죠.. 그럼 이거는 �
         profile:
     1 row in set (0.00 sec)
 
-이렇게 DB의 설정값으로 고히 모셔져 있군요.. 이 값은  
+이렇게 DB의 설정값으로 고히 모셔져 있군요.. 이 값은
 
-     class OpenvswitchMechanismDriver(mech_agent.SimpleAgentMechanismDriverBase):  
-       def __init__(self):  
-         super(OpenvswitchMechanismDriver, self).__init__(  
-           constants.AGENT_TYPE_OVS,  
-           portbindings.VIF_TYPE_OVS,  
-           {portbindings.CAP_PORT_FILTER: True,  
-            portbindings.OVS_HYBRID_PLUG: True})  
+     class OpenvswitchMechanismDriver(mech_agent.SimpleAgentMechanismDriverBase):
+       def __init__(self):
+         super(OpenvswitchMechanismDriver, self).__init__(
+           constants.AGENT_TYPE_OVS,
+           portbindings.VIF_TYPE_OVS,
+           {portbindings.CAP_PORT_FILTER: True,
+            portbindings.OVS_HYBRID_PLUG: True})
 
-이렇게 기본값이 True로 설정되어 DB에 들어가고 있습니다. 하지만 아래를 보면 port에 따라서 vif_details가 들어가있지 않는 포트가 있고  
+이렇게 기본값이 True로 설정되어 DB에 들어가고 있습니다. 하지만 아래를 보면 port에 따라서 vif_details가 들어가있지 않는 포트가 있고
 
     mysql> select port_id, vif_details from ml2_port_bindings;
     +--------------------------------------+------------------------------------------------+
@@ -76,8 +74,8 @@ vif의 detail이라는 property로 들어 있는 것이죠.. 그럼 이거는 �
 
 자 그럼 이 값을 똑같이 바꾸면 어떻게 될까요..
 
-    mysql> update ml2_port_bindings  
-            set vif_details = '{"port_filter": true, "ovs_hybrid_plug": true}';  
+    mysql> update ml2_port_bindings
+            set vif_details = '{"port_filter": true, "ovs_hybrid_plug": true}';
 
 녜.. 예상하는데로.. vif가 hybrid 형태로 잘 연결됩니다. ^^;
 

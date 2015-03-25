@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=654
 permalink: /archives/654
 dsq_thread_id:
   - 862524798
-categories:
-  - Uncategorized
 tags:
   - Ubuntu
 ---
@@ -16,5 +14,4 @@ Ubuntu를 테스트탑으로 사용하면서 참.. 어색한 것이 많다. 그�
 
 간단하다.
 
-<pre># apt-cache search package-name
-</pre>
+    # apt-cache search package-name

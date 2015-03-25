@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=1368
 permalink: /archives/1368
 dsq_thread_id:
   - 1580719101
-categories:
-  - Uncategorized
 tags:
   - XMLHttpRequest
   - 번역
@@ -19,13 +17,13 @@ tags:
 
 * * *
 
-# Chater 15. XMLHttpRequest
+## Chater 15. XMLHttpRequest
 
 XMLHttpRequest(XHR)은 브라우저 레벨 API로, 클라이언트가 JavaScript를 이용하여 데이터를 전송을 scripting할 수 있게 한다. XHR는 IE5에 처음으로 등장해, AJAX(Asynchronous JavaScript And XML)의 기반 기술이 되었으며, 최근 웹 어플리케이션의 핵심 요소가 되었다.
 
 > XMLHTTP는 모든 것을 바꾸었다. DHTML에서 "D"를 의미한다. 이를 사용하여 서버의 데이터를 비동기로 받을 수 있으며, 클라이언트에 document state를 보존할 수 있다. Outlook Web Access(OWA)팀은 브라우저에서 win32와 같은 rich application을 만들고 싶어 했고, IE에 이 기술이 들어가 AJAX가 되므로써 현실화 되었다. – OWA - A catalyst for web evolution Jim Van Eaton
 
-XHR 이전에는, 클라이언트와 서버간의 데이터의 전송 또는 상태 업데이트를 하려면, 웹페이지를 refresh 해야만 되었다. XHR를 통해서는, 이 작업이 비동기와 어플리케이션의 JavaScript 코드로 완전히 제어된다. XHR을 사용하면 페이지를 빌드하는 것을 뛰어넘어, 브라우저에서 interactive web application을 만드는 것을 가능하게한다.  
+XHR 이전에는, 클라이언트와 서버간의 데이터의 전송 또는 상태 업데이트를 하려면, 웹페이지를 refresh 해야만 되었다. XHR를 통해서는, 이 작업이 비동기와 어플리케이션의 JavaScript 코드로 완전히 제어된다. XHR을 사용하면 페이지를 빌드하는 것을 뛰어넘어, 브라우저에서 interactive web application을 만드는 것을 가능하게한다.
 하지만, XHR의 힘은 브라우저 안에서 비동기 통신을 가능하게하는 것 뿐만 아니라, 이를 단순하게 만드는 힘도 있다. XHR은 브라우저에 의해 지원되는 어플리케이션 API이다. 브라우저는 connection management, protocol negotiation, formatting of HTTP request과 아래의 일을 자동으로 처리한다.
 
   * 브라우저는 connection establishment, pooling and termination를 관리한다.
@@ -40,7 +38,7 @@ XHR 이전에는, 클라이언트와 서버간의 데이터의 전송 또는 상
 
 결과적으로, 최근 모든 네트워킹 유스 케이스(스크립트로 다운로드, 업로드, 스트리밍, 실시간 알림)이 XHR위해서 가능하고, 구현되어 왔다. 물론 XHR이 모든 케이스에 가장 효율적인 전송 방법은 아니다. 그렇긴 하더라도 새로운 브라우저의 네트워킹 API를 사용할 수 없는 경우, 오래된 클라이언트의 fallback 전송 방법으로 자주 쓰인다. 이런 마음가짐으로 XHDR의 최근 기능들의 유스 케이스와 성능, 해야할 것과 하지말아야할 것을 살펴보자.
 
-> 전체 XHR API와 기능에 대한 분석은 이 문서의 범위를 벗어난다. 우리의 관심사는 성능이다. XMLHttpRequest API에 대한 공식 W3C 표준을 참고하라. <http://www.w3.org/TR/XMLHttpRequest/>
+> 전체 XHR API와 기능에 대한 분석은 이 문서의 범위를 벗어난다. 우리의 관심사는 성능이다. XMLHttpRequest API에 대한 공식 W3C 표준을 참고하라. http://www.w3.org/TR/XMLHttpRequest/
 
 ## Brief History of XHR
 
@@ -61,7 +59,7 @@ Mozilla도 Microsoft에 대응하여 그들의 XHR 모델을 구현하여 XMLHtt
 
 2001년에, "XMLHttpRequest Level 2" specification은 원래 XMLHttpRequest working draft에 통합되었다. 따라서 XHR 레퍼런스를 찾는데 버전 1 또는 2를 찾는다면, 이 둘은 차이 없다. 이제는 동일한 하나의 규약이다. 사실 모든 XHR2의 새로운 기능은 같은 이름인 XMLHttpRequest API로 더 많은 기능을 제공한다.
 
-> 새로운 XHR2 기능은 현재 모든 최근 브라우저에 의해서 지원된다. - see <http://caniuse.com/xhr2.> 따라서 XHR를 쓴다면 언제든지, 묵시적으로 XHR2 표준을 사용한다.
+> 새로운 XHR2 기능은 현재 모든 최근 브라우저에 의해서 지원된다. - see http://caniuse.com/xhr2 따라서 XHR를 쓴다면 언제든지, 묵시적으로 XHR2 표준을 사용한다.
 
 Cross-origin resource sharing(CORS) XHR는 자동으로 캐싱, 리다이렉트 처리, content negotiation, 인증 등 무수히 많은 저수준의 기능을 핸들링하는 브라우저 레벨 API이다. 첫 번째로 application API를 비지니스 로직에 집중하는 것을 쉽게 하며, 두 번째로 어플리케이션 코드에 브라우저를 sandbox로 활용하고 보안과 정책 제한 사항을 강제할 수 있다.
 
@@ -69,7 +67,7 @@ XHR 인터페이스는 각 요청에 대해 HTTP 구문 제한사항을 강제�
 
   * Accept-Charset, Accept-Encoding, Access-Control-*
   * Host, Upgrade, Connection, Refer, Origin
-  * Cookie, Sec-\*, Proxy-\* 그리고 더 많음...
+  * Cookie, Sec-*, Proxy-* 그리고 더 많음...
 
 브라우저는 안전하지 않은 헤더를 재정의 하는 것을 거부할 것이다. 이것은 어플리케이션이 가짜 user-agent, user 또는 요청이 만들어진 곳(origin)으로 위장하지 못하도록 보장한다. 사실은 원래의 헤더를 보장하는 것은 특별하게 중요하며, 이것은 "same-origin policy"의 핵심 요소로 XHR Request에 적용되어 있다.
 
@@ -81,16 +79,16 @@ Same origin policy는 시작은 간단하다. 브라우저는 인증 토큰, 쿠
 
 하지만, 만일 필요하다면, same origin policy는 또한 XHR의 유용성을 위해서 제약 사항을 제공하는 공간을 설정할 수 있다. 서버가 다른 origin에 있는 스크립트에 대한 리소슬ㄹ 제공하고 싶다면 어떨까? 여기서 "Cross-Orign Resource Sharing"(CORS)이 나온다. CORS는 클라이언트 측의 cross-origin request에 대한 안전한 opt-in(사전 동의) 메커니즘을 제공한다.
 
-    // script origin: (http, example.com, 80)  
-    var xhr = new XMLHttpRequest();  
-    xhr.open('GET', '/resource.js'); // ---- [1]  
-    xhr.onload = function() { ... };  
+    // script origin: (http, example.com, 80)
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/resource.js'); // ---- [1]
+    xhr.onload = function() { ... };
     xhr.send();
-    
-    var cors_xhr = new XMLHttpRequest();  
-    cors_xhr.open('GET', '<http://thirdparty.com/resource.js>'); // ---- [2]  
-    cors_xhr.onload = function() { ... };  
-    cors_xhr.send();  
+
+    var cors_xhr = new XMLHttpRequest();
+    cors_xhr.open('GET', 'http://thirdparty.com/resource.js'); // ---- [2]
+    cors_xhr.onload = function() { ... };
+    cors_xhr.send();
 
   * [1] Same-origin XHR request
   * [2] Cross-origin XHR request
@@ -99,16 +97,16 @@ CORS request는 스크립트를 실행하는 곳과 요청되는 곳의 URL만 �
 
 CORS 요청에 대한 opt-in(사전 동의) 인증은 보다 낮은 레이어에서 제어된다. 요청이 만들어지면, 브라우저는 자동으로 보호된 Origin HTTP 헤더를 추가한다. 이것은 요청이 어디서(어떤 origin에서) 만들어 졌는지를 알린다(advertise). 다음 순서로 원격 서버에서는 origin header를 검사하고 요청을 허락할지를 결정하고 Access-Control-Allow-Origin로 리턴한다.
 
-    => Request  
-    GET /resource.js  
-    HTTP/1.1  
-    Host: thirdparty.com  
-    Origin: <http://example.com> // ---- [1]  
+    => Request
+    GET /resource.js
+    HTTP/1.1
+    Host: thirdparty.com
+    Origin: http://example.com // ---- [1]
     ...
-    
-    <= Response HTTP/1.1 200 OK  
-    Access-Control-Allow-Origin: <http://example.com> // ---- [2]  
-    ...  
+
+    <= Response HTTP/1.1 200 OK
+    Access-Control-Allow-Origin: http://example.com // ---- [2]
+    ...
 
   * [1] 브라우저가 자동으로 설정한 origin 헤더
   * [2] 서버가 설정한 사전동의 헤더
@@ -124,21 +122,21 @@ CORS 요청에 대한 opt-in(사전 동의) 인증은 보다 낮은 레이어에
 
 쿠키와 HTTP 인증을 활성화 하기 위해서는, 클라이언트는 반드시 요청을 만들때 XHDR 객체의 추가 속성(withCredentials)를 설정 해야한다. 그리고 서버는 반드시 어플리케이션에 private user data 포함을 허용하는 적절한 헤더(Access-Control-Allow-Credentials)로 응답해야한다. 유사하게, 클라이언트가 custom HTTP 헤더를 읽거나 쓰기 위해서 또는 "non-simple method"를 request에 사용한다면 반드시 third party 서버로 부터 사전 요청(preflight request)을 통해서 권한을 요청해야 한다.
 
-    => Preflight request  
-    OPTIONS /resource.js HTTP/1.1 // ---- [1]  
-    Host: thirdparty.com  
-    Origin: <http://example.com>  
-    Access-Control-Request-Method: POST  
-    Access-Control-Request-Headers: My-Custom-Header  
+    => Preflight request
+    OPTIONS /resource.js HTTP/1.1 // ---- [1]
+    Host: thirdparty.com
+    Origin: http://example.com
+    Access-Control-Request-Method: POST
+    Access-Control-Request-Headers: My-Custom-Header
     ...
-    
-    <= Preflight response  
-    HTTP/1.1 200 OK // ---- [2]  
-    Access-Control-Allow-Origin: <http://example.com>  
-    Access-Control-Allow-Methods: GET, POST, PUT  
-    Access-Control-Allow-Headers: My-Custom-Header  
-    ...  
-    (actual HTTP request) // ---- [3]  
+
+    <= Preflight response
+    HTTP/1.1 200 OK // ---- [2]
+    Access-Control-Allow-Origin: http://example.com
+    Access-Control-Allow-Methods: GET, POST, PUT
+    Access-Control-Allow-Headers: My-Custom-Header
+    ...
+    (actual HTTP request) // ---- [3]
 
   * [1] 권한을 확인하기 위한 preflight OPTIONS
   * [2] third party origin에서 preflight 성공 응답
@@ -146,7 +144,7 @@ CORS 요청에 대한 opt-in(사전 동의) 인증은 보다 낮은 레이어에
 
 공식 W3C CORS 규약은 언제, 어디서 preflight request가 반드시 사용 되어야 하는지 정의하고 있다. "simple" request는 생략할 수 있다. 그러나 이것을 유발할 다양한 조건 있고, 권한을 확인하기 위해 네트워크의 latency를 유발하는 초소한의 full roundtrip이 추가된다. 좋은 소식은 한번 preflight 요청이 맺어지면, 클라이언트가 감지할 수 있고, 각각의 요청에 대해서 같은 확인을 피할 수 있다.
 
-> CORS은 모든 최근 브라우저가 지원한다. see <http://caniuse.com/cors.> 다양한 CORS 정책과 구현에 대한 자세한 내용은 공식 W3C 표준을 참고한다. <http://www.w3.org/TR/cors/>
+> CORS은 모든 최근 브라우저가 지원한다. see http://caniuse.com/cors 다양한 CORS 정책과 구현에 대한 자세한 내용은 공식 W3C 표준을 참고한다. http://www.w3.org/TR/cors/
 
 ## Downloading data with XHR
 
@@ -160,20 +158,20 @@ XHR은 텍스트와 바이너리 데이터를 전송할 수 있다. 실제로 �
 
 브라우저는 HTTP content-type negotiation을 통하여 적절한 데이터 타입(예를 들면 application/json을 JSON 객체로 디코딩)을 유추하거나 어플리케이션이 명시적으로 XHR 요청을 시작할 때 데이터 타입을 정의한다.
 
-    var xhr = new XMLHttpRequest();  
-    xhr.open('GET', '/images/photo.webp');  
-    xhr.responseType = 'blob'; // ---- [1]  
-    xhr.onload = function() {  
-      if (this.status == 200) {  
-        var img = document.createElement('img');  
-        img.src = window.URL.createObjectURL(this.response); // ---- [2]  
-        img.onload = function() {  
-          window.URL.revokeObjectURL(this.src); // ---- [3]  
-        }  
-        document.body.appendChild(img);  
-      }  
-    };  
-    xhr.send();  
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/images/photo.webp');
+    xhr.responseType = 'blob'; // ---- [1]
+    xhr.onload = function() {
+      if (this.status == 200) {
+        var img = document.createElement('img');
+        img.src = window.URL.createObjectURL(this.response); // ---- [2]
+        img.onload = function() {
+          window.URL.revokeObjectURL(this.src); // ---- [3]
+        }
+        document.body.appendChild(img);
+      }
+    };
+    xhr.send();
 
   * [1] 리턴 타입을 blob으로 설정
   * [2] blob에서 Object를 생성하고 이미지 소스로 설정
@@ -187,25 +185,25 @@ XHR은 텍스트와 바이너리 데이터를 전송할 수 있다. 실제로 �
 
 XHR를 이용해서 데이터를 업로드하는 것은 간단하고 모든 데이터 타입에 대해 효율적이다. 실제로 코드는 XHR request의 send()를 호출할 때 데이터 객체를 전달하는 것을 제외하고 동일하다.
 
-    var xhr = new XMLHttpRequest();  
-    xhr.open('POST','/upload');  
-    xhr.onload = function() { ... };  
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST','/upload');
+    xhr.onload = function() { ... };
     xhr.send("text string"); // ---- [1]
-    
-    var formData = new FormData(); // ---- [2]  
-    formData.append('id', 123456);  
+
+    var formData = new FormData(); // ---- [2]
+    formData.append('id', 123456);
     formData.append('topic', 'performance');
-    
-    var xhr = new XMLHttpRequest();  
-    xhr.open('POST', '/upload');  
-    xhr.onload = function() { ... };  
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/upload');
+    xhr.onload = function() { ... };
     xhr.send(formData); // ---- [3]
-    
-    var xhr = new XMLHttpRequest();  
-    xhr.open('POST', '/upload');  
-    xhr.onload = function() { ... };  
-    var uInt8Array = new Uint8Array([1, 2, 3]); // ---- [4]  
-    xhr.send(uInt8Array.buffer); // ---- [5]  
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/upload');
+    xhr.onload = function() { ... };
+    var uInt8Array = new Uint8Array([1, 2, 3]); // ---- [4]
+    xhr.send(uInt8Array.buffer); // ---- [5]
 
   * [1] 간단한 텍스트 업로드
   * [2] FormData API를 이용하여 동적으로 폼을 생성
@@ -216,27 +214,27 @@ XHR를 이용해서 데이터를 업로드하는 것은 간단하고 모든 데�
 XHR의 send() 함수는 DOMString, Document, FormData, Blob, File, ArrayBuffer 중 하나를 파라미터로 받는다. 자동으로 적동한 인코딩을 수행하고, 적절한 HTTP content-type을 설정하고, request를 보낸다. 바이너리 데이터를 보내거나 파일 업로드 기능을 사용자에게 제공할 필요가 있나요? 간단합니다. 객체에 대한 참조를 얻고, XHR로 전달하면 된다. 사실 약간의 추가 작업을 통해, 큰 파일을 작은 덩어리로 분리하여 보낼 수 있다.
 
     var blob = ...; // ---- [1]
-    
-    const BYTES_PER_CHUNK = 1024 * 1024; // ---- [2]  
-    const SIZE = blob.size;
-    
-    var start = 0;  
-    var end = BYTES_PER_CHUNK;
-    
-    while(start < SIZE) { // ---- [3]  
-      var xhr = new XMLHttpRequest();  
-      xhr.open('POST', '/upload');  
-      xhr.onload = function() { ... };  
-      xhr.setRequestHeader('Content-Range', start+'-'+end+'/'+SIZE); // ---- [4]  
-      xhr.send(blob.slice(start, end)); // ---- [5]  
-      start = end; end = start + BYTES_PER_CHUNK;  
-    }  
 
-  * [1] 어떤 blob 데이터(바이너리 또는 텍스트)
-  * [2] chunk 크기를 1MB로 설정
-  * [3] 1MB씩 증가하면서 데이터를 전
-  * [4] 업로드할 데이터 사이즈를 알림
-  * [5] XHR를 통해서 데이터를 1MB씩 전송
+    const BYTES_PER_CHUNK = 1024 * 1024; // ---- [2]
+    const SIZE = blob.size;
+
+    var start = 0;
+    var end = BYTES_PER_CHUNK;
+
+    while(start < SIZE) { // ---- [3]
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', '/upload');
+      xhr.onload = function() { ... };
+      xhr.setRequestHeader('Content-Range', start+'-'+end+'/'+SIZE); // ---- [4]
+      xhr.send(blob.slice(start, end)); // ---- [5]
+      start = end; end = start + BYTES_PER_CHUNK;
+    }
+
+  * \[1] 어떤 blob 데이터(바이너리 또는 텍스트)
+  * \[2] chunk 크기를 1MB로 설정
+  * \[3] 1MB씩 증가하면서 데이터를 전
+  * \[4] 업로드할 데이터 사이즈를 알림
+  * \[5] XHR를 통해서 데이터를 1MB씩 전송
 
 XHR는 request streaming을 제공하지 않는다. 이 말은 send()를 호출할때 전체 payload를 제공해야한 다는 것이다. 하지만, 위의 예제에서는 간단한 우회 방법을 설명했다. 파일을 분할하고 여러 XHR 요청을 이용하여 데이터를 업로드 한다. 이런 구현 패턴은 true request streaming에 대한 대체 방법으로는 의미가 없다. 하지만 그럼에도 불구하고 일부 어플리케이션에서는 사용 가능한 솔루션(viable solution)이다.
 
@@ -250,35 +248,35 @@ Table 15-1. XHR progress events Event type Description Times fired loadstart Tra
 
 각각의 XHR 전송 요청은 loadstart로 시작하고, loadend 이벤트로 끝난다. 그리고 그 사이에 한 번 이상의 추가 이벤트가 발생하여 전송 상태를 알려준다. 따라서 진행 상황을 모니터링 하려면 어플리케이션에서 XHR 객체의 JavaScript 이벤트 리스너를 등록한다.
 
-    var xhr = new XMLHttpRequest();  
-    xhr.open('GET','/resource');  
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET','/resource');
     xhr.timeout = 5000; // ---- [1]
-    
-    xhr.addEventListener('load', function() { ... }); // ---- [2]  
+
+    xhr.addEventListener('load', function() { ... }); // ---- [2]
     xhr.addEventListener('error', function() { ... }); // ---- [3]
-    
-    var onProgressHandler = function(event) {  
-      if(event.lengthComputable) {  
-        var progress = (event.loaded / event.total) * 100; // ---- [4]  
-        ...  
-      }  
+
+    var onProgressHandler = function(event) {
+      if(event.lengthComputable) {
+        var progress = (event.loaded / event.total) * 100; // ---- [4]
+        ...
+      }
     }
 
-    xhr.upload.addEventListener('progress', onProgressHandler); // ---- [5]  
-    xhr.addEventListener('progress', onProgressHandler); // ---- [6]  
-    xhr.send();  
+    xhr.upload.addEventListener('progress', onProgressHandler); // ---- [5]
+    xhr.addEventListener('progress', onProgressHandler); // ---- [6]
+    xhr.send();
 
-  * [1] request 타임아웃을 5000ms로 설정(기본값: 타임아웃 없음)
-  * [2] 성공적인 요청에 대한 callback 등록
-  * [3] 실패한 요청에 대한 callback 등록
-  * [4] 전송 진행율 계산
-  * [5] 업로드 진행상황 이벤트 callback 등록
-  * [6] 다운로드 진행상황 이벤트 callback 등록
+  * \[1] request 타임아웃을 5000ms로 설정(기본값: 타임아웃 없음)
+  * \[2] 성공적인 요청에 대한 callback 등록
+  * \[3] 실패한 요청에 대한 callback 등록
+  * \[4] 전송 진행율 계산
+  * \[5] 업로드 진행상황 이벤트 callback 등록
+  * \[6] 다운로드 진행상황 이벤트 callback 등록
 
 load 또는 error 이벤트는 XHR 전송의 최종 상태를 알리기 위해 한 번 발생한다. 반면에 progress 이벤트는 자주 발생하며, 전송 상황을 추적하기 위한 API가 제공된다. loaded 속성을 total과 계산하여 전송된 데이터 양를 계산할 수 있다.
 
 > 전송된 데이터를 계산하기 위하여, 서버는 response에 content-length를 반드시 제공해야 한다. 정의에 의하면 응답의 전체 크기는 알 수 없기 때문에, 단위 조각의 전송 진행 상황은 추측할 수 없다.
-> 
+>
 > 또한, XHR request는 기본 timeout을 가지고 있지 않다. 이 말은 request는 영원히 진행중 상태에 있을 수 있다는 말이다. best practice로 어플리케이션에서는 항상 의미있는 timeout을 설정하고, 에러를 처리하라!
 
 ## Streaming data with XHR
@@ -296,18 +294,18 @@ Streaming은 공식 XHR 규약 안에서 전혀 공식적인 유스케이스가 
 
 XHR과 Streams API의 조합은 브라우저에서 XHR Streaming을 효과적으로 가능하게 한다. 하지만, Streams API는 아직 논의중이며, 아직 어떠한 브라우저에서도 사용 가능하지 않다. 따라서 여기에 우리는 갇혔을까? 음.. 완전히는 아니다. 이전에도 언급 했듯이, XHR를 이용한 streaming 업로드는 선택사항이 아니다. 하지만 XHR를 사용하여 제한된 스트리밍 다운로드 지원은 가능하다.
 
-    var xhr = new XMLHttpRequest();  
-    xhr.open('GET', '/stream');  
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/stream');
     xhr.seenBytes = 0;
-    
-    xhr.onreadystatechange = function() { // ---- [1]  
-      if(xhr.readyState > 2) {  
-      var newData = xhr.responseText.substr(xhr.seenBytes); // ---- [2]  
+
+    xhr.onreadystatechange = function() { // ---- [1]
+      if(xhr.readyState > 2) {
+      var newData = xhr.responseText.substr(xhr.seenBytes); // ---- [2]
         // process newData
-    
-        xhr.seenBytes = xhr.responseText.length; // ---- [3]  
-      }  
-    };  
+
+        xhr.seenBytes = xhr.responseText.length; // ---- [3]
+      }
+    };
 
   * [1] 상태와 진행 알림에 등록
   * [2] 부분 응답에서 새로운 데이터를 추출
@@ -348,18 +346,18 @@ HTTP에서는 서버가 클라이언트에 새로운 연결을 시작하는 방�
 
 polling은 간단하게 구연할 수 있지만, 주기적인 호출은 또한 매우 비효율적이다. polling 간격을 선택하는 것은 매우 critical하다. 긴 polling 간격은 업데이트를 가져오는 것이 지연되는 반면에 잛은 간격은 필요없는 트래픽과 클라이언트와 서버에 높은 부담을 준다. 가장 간단한 polling 예제를 보자.
 
-    function checkUpdates(url)  
-    {  
-      var xhr = new XMLHttpRequest();  
-      xhr.open('GET', url);  
-      xhr.onload = function() { ... }; // ---- [1]  
-      xhr.send();  
+    function checkUpdates(url)
+    {
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', url);
+      xhr.onload = function() { ... }; // ---- [1]
+      xhr.send();
     }
-    
-    setInterval(checkUpdates('/updates'), 60000); // ---- [2]  
 
-  * [1] 서버에서 가져온 변경사항을 적용한다.
-  * [2] 60초마다 XHR 요청을 한다.
+    setInterval(checkUpdates('/updates'), 60000); // ---- [2]
+
+  * \[1] 서버에서 가져온 변경사항을 적용한다.
+  * \[2] 60초마다 XHR 요청을 한다.
 
   * 각 XHR 요청은 독립적인 HTTP request이고, 평균적으로 HTTP는 800 바이트 이하(HTTP 쿠키를 사용하지 않을 경우)의 오버헤드를 요청과 응답 헤더에 발생시킨다.
   * 주기적인 검사 작업은 예상한 간격에 데이터가 잘 도착하면 잘 동작한다. 운없게도 예측가능한 도착비율은 표준분포를 따르지 않는다. 이 결과로 주기적인 polling은 메시지가 서버에서 발생한 시간과 클라이언트에 도착하는 시간에 추가적인 latency 지연이 유발한다.
@@ -396,24 +394,24 @@ polling overhead는 얼마인가?
 
 {% img /images/poll-longpoll.png %}
 
-오래 유지되는 HTTP request("a hanging GET")을 이용하여 서버에서 브라우저에 데이터를 푸쉬하는 것에 사용되는 기술은 일반적으로 "Comet"으로 알려져 있다. 하지만 아마 reverse AJAX, AJAX push, HTTP push라는 다른 이름으로도 만날 수 있다.  
+오래 유지되는 HTTP request("a hanging GET")을 이용하여 서버에서 브라우저에 데이터를 푸쉬하는 것에 사용되는 기술은 일반적으로 "Comet"으로 알려져 있다. 하지만 아마 reverse AJAX, AJAX push, HTTP push라는 다른 이름으로도 만날 수 있다.
 업데이트가 있을 때까지 연결을 열린 채로 유지(long-polling)로 인해서, 서버에서 데이터가 발생하면 즉시 클라이언트로 바로 보내질 수 있다. 결과적으로 long-polling은 메시지 지연과 빈 리스트 체크를 없앨 수 있는 가장 좋은 시나리오이다. 업데이트가 전달되면, long-polling 요청은 종료되고 클라이언트는 다른 long-poll 요청을 시작한다. 그리고 다음 메시지가 있을 때 까지 기다린다.
 
-    function checkUpdates(url) {  
-      var xhr = new XMLHttpRequest();  
-      xhr.open('GET', url);  
-      xhr.onload = function() { // ---- [1]  
-        ...  
-        checkUpdates('/updates'); // ---- [2]  
-      };  
-      xhr.send();  
+    function checkUpdates(url) {
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', url);
+      xhr.onload = function() { // ---- [1]
+        ...
+        checkUpdates('/updates'); // ---- [2]
+      };
+      xhr.send();
     }
-    
-    checkUpdates('/updates'); // ---- [3]  
 
-  * [1] 전송받은 업데이트를 처리하고, 새로운 long-pool XHR를 시작한다.
-  * [2] 다음 업데이트에 대한 long-poll 요청을 시작한다. 그리고 영원히..
-  * [3] 최초 long-pool XHR 요청을 시작한다.
+    checkUpdates('/updates'); // ---- [3]
+
+  * \[1] 전송받은 업데이트를 처리하고, 새로운 long-pool XHR를 시작한다.
+  * \[2] 다음 업데이트에 대한 long-poll 요청을 시작한다. 그리고 영원히..
+  * \[3] 최초 long-pool XHR 요청을 시작한다.
 
 이걸로 long-polling은 주기적인 polling에 비하여 항상 최고의 선택일까? 메시지 도착율을 알고 있고, 일정한 경우가 아니라면 long-polling은 메시지 전달 지연이 항상 더 좋다. 만일 이게 가장 중요한 부분이라면 long-polling이 승자다.
 

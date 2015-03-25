@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=1271
 permalink: /archives/1271
 dsq_thread_id:
   - 1291964730
-categories:
-  - Uncategorized
 tags:
   - kvm
 ---

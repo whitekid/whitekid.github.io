@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=884
 permalink: /archives/884
 dsq_thread_id:
   - 726807533
-categories:
-  - Uncategorized
 ---
 varnishd를 사용하고 있었습니다. 그렇죠. 캐쉬 해주니깐 뭔가 더 빠를 것 같다.
 

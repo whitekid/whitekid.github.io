@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=1266
 permalink: /archives/1266
 dsq_thread_id:
   - 1291590316
-categories:
-  - Uncategorized
 tags:
   - apache
   - bash
@@ -19,7 +17,7 @@ tags:
 
 그래서 해당 ip를 그냥 .htaccess에서 접근차단 하기로 했습니다. 아주 간단하게.~~
 
-https://gist.github.com/whitekid/5589530#file-block_moin_ddos-sh
+{% gist 5589530 %}
 
 이 스크립트를 그냥 crontab에서 돌려 놓으세요~
 

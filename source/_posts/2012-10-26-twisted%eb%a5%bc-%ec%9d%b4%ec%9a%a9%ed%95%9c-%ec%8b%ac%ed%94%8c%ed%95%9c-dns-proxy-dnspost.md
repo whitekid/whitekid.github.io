@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=1040
 permalink: /archives/1040
 dsq_thread_id:
   - 900799264
-categories:
-  - Uncategorized
 tags:
   - dns
   - dnspost
@@ -27,15 +25,15 @@ OSX에서는 resover를 사용해서 하고.. 또한 우리 회사 개발자도 
 
 그래서 목마른 사람이 우물을 판다고 python twisted name 라이브러리를 이용해서 간단히 뚝딱뚝딱 만들어 봤습니다. 로컬에서 네임서버 돌리고 이 것을 사용하면 됩니다.
 
-<https://github.com/whitekid/dnspost>
+https://github.com/whitekid/dnspost
 
 ### Installation
 
-    $ apt-get install python-twisted-names  
-    $ git clone <https://github.com/whitekid/dnspost.git>  
-    $ cd dnspost  
-    # edit dnspost.conf listen_port  
-    $ ./dnspost.py  
+    $ apt-get install python-twisted-names
+    $ git clone https://github.com/whitekid/dnspost.git
+    $ cd dnspost
+    # edit dnspost.conf listen_port
+    $ ./dnspost.py
 
 ### Ubuntu/NetworkManager note
 
@@ -45,11 +43,11 @@ ubuntu desktop에서는 NetworkManager를 사용하고, NetworkManager에서는 
 
 /etc/NetworkManager/NetworkManager.conf에서 dns=dnsmasq라는 라인을 삭제합니다
 
-    #dns=dnsmasq  
+    #dns=dnsmasq
 
 NetworkManager restart
 
-    $ service network-manager restart  
+    $ service network-manager restart
 
 px ax | grep dnsmasq로 dnsmasq가 없는지 확인합니다.
 
@@ -59,17 +57,17 @@ px ax | grep dnsmasq로 dnsmasq가 없는지 확인합니다.
 
 만일 반영이 안되면 network-manager를 다시 시작합니다.
 
-    $ service network-manager restart  
+    $ service network-manager restart
 
 #### register dnspost upstart service
 
-    $ cp dnspost.conf /etc/init/dnspost.conf  
-    $ ln -s /lib/upstart-job /etc/init.d/dnspost  
-    $ service dnspost start  
+    $ cp dnspost.conf /etc/init/dnspost.conf
+    $ ln -s /lib/upstart-job /etc/init.d/dnspost
+    $ service dnspost start
 
 #### test
 
-    $ dig daum.net localhost  
+    $ dig daum.net localhost
 
 잘 동작하는 것을 확인하였다면 이제 설정파일 적당히 바꿔서 도메인별로 DNS Server를 다르게 사용해보시기 바랍니다. - 끝 -
 

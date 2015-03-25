@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=647
 permalink: /archives/647
 dsq_thread_id:
   - 732692540
-categories:
-  - Uncategorized
 ---
 PHP로 되어있던 코드를 django로 갈아엎기로 했다. PHP로 아무런 철학없이 대충 돌아가는 코드를 물려받아서.. 이걸을 그냥두고 계속 땜빵하는 짓을 정말로 못하겠다는 것이지.~
 

@@ -7,8 +7,6 @@ guid: http://www.woosum.net/?p=632
 permalink: /archives/632
 dsq_thread_id:
   - 715312835
-categories:
-  - Uncategorized
 tags:
   - iTunes
 ---
@@ -18,7 +16,7 @@ iTunes 라이브러리를 다른 컴퓨터로 옮기기 위해 여기저기 둘�
 
 뒤지다가 결국 아래의 방법이 제일 좋을 것 같다.
 
-[http://www.squidoo.com/copy\_itunes\_library][1]{.broken_link}
+http://www.squidoo.com/copy_itunes_library
 
   * Library Export File: 여기다가는 iTunes 라이브러리를 Export한 XML을 적는다.
   * File Copy Destination Folder: 미디어 파일을 복사할 디렉토리 위치를 적는다. 디렉토리는 미리 만들어 놓는다.

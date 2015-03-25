@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=692
 permalink: /archives/692
 dsq_thread_id:
   - 736055365
-categories:
-  - Uncategorized
 tags:
   - django
 ---
@@ -22,21 +20,20 @@ first\_name, last\_name 등은 어쩌면 우리나라의 환경에 맞지 않는
 
 django.user를 설정하는 곳은 middleware이니 나도 새로운 middleware를 만들어서 처리했다. 물론 django authentication의 코드를 좀 참고했다. 대충 아래 코드 보시고...
 
-[code lang="python"]  
-from myapp.models import AnonymousUser, User
+    from myapp.models import AnonymousUser, User
 
-class LazyUser(object):  
-def \_\_get\_\_(self, request, obj_type = None):  
-if not hasattr(request, '__user'):  
-request._\_user = User.objects.get(id=request.session['user\_id']) if request.session.get('user_id', False) else AnonymousUser()  
-return request.__user
+    class LazyUser(object):
+        def __get__(self, request, obj_type = None):
+            if not hasattr(request, '__user'):
+                request.__user = User.objects.get(id=request.session['user_id']) if request.session.get('user_id', False) else AnonymousUser()
+            return request.__user
 
-class AuthenticationMiddleware:  
-def process_request(self, request):  
-if not hasattr(request.\_\_class\_\_, 'user') or not request.\_\_class\_\_.user is LazyUser:  
-request.\_\_class\_\_.user = LazyUser()  
-[/code]
+    class AuthenticationMiddleware:
+        def process_request(self, request):
+            if not hasattr(request.__class__, 'user') or not request.__class__.user is LazyUser:
+                request.__class__.user = LazyUser()
 
-이렇게하면 이제 request.user를 우리만의 user객체로 사용가능하니.. 좋다~ 
+
+이렇게하면 이제 request.user를 우리만의 user객체로 사용가능하니.. 좋다~
 
 실제 작성했던 코드에서 대충 개념만 표현한 것이라 제대로 동작할 지는 나도 모른다.. ㅋㅋ

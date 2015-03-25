@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=529
 permalink: /archives/529
 dsq_thread_id:
   - 740660173
-categories:
-  - Uncategorized
 tags:
   - dbExpress
   - Delphi

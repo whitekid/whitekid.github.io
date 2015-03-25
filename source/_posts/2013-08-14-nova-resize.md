@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=1389
 permalink: /archives/1389
 dsq_thread_id:
   - 1605720032
-categories:
-  - Uncategorized
 tags:
   - nova
   - OpenStack
@@ -16,8 +14,8 @@ tags:
 ---
 nova resize는 메뉴얼에 나와있는 것 같이, 인스턴스에 적용된 flavor를 바꾸고, 이에 따라서 서버의 설정을 변경하는 명령입니다. 이의 사용 방법은 간단합니다.
 
-    $ nova resize -poll <instance id> <flavor id>  
-    $ nova resize-confirm <instance id>  
+    $ nova resize -poll <instance id> <flavor id>
+    $ nova resize-confirm <instance id>
 
 아주 간단하게 보이죠... 근데 이렇다면 제가 이 글을 쓸 이유가 없습니다. 메뉴얼에 나와있지 않은 숨은 복병이 있습니다.
 
@@ -25,8 +23,8 @@ nova resize는 메뉴얼에 나와있는 것 같이, 인스턴스에 적용된 f
 
     $ nova resize -poll my-instance 3
 
-    Instance resizing... 0% complete  
-    Error resizing instance  
+    Instance resizing... 0% complete
+    Error resizing instance
 
 음.. 이 상태에서는 인스턴스는 종료되어 접근할 수 없고, nova list 명령으로 보면 아래처럼 에러가 났다고 그러고, 재부팅 하기 위해서 nova reboot를 하면 에러 상태에서는 해당 명령을 수행할 수 없다고 합니다.
 
@@ -36,7 +34,7 @@ nova resize는 메뉴얼에 나와있는 것 같이, 인스턴스에 적용된 f
     +--------------------------------------+--------------+--------+------------------------------+
     | cb0802f6-0946-41d7-a7e6-6280974686e0 | my-instance  | ERROR  | admin=10.10.10.2, 10.250.0.4 |
     +--------------------------------------+--------------+--------+------------------------------+
-   
+
     $ nova reboot --hard my-instance
     ERROR: Cannot 'reboot' while instance is in vm_state error (HTTP 409) (Request-ID: req-b745b011-961d-4b11-9366-a85cbe027fc8)
 
@@ -54,7 +52,7 @@ nova resize는 메뉴얼에 나와있는 것 같이, 인스턴스에 적용된 f
 
 ACTIVE 상태이니... 인스턴스 접근을 해보려 하겠지만 안됩니다. 데이터베이스 상에서 status만 reset된 상태입니다. 아직은 인스턴스는 그대로 죽어있습니다. 이제 인스턴스를 상리기 위해서 reboot 합니다.
 
-    $ nova reboot -hard my-instance  
+    $ nova reboot -hard my-instance
 
 이제 잠시 기다리면 인스턴스가 올라옵니다.
 
@@ -92,7 +90,7 @@ ACTIVE 상태이니... 인스턴스 접근을 해보려 하겠지만 안됩니�
 
 보면, 에러가 발생했을 때 traceback이 보이고, 여기서 관심을 둘 부분은 아래입니다.
 
-    Command: ssh 10.100.0.32 mkdir -p /var/lib/nova/instances/cb0802f6-0946-41d7-a7e6-6280974686e0  
+    Command: ssh 10.100.0.32 mkdir -p /var/lib/nova/instances/cb0802f6-0946-41d7-a7e6-6280974686e0
 
 다른 호스트로 ssh로 디렉토리를 만들면서 명령을 실행하다가 발생합니다. 어디선가 본 적이 있을 겁니다. 녜.. 이 내용은 이전에 [migration에 대한 포스트][1]에서 migration에서 실행하는 명령과 같습니다. 즉.. resize는 ssh를 통해서 다른 compute에 디스크를 복사하고, 이는 migration의 필요 요구사항과 같습니다.
 

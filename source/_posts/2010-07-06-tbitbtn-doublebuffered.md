@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=167
 permalink: /archives/167
 dsq_thread_id:
   - 936896325
-categories:
-  - Uncategorized
 tags:
   - Delphi
 ---

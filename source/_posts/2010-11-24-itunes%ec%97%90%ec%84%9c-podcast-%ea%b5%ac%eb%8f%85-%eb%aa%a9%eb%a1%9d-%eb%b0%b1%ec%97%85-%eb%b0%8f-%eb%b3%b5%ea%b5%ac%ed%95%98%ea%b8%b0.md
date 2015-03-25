@@ -7,8 +7,6 @@ guid: http://www.woosum.net/?p=619
 permalink: /archives/619
 dsq_thread_id:
   - 714747165
-categories:
-  - Uncategorized
 tags:
   - iTunes
   - podcast
@@ -21,9 +19,7 @@ iTunes의 podcast 구독목록 백업은 생각보다 간단하다. 하지만 �
 
 자 다시 백업파일 입력하는 대화상자에서 파일 타입을 OPML로 선택하고 저장해보자. 그리고 저장한 파일을 텍스트 편집기로 열어 확인해보자. 내가 원한건 이거다!
 
-<p style="text-align: center;">
-  <a href="http://www.woosum.net/wp-content/uploads/2010/11/podcast_subscription_backup.png"><img class="aligncenter size-full wp-image-620" title="podcast_subscription_backup" src="http://www.woosum.net/wp-content/uploads/2010/11/podcast_subscription_backup.png" alt="" width="503" height="315" /></a>
-</p>
+{% img /images/podcast_subscription_backup.png %}
 
 그런데 다시 이것을 복구하는 방법은?.. 열심히 메뉴나 기타를 뒤져보지만 역시 나오지 않는다. Apple이 자주 사용하는 기능들은 편하지만, 좀 특별하거나 복잡한 기능들은 꼭꼭 숨겨놓는다.
 

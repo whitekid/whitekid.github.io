@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=1477
 permalink: /archives/1477
 dsq_thread_id:
   - 2503833611
-categories:
-  - Uncategorized
 tags:
   - nova-scheduler
   - OpenStack
@@ -64,22 +62,22 @@ nova-scheduler는 컴퓨트 노드 중에서 생성하려는 인스턴스를 위
 
 이 것을 weigher로 만들면 아래처럼 몇 줄 안되는 weigher가 됩니다. 코드는 머 대충 돌아갑니다. ^^;
 
-    class RAMStackWeigher(weights.BaseHostWeigher):  
-      def _weight_multiplier(self):  
+    class RAMStackWeigher(weights.BaseHostWeigher):
+      def _weight_multiplier(self):
         return 1.0
-    
-    def _weigh_object(self, host_state, weight_properties):  
-      instance_type = weight_properties['instance_type']  
-      instance_memory_mb = instance_type['memory_mb']  
+
+    def _weigh_object(self, host_state, weight_properties):
+      instance_type = weight_properties['instance_type']
+      instance_memory_mb = instance_type['memory_mb']
       free_ram_mb = host_state.free_ram_mb
-      
-      if instance_memory_mb > CONF.ram_weight_stack_min:  
-        return free_ram_mb  
-      else:  
-        if free_ram_mb <= CONF.ram_weight_stack_host_free_ram:  
-          return - free_ram_mb  
-        else:  
-          return free_ram_mb - CONF.ram_weight_stack_host_free_ram - (1024 * 256)  
+
+      if instance_memory_mb > CONF.ram_weight_stack_min:
+        return free_ram_mb
+      else:
+        if free_ram_mb <= CONF.ram_weight_stack_host_free_ram:
+          return - free_ram_mb
+        else:
+          return free_ram_mb - CONF.ram_weight_stack_host_free_ram - (1024 * 256)
     [/code]
 
 참고) weigher는 모든 호스트에 대해서 \_weigh\_object를 호출하고 \_weight\_multiplier 순으로 호출됩니다.

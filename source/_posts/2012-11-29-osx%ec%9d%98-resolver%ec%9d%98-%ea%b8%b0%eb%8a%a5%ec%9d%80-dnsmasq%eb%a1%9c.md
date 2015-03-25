@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=1163
 permalink: /archives/1163
 dsq_thread_id:
   - 949686238
-categories:
-  - Uncategorized
 tags:
   - dnsmasq
 ---
@@ -18,14 +16,14 @@ dnsmasq는 dns forwarder가 기본입니다. 그리고 또 심플한 dns 기능�
 
 /etc/dnsmasq.d/company.zone:
 
-    server=/dev.company.com/192.168.1.199  
-    server=/myteam.company.com/192.168.1.200  
+    server=/dev.company.com/192.168.1.199
+    server=/myteam.company.com/192.168.1.200
 
-다음 예제는 local이라는 나만의 가상 도메인을 만들고 호스트를 지정하는 방법입니다. /etc/hosts에 설정하는 것과 비슷하죠.  
+다음 예제는 local이라는 나만의 가상 도메인을 만들고 호스트를 지정하는 방법입니다. /etc/hosts에 설정하는 것과 비슷하죠.
 /etc/dnsmasq/local.zone:
 
-    address=/local-db.local/10.20.1.4  
-    address=/local-[www.local/10.20.1.5][2]  
+    address=/local-db.local/10.20.1.4
+    address=/local-[www.local/10.20.1.5][2]
 
 이렇게해서 dnspost는 역사속으로 사라지는군요.
 

@@ -7,8 +7,6 @@ guid: http://www.woosum.net/?p=595
 permalink: /archives/595
 dsq_thread_id:
   - 752694722
-categories:
-  - Uncategorized
 tags:
   - FreeBSD
   - portsnap

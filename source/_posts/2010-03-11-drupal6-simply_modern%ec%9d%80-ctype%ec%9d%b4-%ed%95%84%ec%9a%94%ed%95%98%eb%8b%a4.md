@@ -5,8 +5,6 @@ author: whitekid
 layout: post
 guid: http://blog.woosum.net/?p=59
 permalink: /archives/59
-categories:
-  - Uncategorized
 tags:
   - drupal
   - ports

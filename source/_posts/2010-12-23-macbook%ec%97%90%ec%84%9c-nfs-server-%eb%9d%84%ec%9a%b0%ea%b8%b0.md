@@ -7,24 +7,22 @@ guid: http://blog.woosum.net/?p=640
 permalink: /archives/640
 dsq_thread_id:
   - 717532865
-categories:
-  - Uncategorized
 tags:
   - Mac
   - nfs
 ---
-Macbook에서 nfs를 설정하는 방법을 [여기][1]{.broken_link}를 참고해서 작업했다.
+Macbook에서 nfs를 설정하는 방법을 [여기][1]를 참고해서 작업했다.
 
-/etc/exports
+/etc/exports:
 
-<pre>/Volumes/Workspace/mydroid/out/target/product/xxx/root -mapall=root 192.168.0.56</pre>
+    /Volumes/Workspace/mydroid/out/target/product/xxx/root -mapall=root 192.168.0.56
 
 이렇게 하면 된다.
 
 FreeBSD 클라이언트에서는
 
-<pre>$ nfsiod -n 4
-$ mount 192.168.0.14:/Users/whitekid/Documents/nfs /mnt</pre>
+    $ nfsiod -n 4
+    $ mount 192.168.0.14:/Users/whitekid/Documents/nfs /mnt
 
 우선 이렇게 하면 훌륭하게 된다. 그런데 문제가 하나 있다.
 

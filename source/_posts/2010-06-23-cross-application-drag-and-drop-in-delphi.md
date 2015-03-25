@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=159
 permalink: /archives/159
 dsq_thread_id:
   - 735906743
-categories:
-  - Uncategorized
 tags:
   - Delphi
   - 'Drag&amp;Drop'

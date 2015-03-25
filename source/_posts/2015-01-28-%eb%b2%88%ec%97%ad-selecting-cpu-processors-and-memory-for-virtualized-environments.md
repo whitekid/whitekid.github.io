@@ -7,13 +7,11 @@ guid: http://blog.woosum.net/?p=1561
 permalink: /archives/1561
 dsq_thread_id:
   - 3460513449
-categories:
-  - Uncategorized
 tags:
   - Hardware
   - Virtualization
 ---
-진짜 오랜만에 인터넷 둘러보다가 가상화에서 CPU/ Memory 선택에 관한 글이 있어서 번역해봅니다. <http://searchservervirtualization.techtarget.com/tip/Selecting-CPU-processors-and-memory-for-virtualized-environments> 그런데 번역해놓고 보니깐... 이론강좌 비슷한 느낌이군요..
+진짜 오랜만에 인터넷 둘러보다가 가상화에서 CPU/ Memory 선택에 관한 글이 있어서 번역해봅니다. http://searchservervirtualization.techtarget.com/tip/Selecting-CPU-processors-and-memory-for-virtualized-environments 그런데 번역해놓고 보니깐... 이론강좌 비슷한 느낌이군요..
 
 * * *
 
@@ -25,7 +23,7 @@ tags:
 
 ### Selecting a CPU for virtualization deployment
 
-CPU를 구입할 때, 첫번째 선택은 어떤 브랜드(AMD or Intel?)을 선택할 것인가 이다. 지난 몇 년 동안, 많은 성능 연구들이 이 둘을 비교했다. 지속적인 프로세서 아키택처 변화를 통해서 AMD는 가끔은 Intel보다 앞서 나갔고 반대의 경우도 있다. Intel과 AMD 각각 [Intel Virtualization Technology(Intel VT)][2]와 [AMD Virtualization][3]{.broken_link}이라는 virtualization extension 기능을 추가했고, 이것은 가상 서버의 실행을 보다 빨리하려는 시도였다.
+CPU를 구입할 때, 첫번째 선택은 어떤 브랜드(AMD or Intel?)을 선택할 것인가 이다. 지난 몇 년 동안, 많은 성능 연구들이 이 둘을 비교했다. 지속적인 프로세서 아키택처 변화를 통해서 AMD는 가끔은 Intel보다 앞서 나갔고 반대의 경우도 있다. Intel과 AMD 각각 [Intel Virtualization Technology(Intel VT)][2]와 [AMD Virtualization][3]이라는 virtualization extension 기능을 추가했고, 이것은 가상 서버의 실행을 보다 빨리하려는 시도였다.
 
 Intel과 AMD 프로세서의 가장 큰 차이점은 물리 아키텍쳐이다. Intel은 front-side 버스 모델을 프로세서와 메모리 컨트럴러를 연결하는데 사용했고, 반면에 AMD는 메모리 컨트럴러를 hyper-transport를 통해서 각 프로세서에 통합하였다. 그리고 precessor family에 따라서 이 프로세서는 서로 다른 전력 소모율을 갖는다.
 
@@ -64,7 +62,7 @@ X86 운영체제는 코드가 잡을 수행하는 보호 레벨(protection level
 사이즈에 더 추가 한다면, 메모리 모듈의 최고 전송률(peak transfer rate)에 따른, 많은 다른 메모리 타입(PC2100, PC5300 등등)이 있다. 원래 "PC" 뒤의 숫자는 메모리 모듈이 데이터 전송에 지원하는 클럭 비율(rate)을 표시(예, PC133)하는데 사용되었다. 이건 나중에 최고 데이터 전송 비율(rate)을 Mbps로 바뀌었고, 따라서 PC5300으로 분류되는 메모리는 최고 데이터 전송 비율이 53000 Mbps를 의미한다. 대부분의 서버는 여러 다른 메모리 타입을 지원하고, 따라서 여유가 있다면, 사용 가능한 가장 빠른 메모리를 선택하는 것이 바람직하다.
 
 > (이 부분은 영 번영이  매끄럽지 못해서 원문도 같이 올려놓습니다.)
-> 
+>
 > The final memory-related decision that you'll have to make is between single, dual or quad-rank DIMMs. A memory rank is defined as a block of 64 bits, or 72 bits for error-correcting code (ECC) memory, created by using the DRAM chips on a DIMM. For example, single-rank DIMMs combine all chips into a single block, while dual-rank DIMMs split the chips into two blocks. Dual-rank DIMMs improve memory density by placing the components of two single-rank DIMMs in the space of one module, typically making them cheaper than single-rank DIMMs.
 
 마지막 메모리 관련 결정사항은 single, dual 또는 quad-rank DIMM 중에서 하나를 선택하는 것이다. 메모리 랭크(rank)는 에러 검출 코드(error-correctiong code: ECC) 메모리(DIMM의 DRAM 칩에서 만들어지고 사용되는)에 사용되는 64 비트 또는 72 비트의 블럭으로 정의된다. 예를 들어 단일 랭크 DIMM은 모든 칩이 단일 블럭으로 구성되고, 반면에 dual-rank DIMM은 칩이 두개의 블럭으로 분리된다. daul-rank DIMM은 두 single-rank을 한 모듈의 같은 공간에 위치시켜 메모리 집적도를 항샹시킨다. 이는 일반적으로 single-rank DIMM보다 보다 가격이 싸게 된다.
@@ -79,7 +77,7 @@ X86 운영체제는 코드가 잡을 수행하는 보호 레벨(protection level
 
 * * *
 
-원문: <http://searchservervirtualization.techtarget.com/tip/Selecting-CPU-processors-and-memory-for-virtualized-environments>
+원문: http://searchservervirtualization.techtarget.com/tip/Selecting-CPU-processors-and-memory-for-virtualized-environments
 
  [1]: http://searchservervirtualization.techtarget.com/tip/Blades-vs-rack-servers-Basic-purchasing-principles-still-apply
  [2]: http://www.intel.com/technology/virtualization/index.htm

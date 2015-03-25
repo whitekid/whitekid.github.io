@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=1077
 permalink: /archives/1077
 dsq_thread_id:
   - 915959953
-categories:
-  - Uncategorized
 tags:
   - MadeByKidd
   - OpenStack
@@ -38,27 +36,27 @@ tenant의 external router로 연결된 router에 대해서 해당 tenant의 subn
     def do_single_loop(self):
         routers = self.qclient.list_routers()['routers'];
         ports = self.qclient.list_ports()
-     
+
         route_info = []
         for r in routers:
             # get tenant's subnet
             subnet = self.qclient.list_ports(device_id=r['id'],
                     device_owner='network:router_interface')['ports'][0]['fixed_ips'][0]['subnet_id']
             cidr = self.qclient.show_subnet(subnet=subnet)['subnet']['cidr']
-     
+
             # get the tenant's gw
             fixed_ip = self.qclient.list_ports(device_id=r['id'],
                     device_owner='network:router_gateway')['ports'][0]['fixed_ips'][0]['ip_address']
             route_info.append((cidr, fixed_ip))
-     
+
         # get current route info
         old_routes = [x.split() for x in subprocess.check_output(['ip', 'route']).splitlines()[2:] if ('via' in x and 'default' not in x) ]
         old_routes = [(x[0], x[2]) for x in old_routes]
-     
+
         # add new routing info
         for cidr, fixed_ip in set(route_info) - set(old_routes):
             subprocess.check_call(['route', 'add', '-net', cidr, 'gw', fixed_ip])
-     
+
         # remove routing info
         for cidr, fixed_ip in set(old_routes) - set(route_info):
                 subprocess.check_call(['route', 'del', '-net', cidr, 'gw', fixed_ip])
@@ -68,9 +66,8 @@ tenant의 external router로 연결된 router에 대해서 해당 tenant의 subn
 
 마지막으로 소스 위치~
 
-[https://github.com/whitekid/metadata\_route\_agent][4]
+https://github.com/whitekid/metadata_route_agent
 
  [1]: http://docs.openstack.org/trunk/openstack-network/admin/content/use_cases_tenant_router.html
  [2]: http://docs.openstack.org/trunk/openstack-network/admin/content/figures/UseCase-MultiRouter.png
  [3]: http://docs.openstack.org/trunk/openstack-network/admin/content/figures/Quantum-PhysNet-Diagram.png
- [4]: https://github.com/whitekid/metadata_route_agent

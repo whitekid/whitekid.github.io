@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=777
 permalink: /archives/777
 dsq_thread_id:
   - 716233002
-categories:
-  - Uncategorized
 ---
 아이폰에서 메일 / 캘린더 / 연락처 / 메모 등의 사용을 정리하면 다음과 같다.
 

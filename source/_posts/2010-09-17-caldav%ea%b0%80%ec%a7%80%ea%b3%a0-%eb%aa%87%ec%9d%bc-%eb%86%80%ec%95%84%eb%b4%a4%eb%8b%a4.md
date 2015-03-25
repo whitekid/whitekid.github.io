@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=442
 permalink: /archives/442
 dsq_thread_id:
   - 714677990
-categories:
-  - Uncategorized
 tags:
   - CalDav
   - Calendar

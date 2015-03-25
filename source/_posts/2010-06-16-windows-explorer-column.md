@@ -5,41 +5,13 @@ author: whitekid
 layout: post
 guid: http://blog.woosum.net/?p=124
 permalink: /archives/124
-the_sidebar:
-  - 
-sidebar_layout:
-  - 
-content_sidebar:
-  - 
-colorscheme:
-  - 
-full_width_widget:
-  - 
-hide_bottom_sidebars:
-  - 
-featureboxes:
-  - 
-carousel_items:
-  - 
-carousel_mode:
-  - 
-carousel_ngen_gallery:
-  - 
-featuretitle:
-  - 
-featuretext:
-  - 
-featuremedia:
-  - 
 dsq_thread_id:
   - 937681928
-categories:
-  - Uncategorized
 tags:
   - extension
   - shell
 ---
-<http://stackoverflow.com/questions/3049652/how-do-i-programmatically-set-a-file-tag>를 보고 간단히 [검색][1]해봤다.
+http://stackoverflow.com/questions/3049652/how-do-i-programmatically-set-a-file-tag 를 보고 간단히 [검색][1]해봤다.
 
   * [Explorer column handler shell extension in C#][2]
   * [CreateCreating Column Handlers][3]

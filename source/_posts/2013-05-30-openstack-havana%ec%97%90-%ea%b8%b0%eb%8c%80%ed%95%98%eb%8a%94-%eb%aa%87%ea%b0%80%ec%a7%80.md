@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=1284
 permalink: /archives/1284
 dsq_thread_id:
   - 1337083440
-categories:
-  - Uncategorized
 tags:
   - OpenStack
 ---
@@ -34,7 +32,7 @@ aws ec2처럼 dns로 연결하고 싶습니다.
 
 VPN은 public cloud를 한다면 필요한 기능입니다. havana까지는 api가 정리가 될 것 같고, 다음 릴리스에서는 뭔가 사용할 만한 결과물이 나오겠지요. OpenVPN을 이용한 client vpn, site-to-site vpn이면 훌륭합니다.
 
-nova-network에서는 [CloudPipe][6]{.broken_link}에서 지원했었지만, 아직 Quantum에는 없네요.
+nova-network에서는 [CloudPipe][6]에서 지원했었지만, 아직 Quantum에는 없네요.
 
 [**QoS API implementation: OpenVSwitch w/ DSCP**][7]
 

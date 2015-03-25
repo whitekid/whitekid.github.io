@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=792
 permalink: /archives/792
 dsq_thread_id:
   - 990979523
-categories:
-  - Uncategorized
 tags:
   - screen
 ---

@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=521
 permalink: /archives/521
 dsq_thread_id:
   - 793107224
-categories:
-  - Uncategorized
 tags:
   - converter
   - flac

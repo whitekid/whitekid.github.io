@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=1262
 permalink: /archives/1262
 dsq_thread_id:
   - 1286495718
-categories:
-  - Uncategorized
 tags:
   - OpenStack
   - Quantum
@@ -17,10 +15,10 @@ OpenStack 네트워크를 OpenVSwitch, GRE tunneling으로 구성하였을 경�
 
 ping이 아주 잘 되고, dns lookup까지 아주 잘되면 일반적으로 인터넷이 잘된다고 할 수 있으나,
 
-  $ curl google.com # ---- [1]  
-  $ curl www.google.com # ---- [2]  
+    $ curl google.com # ---- [1]
+    $ curl www.google.com # ---- [2]
 
-[1] 번의 경우에는 잘 되고, [2]번은 안되는 경우가 발생합니다.
+\[1] 번의 경우에는 잘 되고, \[2]번은 안되는 경우가 발생합니다.
 
 이 것은 gre tunneling의 특성때문에 발생하는 것으로 CISCO의  [Why Can't I Browse the Internet when Using a GRE Tunnel?][2]에 아주 자세히 설명이 나와있습니다.
 

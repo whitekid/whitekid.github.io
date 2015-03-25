@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=972
 permalink: /archives/972
 dsq_thread_id:
   - 858124545
-categories:
-  - Uncategorized
 tags:
   - bash
   - screen
@@ -18,24 +16,24 @@ screen을 이용해 여러 윈도우를 한번에 열고 각각의 윈도우에�
     #!/bin/bash
     SCREENNAME=stack
     NL=`echo -ne '\015'`
-     
+
     if screen -ls | egrep -q "[0-9].$SCREENNAME"; then
             echo "screen named $SCREEN_NAME already exists"
             exit
     fi
-     
+
     screen -d -m -S $SCREENNAME -t shell
     sleep 1
-     
+
     host_spec="host1/192.168.0.10 host2/192.168.0.11"
     for spec in $host_spec; do
             name=`echo "$spec" | cut -d '/' -f 1`
             host=`echo "$spec" | cut -d '/' -f 2`
-     
+
             screen -S $SCREENNAME -X screen -t "$name"
             screen -S $SCREENNAME -p "$name" -X stuff "sshpass -ppassword ssh root@$host$NL"
     done
-     
+
     echo "please run screen -r 'screen -r $SCREENNAME'"
 
 물론 이것도 약간의 문제점이 있습니다. 명령을 실행하면 screen이 background에서 detach된 상태로 만들어 지는데, 이를 수동으로 attach해야하는 문제가 있습니다.

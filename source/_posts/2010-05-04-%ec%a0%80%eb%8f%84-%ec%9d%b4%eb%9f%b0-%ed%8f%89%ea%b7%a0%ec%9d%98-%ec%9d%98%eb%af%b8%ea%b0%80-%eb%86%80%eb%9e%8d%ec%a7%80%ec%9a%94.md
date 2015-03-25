@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=97
 permalink: /archives/97
 dsq_thread_id:
   - 898545633
-categories:
-  - Uncategorized
 ---
 [이미지/ 소리를 합성하는 평균][1]은 정말로 정말로 저에게도 놀랍습니다.
 

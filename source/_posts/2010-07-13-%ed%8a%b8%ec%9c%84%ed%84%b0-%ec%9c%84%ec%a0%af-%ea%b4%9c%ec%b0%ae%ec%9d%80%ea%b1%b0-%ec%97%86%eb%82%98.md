@@ -10,8 +10,6 @@ wp_twitter:
   - yes
 dsq_thread_id:
   - 784917133
-categories:
-  - Uncategorized
 tags:
   - twitter
   - WordPress

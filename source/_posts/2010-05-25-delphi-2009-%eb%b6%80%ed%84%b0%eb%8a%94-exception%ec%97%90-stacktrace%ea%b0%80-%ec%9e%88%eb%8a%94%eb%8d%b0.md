@@ -5,41 +5,13 @@ author: whitekid
 layout: post
 guid: http://blog.woosum.net/?p=107
 permalink: /archives/107
-the_sidebar:
-  - 
-sidebar_layout:
-  - 
-content_sidebar:
-  - 
-colorscheme:
-  - 
-full_width_widget:
-  - 
-hide_bottom_sidebars:
-  - 
-featureboxes:
-  - 
-carousel_items:
-  - 
-carousel_mode:
-  - 
-carousel_ngen_gallery:
-  - 
-featuretitle:
-  - 
-featuretext:
-  - 
-featuremedia:
-  - 
 dsq_thread_id:
   - 720641150
-categories:
-  - Uncategorized
 tags:
   - Delphi
   - StackTrace
 ---
-StackTrace를 확인하기 위해서 JclDebug를 사용하고 있었는데(2007 버전부터), 혹시나하고 [StackOverflow][1]에서 [찾아봤더니][2] Delphi 2009 버전부터는 [Exception에 StackTrace 정보가 들어가 있다][3]{.broken_link}.
+StackTrace를 확인하기 위해서 JclDebug를 사용하고 있었는데(2007 버전부터), 혹시나하고 [StackOverflow][1]에서 [찾아봤더니][2] Delphi 2009 버전부터는 [Exception에 StackTrace 정보가 들어가 있다][3].
 
 시간날 때 공부해야겠군요.
 

@@ -7,16 +7,12 @@ guid: http://blog.woosum.net/?p=903
 permalink: /archives/903
 dsq_thread_id:
   - 733725408
-categories:
-  - Uncategorized
 tags:
   - OpenStack
 ---
 아주 아주 간단하게 그려본 OpenStack Guest VM Network Flow
 
-<p style="text-align: center;">
-  <img class="aligncenter" title="OpenStack VM traffic flow" src="https://docs.google.com/drawings/pub?id=1KQnKfDgdUuO8V7GqvqWRgApenHIOlq8HIN3I3b_DeVc&w=960&h=720" alt="" />
-</p>
+{% img https://docs.google.com/drawings/pub?id=1KQnKfDgdUuO8V7GqvqWRgApenHIOlq8HIN3I3b_DeVc&w=960&h=720 %}
 
   * FloatDHCP 모드임
   * fixed_range로 지정된 VM에만 해당

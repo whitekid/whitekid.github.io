@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=554
 permalink: /archives/554
 dsq_thread_id:
   - 741609589
-categories:
-  - Uncategorized
 tags:
   - MadeByKidd
   - TimeSync

@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=551
 permalink: /archives/551
 dsq_thread_id:
   - 715631877
-categories:
-  - Uncategorized
 tags:
   - Windows7
 ---

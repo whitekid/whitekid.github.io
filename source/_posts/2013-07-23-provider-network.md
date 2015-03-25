@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=1351
 permalink: /archives/1351
 dsq_thread_id:
   - 1520759810
-categories:
-  - Uncategorized
 tags:
   - OpenStack
   - provider_network
@@ -42,9 +40,9 @@ provider network으로 네트워크를 디자인한다면...
 
 /etc/quantum/plugins/openvswitch/ovs\_quantum\_plugin.ini
 
-    tenant_network_type = vlan  
-    network_vlan_ranges = default:100:101,default:200:201  
-    bridge_mappings=default:br-eth1  
+    tenant_network_type = vlan
+    network_vlan_ranges = default:100:101,default:200:201
+    bridge_mappings=default:br-eth1
 
 ### tenant_network_type = vlan
 
@@ -64,31 +62,31 @@ provider network은 admin 권한으로만 생성이 가능합니다. 따라서 a
 
 vlan tag 번호와, -shared 옵션을 확인하기 바랍니다.
 
-    $ quantum net-create pub100 -provider:network_type vlan -provider:segmentation_id=100 -shared  
-    $ quantum net-create pub101 -provider:network_type vlan -provider:segmentation_id=101 -shared  
-    $ quantum net-create pub200 -provider:network_type vlan -provider:segmentation_id=200 -shared  
-    $ quantum net-create pub201 -provider:network_type vlan -provider:segmentation_id=201 -shared  
+    $ quantum net-create pub100 -provider:network_type vlan -provider:segmentation_id=100 -shared
+    $ quantum net-create pub101 -provider:network_type vlan -provider:segmentation_id=101 -shared
+    $ quantum net-create pub200 -provider:network_type vlan -provider:segmentation_id=200 -shared
+    $ quantum net-create pub201 -provider:network_type vlan -provider:segmentation_id=201 -shared
 
 그리고 만들어진 네트워크에 아래처럼 subnet을 할당합니다.
 
-    $ quantum subnet-create pub100 10.10.100.0/24  
-    $ quantum subnet-create pub101 10.10.101.0/24  
-    $ quantum subnet-create pub200 10.10.200.0/24  
-    $ quantum subnet-create pub201 10.10.201.0/24  
+    $ quantum subnet-create pub100 10.10.100.0/24
+    $ quantum subnet-create pub101 10.10.101.0/24
+    $ quantum subnet-create pub200 10.10.200.0/24
+    $ quantum subnet-create pub201 10.10.201.0/24
 
 subnet을 생성할 때는, 반드시 데이터 센터에서 할당핟은 network cidr을 잘 맞춰서 생성해야 합니다.
 
 일반 사용자에서 quantum net-list 명령으로 보면 shared network이기 때문에 방금 생성한 네트워크의 정보를 확인할 수 있습니다.
 
-    $ quantum net-list  
-    +-------------------------------------+-------+----------------------------------------------------+  
-    | id | name | subnets |  
-    +-------------------------------------+-------+----------------------------------------------------+  
-    | 546f14c5-b837-41ef-964a-0eba46aa23f9 | pub101 | 34b28d6f-5398-46ed-ba9e-f848ef6269b0 10.10.101.0/24 |  
-    | 7b455fae-a2a5-4204-b04a-4859f335580d | pub100 | 238340a8-7d9c-4a5b-ac34-d8047e1c3f5a 10.10.100.0/24 |  
-    | ce24e1ec-f256-4d81-b99d-668847d7a472 | pub200 | 48df6481-b952-4c92-a8f3-6293ecb4186c 10.10.200.0/24 |  
-    | fc427218-8244-4284-b68c-d3429c8cccec | pub201 | 82274a91-95fb-42cf-895e-e70efff4b062 10.10.201.0/24 |  
-    +-------------------------------------+-------+----------------------------------------------------+  
+    $ quantum net-list
+    +-------------------------------------+-------+----------------------------------------------------+
+    | id | name | subnets |
+    +-------------------------------------+-------+----------------------------------------------------+
+    | 546f14c5-b837-41ef-964a-0eba46aa23f9 | pub101 | 34b28d6f-5398-46ed-ba9e-f848ef6269b0 10.10.101.0/24 |
+    | 7b455fae-a2a5-4204-b04a-4859f335580d | pub100 | 238340a8-7d9c-4a5b-ac34-d8047e1c3f5a 10.10.100.0/24 |
+    | ce24e1ec-f256-4d81-b99d-668847d7a472 | pub200 | 48df6481-b952-4c92-a8f3-6293ecb4186c 10.10.200.0/24 |
+    | fc427218-8244-4284-b68c-d3429c8cccec | pub201 | 82274a91-95fb-42cf-895e-e70efff4b062 10.10.201.0/24 |
+    +-------------------------------------+-------+----------------------------------------------------+
 
 물론 shared network이므로 network의 subnet 정보도 확인 할 수 있습니다.
 
@@ -116,22 +114,22 @@ private network을 사용했던 경우에는 l3-agent가 동작하는 tenant의 
 
 /etc/qantum/dhcp_agent.ini:
 
-    enable_isolated_metadata = True  
+    enable_isolated_metadata = True
 
 설정하고, dhcp-agent를 재시작한 후, dhcp-agent가 동작하는 namespace를 보면 아래처럼 169.254.169.254/16 이라는 ip address가 설정된 것을 확인할 수 있습니다.
 
-    $ ip netns exec qdhcp-7b455fae-a2a5-4204-b04a-4859f335580d ip a  
-    50: lo: <LOOPBACK,UP,LOWER_UP> mtu 16436 qdisc noqueue state UNKNOWN  
-    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00  
-    inet 127.0.0.1/8 scope host lo  
-    inet6 ::1/128 scope host  
-    valid_lft forever preferred_lft forever  
-    51: ns-61eaed6f-d0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP qlen 1000  
-    link/ether fa:16:3e:ad:73:bb brd ff:ff:ff:ff:ff:ff  
-    inet 10.10.100.3/24 brd 10.10.100.255 scope global ns-61eaed6f-d0  
-    inet 169.254.169.254/16 brd 169.254.255.255 scope global ns-61eaed6f-d0  
-    inet6 fe80::f816:3eff:fead:73bb/64 scope link  
-    valid_lft forever preferred_lft forever  
+    $ ip netns exec qdhcp-7b455fae-a2a5-4204-b04a-4859f335580d ip a
+    50: lo: <LOOPBACK,UP,LOWER_UP> mtu 16436 qdisc noqueue state UNKNOWN
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+    inet6 ::1/128 scope host
+    valid_lft forever preferred_lft forever
+    51: ns-61eaed6f-d0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP qlen 1000
+    link/ether fa:16:3e:ad:73:bb brd ff:ff:ff:ff:ff:ff
+    inet 10.10.100.3/24 brd 10.10.100.255 scope global ns-61eaed6f-d0
+    inet 169.254.169.254/16 brd 169.254.255.255 scope global ns-61eaed6f-d0
+    inet6 fe80::f816:3eff:fead:73bb/64 scope link
+    valid_lft forever preferred_lft forever
 
 이제 instance에서 아래처럼 확인하면 meta-data를 가져오는 것을 확인할 수 있습니다.
 
@@ -145,13 +143,13 @@ private network을 사용했던 경우에는 l3-agent가 동작하는 tenant의 
 
 OpenStack way로 해결하는 방법은 subnet을 생성할 때 host-route 옵션을 주는 것입니다.
 
-    $ quantum subnet-create -host-route \  
-      destination=169.254.0.0/16,nexthop=10.10.100.3 pub100 10.10.100/24  
+    $ quantum subnet-create -host-route \
+      destination=169.254.0.0/16,nexthop=10.10.100.3 pub100 10.10.100/24
 
 또는 기존의 subnet을 업데이트 하려면... 쬐끔 복잡하게..
 
-    $ quantum subnet-update \  
-      -host-routes type=dict list=true destination=169.254.0.0/16,nexthop=10.10.100.3  
+    $ quantum subnet-update \
+      -host-routes type=dict list=true destination=169.254.0.0/16,nexthop=10.10.100.3
 
 이렇게하면, 인스턴스가 dhcp에서 정보를 가져올 때 routing table까지 가져오므로 instance의 routing table에 의해서 meta-data에 접근이 가능합니다.
 
@@ -161,13 +159,13 @@ OpenStack way로 해결하는 방법은 subnet을 생성할 때 host-route 옵�
 
 cirros의 경우는 부팅 후 routing table을 직접 수정하여 확인하세요.
 
-    $ route add -net 169.254.0.0 netmask 255.255.0.0 gw 10.10.100.3 dev eth0  
+    $ route add -net 169.254.0.0 netmask 255.255.0.0 gw 10.10.100.3 dev eth0
 
 ubuntu cloud 이미지는 아주 잘 동작합니다. 다만 꺼림직하게 인스턴스 routing table이 하나 추가된다는 것 빼구요. 이거 없애려면, 위에서 언급했던, physical router에서 routing table을 추가하면 됩니다.
 
 #### CentOS 5.x의 문제
 
-CentOS 5.8에서도 dhclient가 static routing을 요청하지 않아서 문제가 발생합니다. 이 경우는 <http://jcape.name/2009/07/17/distributing-static-routes-with-dhcp/> 를 참고하세요.
+CentOS 5.8에서도 dhclient가 static routing을 요청하지 않아서 문제가 발생합니다. 이 경우는 http://jcape.name/2009/07/17/distributing-static-routes-with-dhcp/ 를 참고하세요.
 
 ### dhcp-agent의 ip address고정...
 
@@ -175,9 +173,9 @@ CentOS 5.8에서도 dhclient가 static routing을 요청하지 않아서 문제�
 
 pub100에서의 dhcp-agent가 동작하는 port의 ip address는 10.10.100.3인 반면에 pub101에서는 10.10.101.2으로 할당됩니다. 당연히 인스턴스의 ip address도 10.10.100.2, 10.10.101.3으로 서로 다릅니다. 아마도 인스턴스를 생성하고, dhcp-agent의 포트를 생성하는 순서의 문제인 것 같은데, subnet 생성 후에 dhcp-agent의 포트를 강제로 만들어 주면 되겠습니다.
 
-    $ quantum dhcp-agent-network-add <agent_id> <network_id>  
+    $ quantum dhcp-agent-network-add <agent_id> <network_id>
 
-# 결론
+## 결론
 
   * provider network은 SPoF인 l3-agent을 사용하지 않습니다.
   * 모든 네트워크가 physical network으로 구현되어, 기존의 네트워크 인프라에서 운영될 수 있습니다.

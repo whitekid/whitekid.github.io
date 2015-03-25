@@ -7,12 +7,10 @@ guid: http://blog.woosum.net/?p=859
 permalink: /archives/859
 dsq_thread_id:
   - 716541761
-categories:
-  - Uncategorized
 tags:
   - cloud
 ---
--클라우드 컴퓨팅에 대한 NIST의 정의(<http://csrc.nist.gov/publications/nistpubs/800-145/SP800-145.pdf>)를 번역해 보았습니다. 역시 번역하고 보니 구글 번역이나 그게 그거인듯.... 어색하시면 원문 보세요~
+[클라우드 컴퓨팅에 대한 NIST의 정의](http://csrc.nist.gov/publications/nistpubs/800-145/SP800-145.pdf)를 번역해 보았습니다. 역시 번역하고 보니 구글 번역이나 그게 그거인듯.... 어색하시면 원문 보세요~
 
 * * *
 
@@ -71,5 +69,3 @@ tags:
 ### 하이브리드 클라우드(Hybrid cloud)
 
 클라우드 인프라는 2개 또는 그 이상의 구별되는 클라우드 인프라(프라이빗, 커뮤니티, 퍼플릭)로 구성된다. 각각은 독립적인 개체로 유지되지만 데이터와 어플리케이션의 이동성(portability)(클라우드간의 로드발런싱으로 클라우드간의 경계를 넘어감)를 가능하게 하는 표준 또는 독점 기술(proprietary technology)로 같이 묶인다.
-
-<img id="smallDivTip" style="z-index: 90; border: 0px solid blue; position: absolute; left: 147px; top: 1438px;" src="chrome://dictionarytip/skin/dtipIconHover.png" alt="" />

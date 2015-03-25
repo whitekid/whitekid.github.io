@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=161
 permalink: /archives/161
 dsq_thread_id:
   - 752162935
-categories:
-  - Uncategorized
 tags:
   - Delphi
   - 'Drag&amp;Drop'
@@ -28,4 +26,3 @@ Shell로 Drag&Drop이 없으면 간단히 델파이에서 제공하는 기능을
 [DragDropShellAndVCL][2]
 
  [1]: http://melander.dk/delphi/dragdrop
- [2]: http://blog.woosum.net/wp-content/uploads/2010/06/DragDropShellAndVCL.zip

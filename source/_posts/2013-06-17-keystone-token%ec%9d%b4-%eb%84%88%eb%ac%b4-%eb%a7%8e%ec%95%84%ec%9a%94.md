@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=1312
 permalink: /archives/1312
 dsq_thread_id:
   - 1406595535
-categories:
-  - Uncategorized
 tags:
   - keystone
   - OpenStack
@@ -20,13 +18,13 @@ tags:
 
 이전에도 비슷하나 경험이 있었지만, 그때는 대충 넘어갔었지만, 들은 것도 있어서 뒤져봤는데 역시나... keystone의 token table에 데이터가 많이 쌓었나 보다.
 
-    mysql> select count(*) from token;  
-    +----------+  
-    | count(*) |  
-    +----------+  
-    |    20916 |  
-    +----------+  
-    1 row in set (25.17 sec)  
+    mysql> select count(*) from token;
+    +----------+
+    | count(*) |
+    +----------+
+    |    20916 |
+    +----------+
+    1 row in set (25.17 sec)
 
 뭐.. 개인 테스트 환경이고 해서, 무식하게 다 지우고 하니 nova list 명령이 잘 된다. 대략  들은 적이 있다. 각 호스트들의 agent들이 api를 수행할 때, 모두 keystone 인증 토큰을 발급 받는데, 이 토큰들이 계속 누적되어서 문제를 발생하는 것이다. 우선 간단하게 expire된 token을 날려버리는 것도 좋겠다.
 
@@ -34,7 +32,7 @@ tags:
 
 근데 저 정도의 숫자로 MySQL의 성능 이슈에 걸리는 것도 이상한 것이다. MySQL 튜닝 문제인 것 같다. token을 보면 primary key를 지외하고는 인덱스를 잡지 않았으며, 쿼리에 맞게 인덱스를 추가하면 되겠다.
 
-    # Query_time: 77.709733 Lock_time: 0.000087 Rows_sent: 0 Rows_examined: 20919 use keystone; SET timestamp=1371436405; SELECT token.id AS token_id, token.expires AS token_expires, token.extra AS token_extra, token.valid AS token_valid, token.user_id AS token_user_id, token.trust_id AS token_trust_id FROM token WHERE token.expires > '2013-06-17 02:32:08&' AND token.valid = 0;  
+    # Query_time: 77.709733 Lock_time: 0.000087 Rows_sent: 0 Rows_examined: 20919 use keystone; SET timestamp=1371436405; SELECT token.id AS token_id, token.expires AS token_expires, token.extra AS token_extra, token.valid AS token_valid, token.user_id AS token_user_id, token.trust_id AS token_trust_id FROM token WHERE token.expires > '2013-06-17 02:32:08&' AND token.valid = 0;
 
 그냥 무식하게 DELETE 하기 전의 token 테이블에 걸린 slow query를 보면 위와 같은데... expires, valid에 index를 걸어주면 좀 더 빠른 실행이 가능하지 않을까?
 
@@ -45,11 +43,11 @@ tags:
     |  1 | SIMPLE      | token | ALL  | NULL          | NULL | NULL    | NULL |  492 | Using where |
     +----+-------------+-------+------+---------------+------+---------+------+------+-------------+
     1 row in set (0.00 sec)
-     
+
     mysql> create index idx_token_expires_valid on token(expires, valid);
     Query OK, 0 rows affected (0.09 sec)
     Records: 0  Duplicates: 0  Warnings: 0
-     
+
     mysql> explain select id from token where expires > '2013-06-17 02:32:08' AND token.valid = 0;
     +----+-------------+-------+-------+-------------------------+-------------------------+---------+------+------+--------------------------+
     | id | select_type | table | type  | possible_keys           | key                     | key_len | ref  | rows | Extra                    |
@@ -92,9 +90,9 @@ update 1) 저 무지막지한 토큰은 quantum에 의해 발생하는 것이 �
 
 update 2) [Launchpad에 버그가 등록][1]되어 있습니다.
 
-update 3) 이 문제를 해결하는 가장 간단한 방법은 token driver를 memcache로 변경하는 것이다.  
+update 3) 이 문제를 해결하는 가장 간단한 방법은 token driver를 memcache로 변경하는 것이다.
 
-    [token]  
-    driver = keystone.token.backends.memcache.Token  
+    [token]
+    driver = keystone.token.backends.memcache.Token
 
  [1]: https://bugs.launchpad.net/ubuntu/+source/keystone/+bug/1032633

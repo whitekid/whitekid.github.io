@@ -1,14 +1,12 @@
 ---
 id: 1173
-title: 'Open Technet, Cloud Computing Technology &#038; Business Conference 발표 자료'
+title: '가상머신 만드는 시간, 15분'
 author: whitekid
 layout: post
 guid: http://blog.woosum.net/?p=1173
 permalink: /archives/1173
 dsq_thread_id:
   - 958732116
-categories:
-  - Uncategorized
 tags:
   - OpenStack
 ---
@@ -20,11 +18,7 @@ tags:
   * Quantum Overview and Deploy
   * Automation with Chef
 
-
-
-<div style="margin-bottom: 5px;">
-  <strong> <a title="15minutes to create_vm" href="http://www.slideshare.net/whitekid/15minutes-to-createvm-15493843" target="_blank">15minutes to create_vm</a> </strong> from <strong><a href="http://www.slideshare.net/whitekid" target="_blank">Choe Cheng-Dae</a></strong>
-</div>
+{% slideshare 15493843 %}
 
 할 이야기는 많고 시간은 부족하고.. 결국은 starting point를 제공하는 기분으로 했습니다~
 

@@ -7,9 +7,7 @@ guid: http://blog.woosum.net/?p=891
 permalink: /archives/891
 dsq_thread_id:
   - 714424786
-categories:
-  - Uncategorized
 tags:
   - CloudStack
 ---
-<http://wiki.woosum.net/CloudStackSandbox>
+http://wiki.woosum.net/CloudStackSandbox

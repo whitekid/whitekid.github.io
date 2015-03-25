@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=1400
 permalink: /archives/1400
 dsq_thread_id:
   - 1623320363
-categories:
-  - Uncategorized
 tags:
   - moinmoin
 ---

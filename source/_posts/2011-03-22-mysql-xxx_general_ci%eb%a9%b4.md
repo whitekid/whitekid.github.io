@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=680
 permalink: /archives/680
 dsq_thread_id:
   - 716454217
-categories:
-  - Uncategorized
 tags:
   - MySQL
 ---
@@ -20,4 +18,4 @@ MySQL에서 LIKE로 검색하는데 이놈이 대소문자를 구별하지 않�
 
 그럼 Case Sentive 검색을 하려면 어떻게 하느냐? euckr\_general\_ci는 Case Insentive로 되기때문에 \_cs로 해야하는데 euckr\_general\_cs가 없다. 대신 euckr\_bin이 있으니 그걸로 하면 된다.
 
-select field from table where field COLLATE euckr_bin = 'test string'
+    select field from table where field COLLATE euckr_bin = 'test string'

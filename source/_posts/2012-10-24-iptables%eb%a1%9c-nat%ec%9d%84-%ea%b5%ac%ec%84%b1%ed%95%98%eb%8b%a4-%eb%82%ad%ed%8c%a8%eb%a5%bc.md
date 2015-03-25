@@ -7,14 +7,12 @@ guid: http://blog.woosum.net/?p=1010
 permalink: /archives/1010
 dsq_thread_id:
   - 897582809
-categories:
-  - Uncategorized
 tags:
   - linux
 ---
 내 PC안에서 VMWare로 가상 환경을 구축하여 테스트하고 있기 때문에 가상머신이 인터넷을 접속하기 위해서 아래처럼 NAT을 구성했다.
 
-    $ iptables -A POSTROUTING -t nat -j MASQUERADE  
+    $ iptables -A POSTROUTING -t nat -j MASQUERADE
 
 아주 무리없이 잘 돌아가는 것 처럼 보였다.
 
@@ -24,7 +22,7 @@ vmnet 간에 traffic이 soruce ip가 해당 네트웍의 gateway로 잡혀서 �
 
 위에서 NATing을 설정할 때 input/ ouput interface를 지정하지 않았기 때문에 이녀석은 모든 interface간에 통신을 모두다 NATing 해버리는 것이다... 결국 source ip가 gateway ip(즉 호스트에 있는 해당 네트워크의 ip)로 말이지...
 
-    $ iptables -A POSTROUTING -t nat -j MASQUERADE -o eth0  
+    $ iptables -A POSTROUTING -t nat -j MASQUERADE -o eth0
 
 그래서 다시 eth0로 나가는 놈만 하는 것으로 했다. 그랬더니 이제 이해할 수 있는 오류들이 나오기 시작한다.. ㅎㅎ
 

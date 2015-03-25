@@ -5,36 +5,8 @@ author: whitekid
 layout: post
 guid: http://blog.woosum.net/?p=129
 permalink: /archives/129
-the_sidebar:
-  - 
-sidebar_layout:
-  - 
-content_sidebar:
-  - 
-colorscheme:
-  - 
-full_width_widget:
-  - 
-hide_bottom_sidebars:
-  - 
-featureboxes:
-  - 
-carousel_items:
-  - 
-carousel_mode:
-  - 
-carousel_ngen_gallery:
-  - 
-featuretitle:
-  - 
-featuretext:
-  - 
-featuremedia:
-  - 
 dsq_thread_id:
   - 728134310
-categories:
-  - Uncategorized
 tags:
   - extension
   - shell
@@ -49,4 +21,4 @@ Shell extension에 관심있다면 쭈욱 봐야겠다
   * Drop handler
   * Query info handler
 
- [1]: http://www.codeproject.com/KB/shell/shellextguideindex.aspx "http://www.codeproject.com/kb/shell/ShellExtGuide1.aspx"
+ [1]: http://www.codeproject.com/KB/shell/shellextguideindex.aspx

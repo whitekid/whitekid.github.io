@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=1413
 permalink: /archives/1413
 dsq_thread_id:
   - 1849911786
-categories:
-  - Uncategorized
 tags:
   - OpenStack
   - SecurityGroup

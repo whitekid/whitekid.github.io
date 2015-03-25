@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=169
 permalink: /archives/169
 dsq_thread_id:
   - 1111798952
-categories:
-  - Uncategorized
 tags:
   - CnWizard
   - Delphi

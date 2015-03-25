@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=729
 permalink: /archives/729
 dsq_thread_id:
   - 714643308
-categories:
-  - Uncategorized
 ---
 Nate 해킹사건 때문에 데이터 암호화를 보다 더 강화하기로 했다. 물론 [AES][1]로 하자고 그래서 하는데, 부득불 mysql의 aes\_encrypt / aes\_decrypt와 호환되게 한다고 해서 하다가 몇가지 꼼수를 부리게 되었다.
 
@@ -38,20 +36,24 @@ rijndael 의 모드
 
 ### Python 버전
 
-참고로 python에서 padding은 \x00을 사용한다.  
+참고로 python에서 padding은 \x00을 사용한다.
+
+{% gist 5677992 %}
 
 
 ### PHP 버전
 
-php 버전의 문제는 bin2hex는 php 버전이 있지만, 역은 undocumented다. 그래서 구현해줘야한다.  
+php 버전의 문제는 bin2hex는 php 버전이 있지만, 역은 undocumented다. 그래서 구현해줘야한다.
+
+{% gist 5678001 %}
 
 
-<pre><span style="font-size: 1.5em; font-family: Georgia, 'Times New Roman', 'Bitstream Charter', Times, serif; line-height: 19px;">참고</span></pre>
+참고
 
   * MySQL의 AES가 128면 불안해 하는 사람(^^)들이 있다면, MySQL의 aes 함수들은 포기하고 libmcrypt를 이용해서 stored procedure를 만드는 것이 좋다.
   * 근데 굳이 MySQL의 command line에서 이것을 쓴다는 것은 글쎄 개인적인 소견으론 바람직하지 않는 것 같다.
   * MySQL에서 사용하는 것을 포기한다면 initialization vector를 사용하는 것이 좋겠다.
-  * 음 다음에 데이터 암호화 한다면 아래처럼 해볼듯... 
+  * 음 다음에 데이터 암호화 한다면 아래처럼 해볼듯...
       * 랜덤 iv 생성 -> 데이터 암호화 (with salt) -> iv 자체도 암호화 -> 약간 섞어서 최종 데이터 생성 -> bin2hex
 
  [1]: http://en.wikipedia.org/wiki/Advanced_Encryption_Standard

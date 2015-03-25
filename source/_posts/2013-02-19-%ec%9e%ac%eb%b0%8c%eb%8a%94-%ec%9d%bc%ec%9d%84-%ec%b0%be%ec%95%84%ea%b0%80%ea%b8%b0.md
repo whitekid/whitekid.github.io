@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=1206
 permalink: /archives/1206
 dsq_thread_id:
   - 1090954790
-categories:
-  - Uncategorized
 tags:
   - 잡담
 ---

@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=1345
 permalink: /archives/1345
 dsq_thread_id:
   - 1491708388
-categories:
-  - Uncategorized
 tags:
   - chef
 ---
@@ -18,13 +16,13 @@ tags:
 
 chef로 chef-client를 service로 돌린 경우에는 아래처럼 environment에 넣으면된다.
 
-    override_attributes(  
-      :chef_client => {  
-      :server_url => "<https://chef.stack>",  
-      :daemon_options => ['-f'],  
-      },  
-      .....  
-    )  
+    override_attributes(
+      :chef_client => {
+      :server_url => "https://chef.stack",
+      :daemon_options => ['-f'],
+      },
+      .....
+    )
 
 update) 약간 된 버전의 경우 [fork bomb 버그][2]가 있습니다. 11.4.4 버전 이상으로 업그레이드 하세요.
 

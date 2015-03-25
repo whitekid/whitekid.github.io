@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=1056
 permalink: /archives/1056
 dsq_thread_id:
   - 904961517
-categories:
-  - Uncategorized
 tags:
   - vmware
 ---
@@ -27,14 +25,14 @@ VMWare를 사용하면서 뭔가 복잡한 네트워크 모델을 사용하려�
 간단히 정리하면
 
   1. hostonly network을 가지는 2개의 vm(10.20.1.10, 10.20.2.10)을 만든다. ==> 이하 internal vm
-  2. 두 hostonly network을 가지는 router vm을 만든다. ==> 이하 router vm  
-    eth0: NAT network for external internet access  
-    eth1: 10.20.1.2  
+  2. 두 hostonly network을 가지는 router vm을 만든다. ==> 이하 router vm
+    eth0: NAT network for external internet access
+    eth1: 10.20.1.2
     eth2: 10.20.2.2
   3. 여기서 .2를 가지는 것은 .1은 host-pc에 연결하고 host-pc에서 management용으로 사용할 것이므로 .2를 사용한다.
-  4. router vm에서 routing이 되도록 설정한다. 간단히  
+  4. router vm에서 routing이 되도록 설정한다. 간단히
     $ systctl net.ipv4.ip_foward=1
-  5. router vm에 internal vm이 외부 인터넷 접근을 위해 NATing을 설정한다. 외부 인터넷 접근 필요 하다면...  
+  5. router vm에 internal vm이 외부 인터넷 접근을 위해 NATing을 설정한다. 외부 인터넷 접근 필요 하다면...
     $ iptables -t nat -A POSTROUTING -j MASQUERADE -o eth0
   6. internal vm의 default gateway를 .2번으로 설정한다.
   7. internal vm에서 tracepath <ip>를 통해서 각각의 vm을 router vm을 통해서 접근하는지 확인한다.

@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=555
 permalink: /archives/555
 dsq_thread_id:
   - 716307557
-categories:
-  - Uncategorized
 tags:
   - Delphi
   - NamedPipe
@@ -29,13 +27,13 @@ tags:
 
 서비스의 등록과 삭제는 관리자 권한이 필요합니다. 관리자 권한으로 서비스 프로그램에 옵션을 주어서 실행합니다.
 
-<pre>ServiceApplication.exe /INSTALL [/SILENT]
-ServiceApplication.exe /UNINSTALL [/SILENT]</pre>
+    ServiceApplication.exe /INSTALL [/SILENT]
+    ServiceApplication.exe /UNINSTALL [/SILENT]
 
 ### 서비스 시작 및 종료
 
-<pre>net.exe start ServiceName
-net.exe stop ServiceName</pre>
+    net.exe start ServiceName
+    net.exe stop ServiceName
 
 ## Delphi로 Windows Service 작성하기
 
@@ -52,38 +50,36 @@ Delphi로 서비스를 작성하는 것은 아래 참조 링크에 아주 자세
 
 이렇게 해서 서비스의 대략적인 소스는 다음과 같습니다.
 
-[code lang="delphi"]  
-procedure TTimeSyncService.ServiceContinue(Sender: TService;  
-var Continued: Boolean);  
-begin  
-ServiceThread.Start;  
-Continued := True;  
-end;
+    procedure TTimeSyncService.ServiceContinue(Sender: TService;
+      var Continued: Boolean);
+    begin
+      ServiceThread.Start;
+      Continued := True;
+    end;
 
-procedure TTimeSyncService.ServiceExecute(Sender: TService);  
-begin  
-while not Terminated do  
-ServiceThread.ProcessRequests(False);  
-end;
+    procedure TTimeSyncService.ServiceExecute(Sender: TService);
+    begin
+      while not Terminated do
+        ServiceThread.ProcessRequests(False);
+    end;
 
-procedure TTimeSyncService.ServicePause(Sender: TService; var Paused: Boolean);  
-begin  
-ServiceThread.Suspended := True;  
-Paused := True;  
-end;
+    procedure TTimeSyncService.ServicePause(Sender: TService; var Paused: Boolean);
+    begin
+      ServiceThread.Suspended := True;
+      Paused := True;
+    end;
 
-procedure TTimeSyncService.ServiceStart(Sender: TService; var Started: Boolean);  
-begin  
-TimeSyncServiceThread := TTimeSyncServiceThread.Create(False);  
-Started := True;  
-end;
+    procedure TTimeSyncService.ServiceStart(Sender: TService; var Started: Boolean);
+    begin
+      TimeSyncServiceThread := TTimeSyncServiceThread.Create(False);
+      Started := True;
+    end;
 
-procedure TTimeSyncService.ServiceStop(Sender: TService; var Stopped: Boolean);  
-begin  
-TimeSyncServiceThread.Terminate;  
-Stopped := True;  
-end;  
-[/code]
+    procedure TTimeSyncService.ServiceStop(Sender: TService; var Stopped: Boolean);
+    begin
+      TimeSyncServiceThread.Terminate;
+      Stopped := True;
+end;
 
 이 서비스 Thread에서 클라이언트와 통신을 대기하면 됩니다. 처음 서비스를 작성하려고 생각했을때 서비스니깐 뭔가 클라이언트와 통신하는 방법을 기본으로 제공해줄까? 하고 생각을 했었지만 아무것도 없습니다. 그 방법은 작성하는 사람이 TCP/IP, PIPE, MemoryMap 등등 [제공하는 IPC][3] 중에서 편한것 선택해서 하면 됩니다.
 
@@ -95,70 +91,66 @@ TimeSync는 여러 크라이언트의 동시 연결 또는 여러 복잡 다단�
 
 대락적인 코드는 다음과 같습니다.
 
-[code lang="delphi"]  
-procedure TTimeSyncServiceThread.Execute;  
-begin  
-// 통신할 파이프 생성  
-PipeHandle := CreateNamedPipe(PIPE_NAME,  
-PIPE\_ACCESS\_DUPLEX,  
-PIPE\_TYPE\_MESSAGE or PIPE\_READMODE\_MESSAGE or PIPE_WAIT,  
-PIPE\_UNLIMITED\_INSTANCES,  
-BUFSIZE,  
-BUFSIZE,  
-NMPWAIT\_USE\_DEFAULT_WAIT,  
-@sa);
+    procedure TTimeSyncServiceThread.Execute;
+    begin
+      // 통신할 파이프 생성
+      PipeHandle := CreateNamedPipe(PIPE_NAME,
+          PIPE_ACCESS_DUPLEX,
+          PIPE_TYPE_MESSAGE or PIPE_READMODE_MESSAGE or PIPE_WAIT,
+          PIPE_UNLIMITED_INSTANCES,
+          BUFSIZE,
+          BUFSIZE,
+          NMPWAIT_USE_DEFAULT_WAIT,
+          @sa);
 
-try  
-while not Terminated do  
-begin  
-// 서비스 클라이언트의 연결 대기  
-ConnectNamedPipe(PipeHandle, nil);
+      try
+        while not Terminated do
+        begin
+          // 서비스 클라이언트의 연결 대기
+          ConnectNamedPipe(PipeHandle, nil);
 
-// 클라이언트 패킷 수신  
-FileRead(PipeHandle, Buffer, ....);
+          // 클라이언트 패킷 수신
+          FileRead(PipeHandle, Buffer, ....);
 
-// 클라이언트의 요청에 따라서 뭔가 수행  
-DoSometing(Buffer);
+          // 클라이언트의 요청에 따라서 뭔가 수행
+          DoSometing(Buffer);
 
-// 처리 결과를 클라이언트에 보내기  
-FileWrite(PipeHandle, Buffer, ....);
+          // 처리 결과를 클라이언트에 보내기
+          FileWrite(PipeHandle, Buffer, ....);
 
-// 연결 해제하고 다른 클라이언트의 연결을 기다림...  
-DisconnectNamedPipe(PipeHandle);  
-end;  
-finally  
-CloseHandle(PipeHandle)  
-end;  
-end;  
-[/code]
+          // 연결 해제하고 다른 클라이언트의 연결을 기다림...
+          DisconnectNamedPipe(PipeHandle);
+        end;
+      finally
+        CloseHandle(PipeHandle)
+      end;
+    end;
 
 클라이언트에서 마찬가지로 파이프에 연결해서 처리합니다.
 
-[code lang="delphi"]  
-procedure Sync;  
-var  
-PipeHandle: THandle;  
-PipeStream: THandleStream;  
-Command, Result: DWORD;  
-begin  
-PipeHandle := CreateFile(PIPE_NAME,  
-GENERIC\_READ or GENERIC\_WRITE, 0, nil, OPEN_EXISTING, 0, 0);
+    procedure Sync;
+    var
+      PipeHandle: THandle;
+      PipeStream: THandleStream;
+      Command, Result: DWORD;
+    begin
+      PipeHandle := CreateFile(PIPE_NAME,
+            GENERIC_READ or GENERIC_WRITE, 0, nil, OPEN_EXISTING, 0, 0);
 
-// 연결할 파이프가 부족하면 잠시 대기합니다. 하지만 TimeSync에서는 가능성이 극히 적음  
-if GetLastError = ERROR\_PIPE\_BUSY then  
-begin  
-if not WaitNamedPipe(PIPE_NAME, 2000) then  
-raise Exception.Create(StrServiceConnectFailed);  
-end;  
-try  
-FileWrite(PipeHandle, Buffer, ....);  
-FileRead(PipeHandle, Buffer, ....);  
-finally  
-DisconnectNamedPipe(PipeHandle);  
-CloseHandle(PipeHandle);  
-end;  
-end;  
-[/code]
+      // 연결할 파이프가 부족하면 잠시 대기합니다. 하지만 TimeSync에서는 가능성이 극히 적음
+      if GetLastError = ERROR_PIPE_BUSY then
+      begin
+        if not WaitNamedPipe(PIPE_NAME, 2000) then
+          raise Exception.Create(StrServiceConnectFailed);
+      end;
+      try
+        FileWrite(PipeHandle, Buffer, ....);
+        FileRead(PipeHandle, Buffer, ....);
+      finally
+        DisconnectNamedPipe(PipeHandle);
+        CloseHandle(PipeHandle);
+      end;
+    end;
 
 아주 아주 간단한 구조로 구성이 되었고, 잘 될거라고 믿고 있었습니다.
 
@@ -170,29 +162,27 @@ end;
 
 그래서 서버의 파이프를 생성할때 CreateNamedPipe의 마지막 인자로 SecurityAttribute를 설정해야합니다. 아래는 누구나 다 그 만들어진 파이프에 연결이 가능하게 하는 SecurityAttribite를 만드는 코드입니다.
 
-[code lang="delphi"]  
-var  
-PipeHandle: THandle;  
-sa: TSecurityAttributes;  
-sd: TSecurityDescriptor;  
-begin  
-InitializeSecurityDescriptor(@sd, SECURITY\_DESCRIPTOR\_REVISION);  
-SetSecurityDescriptorDacl(@sd, True, nil, False);
+    var
+      PipeHandle: THandle;
+      sa: TSecurityAttributes;
+      sd: TSecurityDescriptor;
+    begin
+      InitializeSecurityDescriptor(@sd, SECURITY_DESCRIPTOR_REVISION);
+      SetSecurityDescriptorDacl(@sd, True, nil, False);
 
-FillChar(sa, SizeOf(sa), 0);  
-sa.nLength := SizeOf(sa);  
-sa.lpSecurityDescriptor := @sd;  
-sa.bInheritHandle := False;
+      FillChar(sa, SizeOf(sa), 0);
+      sa.nLength := SizeOf(sa);
+      sa.lpSecurityDescriptor := @sd;
+      sa.bInheritHandle := False;
 
-PipeHandle := CreateNamedPipe(PIPE_NAME,  
-PIPE\_ACCESS\_DUPLEX,  
-PIPE\_TYPE\_MESSAGE or PIPE\_READMODE\_MESSAGE or PIPE_WAIT,  
-PIPE\_UNLIMITED\_INSTANCES,  
-BUFSIZE,  
-BUFSIZE,  
-NMPWAIT\_USE\_DEFAULT_WAIT,  
-@sa);  
-[/code]
+      PipeHandle := CreateNamedPipe(PIPE_NAME,
+          PIPE_ACCESS_DUPLEX,
+          PIPE_TYPE_MESSAGE or PIPE_READMODE_MESSAGE or PIPE_WAIT,
+          PIPE_UNLIMITED_INSTANCES,
+          BUFSIZE,
+          BUFSIZE,
+          NMPWAIT_USE_DEFAULT_WAIT,
+          @sa);
 
 이렇게 했더니만 연결이 잘 됩니다. 이제 프로그램은 완성했습니다. ^^;
 
@@ -206,17 +196,17 @@ NMPWAIT\_USE\_DEFAULT_WAIT,
 
 이걸 개인이 하라고 하는건 무린것 같고(특히 서비스 등록이나 실행은 관리자 권한이 필요하죠). 그래서 [InnoSetup][4]으로 설치 스크립트를 만들었습니다.
 
-<pre>[Run]
-Filename: net.exe; Parameters: stop TimeSyncService
-Filename: {app}\TimeSyncSvc.exe; Parameters: /INSTALL /SILENT
-Filename: net.exe; Parameters: start TimeSyncService
+    [Run]
+    Filename: net.exe; Parameters: stop TimeSyncService
+    Filename: {app}\TimeSyncSvc.exe; Parameters: /INSTALL /SILENT
+    Filename: net.exe; Parameters: start TimeSyncService
 
-[UninstallRun]
-Filename: net.exe; Parameters: stop TimeSyncService
-Filename: {app}\TimeSyncSvc.exe; Parameters: /UNINSTALL /SILENT
+    [UninstallRun]
+    Filename: net.exe; Parameters: stop TimeSyncService
+    Filename: {app}\TimeSyncSvc.exe; Parameters: /UNINSTALL /SILENT
 
-[Icons]
-Name: {commonstartup}\시간 동기화; Filename: {app}\TimeSync.exe; IconFilename: {app}\TimeSync.exe; Languages:</pre>
+    [Icons]
+    Name: {commonstartup}\시간 동기화; Filename: {app}\TimeSync.exe; IconFilename: {app}\TimeSync.exe; Languages:
 
 포인트는 설치중에 서비스 설치/ 실행하고, 설치 제거하면 서비스 정지/ 해제하는 것, 그리고 시작프로그램에 등록하는 것입니다.
 
@@ -224,7 +214,7 @@ Name: {commonstartup}\시간 동기화; Filename: {app}\TimeSync.exe; IconFilena
 
 ### 오류: "지정된 서비스가 지워진 것으로 표시되었습니다"
 
-서비스를 잘못 시작/ 종료/ 삭제하다보면 위의 메시지가 나올때가 있습니다(지금 떠올려보면 서비스가 실행된 상태에서 서비스를 uninstall 했던 것 같습니다). 이것은 서비스가 말그대로 <a href="<http://www.pyrasis.com/blog/entry/ServiceDeleteFlag>">삭제 플레그가 설정된 것으로 시간이 지나면 자동으로 삭제된다</a>고 합니다.
+서비스를 잘못 시작/ 종료/ 삭제하다보면 위의 메시지가 나올때가 있습니다(지금 떠올려보면 서비스가 실행된 상태에서 서비스를 uninstall 했던 것 같습니다). 이것은 서비스가 말그대로 http://www.pyrasis.com/blog/entry/ServiceDeleteFlag 삭제 플레그가 설정된 것으로 시간이 지나면 자동으로 삭제된다고 합니다.
 
 하염없이 기다리시거나 아니면 재부팅하면 됩니다. 한없이 기다리기 뭐해서 재부팅하고 커피한잔 마셨습니다.
 
@@ -236,19 +226,18 @@ Name: {commonstartup}\시간 동기화; Filename: {app}\TimeSync.exe; IconFilena
 
 TimeSync_Pipe가 여기서 사용하는 파이프입니다.
 
-[<img class="aligncenter size-full wp-image-580" title="pipelist" src="http://blog.woosum.net/wp-content/uploads/2010/11/pipelist.png" alt="" width="677" height="410" />][6]
+{% img /images/pipelist.png %}
 
 ## 참고 자료
 
-  * <http://www.devarticles.com/c/a/Delphi-Kylix/Creating-a-Windows-Service-in-Delphi/>
-  * <http://delphi.about.com/od/windowsshellapi/a/delphi-windows-service-applications.htm>
-  * <http://www.tolderlund.eu/delphi/service/service.htm>
-  * <http://groups.google.com/group/microsoft.public.vc.language/browse_thread/thread/584464bab80972c5/f3b89572716b8dd0>
-  * <http://answers.google.com/answers/threadview?id=430173>
+  * http://www.devarticles.com/c/a/Delphi-Kylix/Creating-a-Windows-Service-in-Delphi/
+  * http://delphi.about.com/od/windowsshellapi/a/delphi-windows-service-applications.htm
+  * http://www.tolderlund.eu/delphi/service/service.htm
+  * http://groups.google.com/group/microsoft.public.vc.language/browse_thread/thread/584464bab80972c5/f3b89572716b8dd0
+  * http://answers.google.com/answers/threadview?id=430173
 
  [1]: /timesync
  [2]: http://msdn.microsoft.com/en-us/library/ms724936%28VS.85%29.aspx
  [3]: http://msdn.microsoft.com/en-us/library/aa365574%28VS.85%29.aspx
  [4]: http://www.jrsoftware.org/isinfo.php
  [5]: http://technet.microsoft.com/en-us/sysinternals/bb842062.aspx
- [6]: http://blog.woosum.net/wp-content/uploads/2010/11/pipelist.png

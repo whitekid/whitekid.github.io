@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=331
 permalink: /archives/331
 dsq_thread_id:
   - 985891806
-categories:
-  - Uncategorized
 tags:
   - StackOverflow
 ---

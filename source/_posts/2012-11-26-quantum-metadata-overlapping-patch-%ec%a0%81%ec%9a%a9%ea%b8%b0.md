@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=1135
 permalink: /archives/1135
 dsq_thread_id:
   - 944687139
-categories:
-  - Uncategorized
 tags:
   - OpenStack
   - Quantum
@@ -21,7 +19,7 @@ quantum의 문제중에 하나인 [overlapping_ip을 사용할 때 metadata serv
 
 {% img https://docs.google.com/drawings/pub?id=1T4Iq8p2tjnfcqvmfeCxwDVfdlYx7CAOAXJub4TRTe1k&w=822&h=614" %}
 
-  1. metadata request는 <http://169.254.169.254/latest/metadata> 형태로 router namespace로 들어온다.
+  1. metadata request는 http://169.254.169.254/latest/metadata 형태로 router namespace로 들어온다.
   2. router namespace의 NAT rule에 의해서 localhost의 port 9697로 redirect 된다.
   3. 9696에서 listen하는 process(quantum-ns-metadata-proxy)는 l3_agent에서 network 생성에 맞춰 관리되며, namespace당 하나씩 생성된다.
   4. quantum-ns-metadata-proxy는 파라미터로 router_id를 가지므로 자신이 담당하는 network을 알 수 있다.

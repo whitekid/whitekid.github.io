@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=110
 permalink: /archives/110
 dsq_thread_id:
   - 737490477
-categories:
-  - Uncategorized
 tags:
   - Delphi
   - drupal

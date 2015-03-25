@@ -7,13 +7,11 @@ guid: http://blog.woosum.net/?p=464
 permalink: /archives/464
 dsq_thread_id:
   - 717695951
-categories:
-  - Uncategorized
 tags:
   - FreeBSD
   - portsnap
 ---
-<pre>0     3     *     *     *     root    portsnap cron update && pkg_version -vIL=</pre>
+    0     3     *     *     *     root    portsnap cron update && pkg_version -vIL=
 
 자 이렇게하면 메일 새벽 3시에 ports의 snapshot을 받아서 업데이트 한다.
 

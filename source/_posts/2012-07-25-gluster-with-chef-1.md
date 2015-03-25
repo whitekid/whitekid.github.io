@@ -7,17 +7,15 @@ guid: http://blog.woosum.net/?p=949
 permalink: /archives/949
 dsq_thread_id:
   - 778393475
-categories:
-  - Uncategorized
 tags:
   - chef
   - glusterfs
 ---
-공부삼아서 Chef로 Gluster를 셋업하는 것(<https://github.com/whitekid/chef-glusterfs>) 해 봤는데, 역시나 공부삼아 코멘트 적어봅니다.
+공부삼아서 Chef로 Gluster를 셋업하는 것(https://github.com/whitekid/chef-glusterfs) 해 봤는데, 역시나 공부삼아 코멘트 적어봅니다.
 
 물론 당연히도 저는 Chef와 Ruby를 처음 다르기에 정석과는 많이 다를 수 있고, 여기에서 이야기하는 것들이 틀릴 수 도 있습니다. ㅎㅎ..
 
-<https://github.com/whitekid/chef-glusterfs>는 chef에서 사용하는 cookbook입니다. cookbook 즉 요리책은 형상관리할 대상을 어떻게 요리할 지 적어 놓은 것이죠. 이 cookbook안에 recipe가 있으며, 이 recipe를 작성하여 하나의 인프라를 관리합니다.
+https://github.com/whitekid/chef-glusterfs 는 chef에서 사용하는 cookbook입니다. cookbook 즉 요리책은 형상관리할 대상을 어떻게 요리할 지 적어 놓은 것이죠. 이 cookbook안에 recipe가 있으며, 이 recipe를 작성하여 하나의 인프라를 관리합니다.
 
 recipes 디렉토리를 보시면 client.rb, server.rb, default.rb 라는 파일이 있습니다. 이게 recipe이며, 이것들이 여러개 모여서 glusterfs 클라이언트와 서버를 관리하는 cookbook이 되는 것이죠. 이름에서 보이다시피 client.rb는 glusterfs 클라이언트를 설치하고 서버와 연결하여 마운트하는 recipe이고, server.rb는 glusterfs 클러스터를 구성하고 volume을 생성하는 recipe입니다.
 
@@ -27,24 +25,26 @@ recipes 디렉토리를 보시면 client.rb, server.rb, default.rb 라는 파일
       action :install
     end
 
-> 여기서 ":install" 이 뭘까요?
-> 
-> 저는 한참 고민했습니다. 엇듯 봐서는 method 같기도 하고, action이 method이면 :install은 parameter인 것 같기도 하고.. 처음에는 우선 그려러니 하고 넘어갔었는데, 찾아보니 :install은 문자열 "install"의 symbol이라고 합니다. 문자열 reference죠.
-> 
-> irb> :install.equal? :install  
-> => true
-> 
-> 로 나옵니다. 여기서 equals?는 값 비교가 아닌 object 비교, 즉 같은 메모리를 점유하고 있는 오브젝트인가를 검사하는 것인데 같이 나오는 것으로 보면 같은 object이죠.
-> 
-> python의 immutable과 비슷하다고 봐야합니다. ruby symbol도 immutable입니다.
-> 
-> "Symbols are a way to represent strings and names in ruby."라 설명하고 있네요.
-> 
-> 근데 그럼 action은 뭘까요? 이건.. attribute입니다. 즉 package 리소스의 action attribute를 "install"로 설정하는 것입니다.
+여기서 ":install" 이 뭘까요?
+
+저는 한참 고민했습니다. 엇듯 봐서는 method 같기도 하고, action이 method이면 :install은 parameter인 것 같기도 하고.. 처음에는 우선 려러니 하고 넘어갔었는데, 찾아보니 :install은 문자열 "install"의 symbol이라고 합니다. 문자열 reference죠.
+
+    irb> :install.equal? :install
+    => true
+
+로 나옵니다. 여기서 equals?는 값 비교가 아닌 object 비교, 즉 같은 메모리를 점유하고 있는 오브젝트인가를 검사하는 것인데 같이 나오는 으로 보면 같은 object이죠.
+
+python의 immutable과 비슷하다고 봐야합니다. ruby symbol도 immutable입니다.
+
+> "Symbols are a way to represent strings and names in ruby."
+
+라 설명하고 있네요.
+
+근데 그럼 action은 뭘까요? 이건.. attribute입니다. 즉 package 리소스의 action attribute를 "install"로 설정하는 것입니다.
 
 package라는 리소스를 이용해서 gluster-fuse 패키지를 설치합니다. package는 각 chef node의 OS에 맞게 패키지를 설치합니다. 따라서 CentOS는 yum을 Ubuntu는 apt-get을 FreeBSD는 ports를 이용하여 설치를 합니다.
 
-chef에서 사용되는 리소스는 opscode의 리소스 패이지(<http://wiki.opscode.com/display/chef/Resources>)를 보시기 바랍니다. 아주 자세히 설명되어 있습니다.
+chef에서 사용되는 리소스는 opscode의 리소스 패이지(http://wiki.opscode.com/display/chef/Resources)를 보시기 바랍니다. 아주 자세히 설명되어 있습니다.
 
 당연히 gluster-fuse는 CentOS에서 있는 패키지 이름입니다. 만일 Ubuntu를 사용한다면 다른 이름을 넣어주겠죠.
 
@@ -74,7 +74,7 @@ recipes는 아래처럼 사용합니다.
           recursive true
         end
       end
-     
+
       # mount -t glusterfs -o log-level=WARNING,log-file=/var/log/gluster.log \
       #       10.200.1.11:/test /mnt
       server = node[:glusterfs][:server][:peers][0]

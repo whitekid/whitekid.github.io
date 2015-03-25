@@ -7,15 +7,13 @@ guid: http://blog.woosum.net/?p=1454
 permalink: /archives/1454
 dsq_thread_id:
   - 2043606883
-categories:
-  - Uncategorized
 tags:
   - availability-zone
   - host-aggregate
   - nova
   - OpenStack
 ---
-<a href="http://docs.openstack.org/grizzly/openstack-compute/admin/content/host-aggregates.html" target="_blank">Host aggregation</a>은 Availability zone 처럼 사용할 수 있습니다.
+[Host aggregation](http://docs.openstack.org/grizzly/openstack-compute/admin/content/host-aggregates.html)은 Availability zone 처럼 사용할 수 있습니다.
 
 기본 설치 상태에서 보면 아래처럼 nova zone만 보입니다.
 
@@ -78,7 +76,7 @@ tags:
     | Id | Name | Availability Zone | Hosts                          | Metadata |
     +----+------+-------------------+--------------------------------+----------+
     | 2  | agg2 | None              | [u'compute002', u'compute003'] | {}       |
-    +----+------+-------------------+--------------------------------+----------+ 
+    +----+------+-------------------+--------------------------------+----------+
 
 여기서 다시 nova availability-zone-list 하면 아무런 변화기 없습니다. nova aggregate-list 결과에 보면 "Availability Zone"이라는 항목이 있습니다. 녜.. host aggregate에 zone 설정이 없어서 그런 것이죠..
 
@@ -133,4 +131,4 @@ tags:
 
 admin 권한으로는 compute node까지 지정이 가능하고, admin이 아닌 경우는 zone 까지만 지정 가능합니다.
 
-참고링크: <http://russellbryantnet.wordpress.com/2013/05/21/availability-zones-and-host-aggregates-in-openstack-compute-nova/>
+참고링크: http://russellbryantnet.wordpress.com/2013/05/21/availability-zones-and-host-aggregates-in-openstack-compute-nova/

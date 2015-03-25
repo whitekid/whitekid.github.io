@@ -5,8 +5,6 @@ author: whitekid
 layout: post
 guid: http://blog.woosum.net/?p=215
 permalink: /archives/215
-categories:
-  - Uncategorized
 tags:
   - FreeBSD
   - ports

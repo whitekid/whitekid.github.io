@@ -5,15 +5,13 @@ author: whitekid
 layout: post
 guid: http://blog.woosum.net/?p=14
 permalink: /archives/14
-categories:
-  - Uncategorized
 tags:
   - drupal
   - ports
 ---
 ## www/drupal6-print
 
-PDF 생성을 위해서 <http://tcpdf.sourceforge.net/>가 필요하다.
+PDF 생성을 위해서 http://tcpdf.sourceforge.net/ 가 필요하다.
 근데 이게 한글이 될까? 폰트도 없는데... 음 우선 해보고..
 
     diff -ruN drupal6-print.orig/Makefile drupal6-print/Makefile
@@ -21,17 +19,17 @@ PDF 생성을 위해서 <http://tcpdf.sourceforge.net/>가 필요하다.
     +++ drupal6-print/Makefile  2010-03-03 00:36:38.000000000 +0900
     @@ -5,8 +5,7 @@
      # $FreeBSD: ports/www/drupal6-print/Makefile,v 1.2 2010/02/05 11:44:48 dinoex Exp $
-     
+
      PORTNAME=  print
     -DISTVERSION= 6.x-1.0-rc5
     -PORTREVISION=  1
     +DISTVERSION= 6.x-1.10
      CATEGORIES=  www
-     MASTER_SITES=  <a href="http://ftp.drupal.org/files/projects/">http://ftp.drupal.org/files/projects/</a>
-     
+     MASTER_SITES=  http://ftp.drupal.org/files/projects/
+
     @@ -14,14 +13,17 @@
      COMMENT= Drupal 6 module that add printer-friendly pages
-     
+
      DRUPAL6_MODULE=  yes
     -MODULE_DIRS= icons translations
     +MODULE_DIRS= css icons print_mail print_pdf translations
@@ -62,7 +60,7 @@ PDF 생성을 위해서 <http://tcpdf.sourceforge.net/>가 필요하다.
     +   translations/tr.po translations/uk.po translations/vi.po
      DOC_FILES= CHANGELOG.txt CREDITS.txt INSTALL.txt \
         LICENSE.txt MAINTAINERS.txt README.txt
-     
+
     diff -ruN drupal6-print.orig/distinfo drupal6-print/distinfo
     --- drupal6-print.orig/distinfo 2008-08-02 22:58:10.000000000 +0900
     +++ drupal6-print/distinfo  2010-03-03 00:11:12.000000000 +0900
@@ -81,14 +79,14 @@ PDF 생성을 위해서 <http://tcpdf.sourceforge.net/>가 필요하다.
     +++ drupal6-pathauto/Makefile 2010-03-03 01:00:35.000000000 +0900
     @@ -6,8 +6,7 @@
      #
-     
+
      PORTNAME=  pathauto
     -DISTVERSION= 6.x-1.2
     -PORTREVISION=  1
     +DISTVERSION= 6.x-1.3
      CATEGORIES=  www
-     
-     MAINTAINER=  <a href="mailto:nick@foobar.org">nick@foobar.org</a>
+
+     MAINTAINER=  nick@foobar.org
     diff -ruN drupal6-pathauto.orig/distinfo drupal6-pathauto/distinfo
     --- drupal6-pathauto.orig/distinfo  2009-12-26 04:51:28.000000000 +0900
     +++ drupal6-pathauto/distinfo 2010-03-03 01:00:38.000000000 +0900

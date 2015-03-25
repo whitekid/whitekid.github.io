@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=1227
 permalink: /archives/1227
 dsq_thread_id:
   - 1146105022
-categories:
-  - Uncategorized
 tags:
   - dhclient
 ---
@@ -20,6 +18,6 @@ dhcp를 사용한다면 특별한 이유가 없는 한 dhcp server에서 제공�
 
 /etc/dhcp/dhclient.conf:
 
-    prepend domain-name-servers <custom-dns-server>;  
+    prepend domain-name-servers <custom-dns-server>;
 
 이렇게 설정된 dns는 /etc/resolv.conf에서 첫번재 entry로 등록이 됩니다. 이 옵션은 중복으로 사용 가능합니다.

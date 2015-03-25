@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=635
 permalink: /archives/635
 dsq_thread_id:
   - 732301774
-categories:
-  - Uncategorized
 tags:
   - VirtualBox
 ---

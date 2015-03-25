@@ -5,36 +5,8 @@ author: whitekid
 layout: post
 guid: http://blog.woosum.net/?p=117
 permalink: /archives/117
-the_sidebar:
-  - 
-sidebar_layout:
-  - 
-content_sidebar:
-  - 
-colorscheme:
-  - 
-full_width_widget:
-  - 
-hide_bottom_sidebars:
-  - 
-featureboxes:
-  - 
-carousel_items:
-  - 
-carousel_mode:
-  - 
-carousel_ngen_gallery:
-  - 
-featuretitle:
-  - 
-featuretext:
-  - 
-featuremedia:
-  - 
 dsq_thread_id:
   - 762743890
-categories:
-  - Uncategorized
 tags:
   - FreeBSD
 ---
@@ -44,7 +16,7 @@ gettext가 0.18로 업데이트 되었다.
 
 어쩔수 없이 gettext가 업데이트 된 상황을 반영해야한다.
 
-<pre>portmaster -w -r gettext</pre>
+  portmaster -w -r gettext
 
 하다가 기존의 라이브러리 참조하는에러가 나서 임시로 라이브러리를 기존 것으로 symbolic 걸어놓고 다시 gettext 업데이트 하고 있다.
 

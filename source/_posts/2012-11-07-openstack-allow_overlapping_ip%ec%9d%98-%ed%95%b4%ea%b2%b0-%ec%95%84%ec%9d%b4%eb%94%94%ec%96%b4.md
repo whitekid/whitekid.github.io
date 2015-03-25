@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=1083
 permalink: /archives/1083
 dsq_thread_id:
   - 918225406
-categories:
-  - Uncategorized
 tags:
   - MadeByKidd
   - OpenStack
@@ -26,24 +24,30 @@ prox 서버는 간단히 twisted를 이용해서 만들었습니다.
 
 적용 순서는...
 
-  1. metadata patch 적용: <https://github.com/whitekid/nova/commit/de9b371a4667dd66f510093a1e207bc7f9e02c6d>
+  1. metadata patch 적용: https://github.com/whitekid/nova/commit/de9b371a4667dd66f510093a1e207bc7f9e02c6d
   2. metadata api restart
 
 router name space에서
 
-  1. lo device에 metadata ip 추가  
+  1. lo device에 metadata ip 추가
+    ```
     $ ip netns exec qrouter-XXXX ip addr add 169.254.169.254/32 device lo
-  2. DNAT하는 iptables rule 삭제 
-    <pre>$ ip netns exec qrouter-XXXX
-$ iptables -t nat -L quantum-l3-agent-PREROUTING | grep 169.254.169.254 > /dev/null && iptables -t nat -D quantum-l3-agent-PREROUTING 1
-$ exit</pre>
+    ```
+  2. DNAT하는 iptables rule 삭제
+    ```
+    $ ip netns exec qrouter-XXXX
+    $ iptables -t nat -L quantum-l3-agent-PREROUTING | grep 169.254.169.254 > /dev/null && iptables -t nat -D quantum-l3-agent-PREROUTING 1
+    $ exit
+    ```
 
-  3. metadata proxy 실행 
-    <pre>$ ip netns exec qrouter-XXX python metadata-proxy [real-metadata-api-server-ip] [tenant-id]</pre>
+  3. metadata proxy 실행
+      ```
+      $ ip netns exec qrouter-XXX python metadata-proxy [real-metadata-api-server-ip] [tenant-id]
+      ```
 
 그냥 단순히 아이디어 검증 차원이라, 실제로 쓰고자 한다면 많은 추가 작업이 필요할 것 같습니다.
 
-<https://github.com/whitekid/metadata_proxy>
+https://github.com/whitekid/metadata_proxy
 
 ps. 아.. 영어 어렵다.. ㅡㅡ
 

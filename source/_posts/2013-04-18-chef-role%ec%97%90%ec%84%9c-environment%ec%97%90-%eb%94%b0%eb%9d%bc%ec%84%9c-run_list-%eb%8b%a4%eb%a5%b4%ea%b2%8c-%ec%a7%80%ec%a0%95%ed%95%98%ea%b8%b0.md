@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=1243
 permalink: /archives/1243
 dsq_thread_id:
   - 1219274738
-categories:
-  - Uncategorized
 tags:
   - chef
 ---
@@ -16,17 +14,17 @@ chef를 사용하다보면 environment에 따라서 다른 run\_list가 필요�
 
 role에서는 이런 경우를 위해서 env\_run\_lists를 이용하여 기능을 재공하고 있습니다.
 
-roles/base.rb  
+roles/base.rb
 
-    name "base"  
+    name "base"
     description "base role for all node"
-    
-    default_roles = [  
-      "recipe[chef-client::service]", "recipe[chef-client::config]", "recipe[ntp]",  
+
+    default_roles = [
+      "recipe[chef-client::service]", "recipe[chef-client::config]", "recipe[ntp]",
     ]
-    
-    run_list default_roles  
-    env_run_lists "_default" => default_roles,  
+
+    run_list default_roles
+    env_run_lists "_default" => default_roles,
                   "devel" => default_roles + ["recipe[my_cookbook::developers_public_keys]"]
 
 

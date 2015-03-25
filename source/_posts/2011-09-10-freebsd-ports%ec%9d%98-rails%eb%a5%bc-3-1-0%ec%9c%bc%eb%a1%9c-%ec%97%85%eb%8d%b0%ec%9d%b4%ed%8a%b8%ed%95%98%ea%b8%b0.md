@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=747
 permalink: /archives/747
 dsq_thread_id:
   - 726643661
-categories:
-  - Uncategorized
 tags:
   - ports
   - rails

@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=372
 permalink: /archives/372
 dsq_thread_id:
   - 736070928
-categories:
-  - Uncategorized
 tags:
   - postfix
   - rbl
@@ -19,32 +17,26 @@ tags:
 
 하는 김에 더 많이 넣어버렸다.
 
-[code lang="plain"]  
-smtpd\_client\_restrictions = foo bar...  
-reject\_rbl\_client spamlist.or.kr  
-reject\_rbl\_client zen.spamhaus.org  
-reject\_rbl\_client cbl.abuseat.org  
-reject\_rbl\_client dnsbl.sorbs.net  
-[/code]
+    smtpd_client_restrictions = foo bar...
+            reject_rbl_client spamlist.or.kr
+            reject_rbl_client zen.spamhaus.org
+            reject_rbl_client cbl.abuseat.org
+            reject_rbl_client dnsbl.sorbs.net
 
 5시간 정도 적용한 결과다..
 
-[code lang="plain"]  
-$ grep spamhaus /var/log/maillog | wc -l  
-28  
-$ grep spamlist /var/log/maillog | wc -l  
-78  
-grep abuseat /var/log/maillog | wc -l  
-2  
-$ grep sorbs /var/log/maillog | wc -l  
-3  
-[/code]
+    $ grep spamhaus /var/log/maillog | wc -l
+          28
+    $ grep spamlist /var/log/maillog | wc -l
+          78
+     grep abuseat /var/log/maillog | wc -l
+           2
+    $ grep sorbs /var/log/maillog | wc -l
+           3
 
 (하루 지나니 보니 192, 99, 2, 7로 변했음) 이게 많은지 모르면.. 이 전날 통계를 보면...
 
-[code lang="plain"]  
-$ bzgrep -E -o  'blocked using ([a-zA-Z\.]+)' /var/log/maillog.1.bz2 | sort | uniq -c  
-65 blocked using spamlist.or.kr  
-[/code]
+    $ bzgrep -E -o  'blocked using ([a-zA-Z\.]+)' /var/log/maillog.1.bz2 | sort | uniq -c
+     65 blocked using spamlist.or.kr
 
 대략 괜찮은 듯..

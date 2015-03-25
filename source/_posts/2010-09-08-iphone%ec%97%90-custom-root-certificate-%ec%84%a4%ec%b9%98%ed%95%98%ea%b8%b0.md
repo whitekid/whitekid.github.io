@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=407
 permalink: /archives/407
 dsq_thread_id:
   - 717992703
-categories:
-  - Uncategorized
 tags:
   - iPhone
   - Mail
@@ -22,7 +20,6 @@ tags:
 
 이 문제는 아이폰에서 보낼때 아래처럼 "자신을 항상 숨은 참조로"를 설정해놓고, 아웃룩에서 pop3로 받을 때 규칙으로 보낸 편지함으로 옮기면 되겠네요.
 
-[<img class="aligncenter size-full wp-image-408" title="iphone_bcc" src="http://blog.woosum.net/wp-content/uploads/2010/09/iphone_bcc.png" alt="" width="320" height="480" />][2]
+{% img /images/iphone_bcc.png %}
 
  [1]: http://nsayer.blogspot.com/2009/01/iphone-supports-alternate-ca-root-keys.html
- [2]: http://blog.woosum.net/wp-content/uploads/2010/09/iphone_bcc.png

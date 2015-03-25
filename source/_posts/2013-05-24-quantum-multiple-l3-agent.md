@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=1273
 permalink: /archives/1273
 dsq_thread_id:
   - 1313098193
-categories:
-  - Uncategorized
 tags:
   - OpenStack
   - Quantum
@@ -48,20 +46,20 @@ l3-agent가 돌아가는 곳은 모든 네트워크 트래픽이 통과하기에
     qrouter-f3fe0c48-3248-4b2d-9f5b-c4a9c5fc01ed
     qdhcp-85e58593-f869-4233-9e5f-26e7b63df016
     root@network:~# ip netns exec qrouter-f3fe0c48-3248-4b2d-9f5b-c4a9c5fc01ed ip addr
-    15: qr-8acb1ecd-d0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UNKNOWN 
+    15: qr-8acb1ecd-d0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UNKNOWN
         link/ether fa:16:3e:74:31:5d brd ff:ff:ff:ff:ff:ff
         inet 10.250.0.1/24 brd 10.250.0.255 scope global qr-8acb1ecd-d0
-        inet6 fe80::f816:3eff:fe74:315d/64 scope link 
+        inet6 fe80::f816:3eff:fe74:315d/64 scope link
            valid_lft forever preferred_lft forever
-    16: qg-a364f00b-f1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UNKNOWN 
+    16: qg-a364f00b-f1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UNKNOWN
         link/ether fa:16:3e:5e:80:f9 brd ff:ff:ff:ff:ff:ff
         inet 10.200.0.2/16 brd 10.200.255.255 scope global qg-a364f00b-f1
-        inet6 fe80::f816:3eff:fe5e:80f9/64 scope link 
+        inet6 fe80::f816:3eff:fe5e:80f9/64 scope link
            valid_lft forever preferred_lft forever
-    17: lo: <LOOPBACK,UP,LOWER_UP> mtu 16436 qdisc noqueue state UNKNOWN 
+    17: lo: <LOOPBACK,UP,LOWER_UP> mtu 16436 qdisc noqueue state UNKNOWN
         link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
         inet 127.0.0.1/8 scope host lo
-        inet6 ::1/128 scope host 
+        inet6 ::1/128 scope host
            valid_lft forever preferred_lft forever
 
 이제 이 router를 network02.stack으로 옮겨보죠. 옮기는 것도 자동으로 되면 좋겠는데, 아직 그러한 기능은 없는 것으로 보이며 l3-agent-router-remove, l3-agent-router-add 명령을 이용해서 옮기면 됩니다.
@@ -87,22 +85,24 @@ l3-agent가 돌아가는 곳은 모든 네트워크 트래픽이 통과하기에
     root@network02:~# ip netns
     qrouter-f3fe0c48-3248-4b2d-9f5b-c4a9c5fc01ed
     root@network02:~# ip netns exec qrouter-f3fe0c48-3248-4b2d-9f5b-c4a9c5fc01ed ip addr
-    12: lo: <LOOPBACK,UP,LOWER_UP> mtu 16436 qdisc noqueue state UNKNOWN 
+    12: lo: <LOOPBACK,UP,LOWER_UP> mtu 16436 qdisc noqueue state UNKNOWN
         link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
         inet 127.0.0.1/8 scope host lo
-        inet6 ::1/128 scope host 
+        inet6 ::1/128 scope host
            valid_lft forever preferred_lft forever
-    13: qr-8acb1ecd-d0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UNKNOWN 
+    13: qr-8acb1ecd-d0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UNKNOWN
         link/ether fa:16:3e:74:31:5d brd ff:ff:ff:ff:ff:ff
         inet 10.250.0.1/24 brd 10.250.0.255 scope global qr-8acb1ecd-d0
-        inet6 fe80::f816:3eff:fe74:315d/64 scope link 
+        inet6 fe80::f816:3eff:fe74:315d/64 scope link
            valid_lft forever preferred_lft forever
-    14: qg-a364f00b-f1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UNKNOWN 
+    14: qg-a364f00b-f1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UNKNOWN
         link/ether fa:16:3e:5e:80:f9 brd ff:ff:ff:ff:ff:ff
         inet 10.200.0.2/16 brd 10.200.255.255 scope global qg-a364f00b-f1
-        inet6 fe80::f816:3eff:fe5e:80f9/64 scope link 
+        inet6 fe80::f816:3eff:fe5e:80f9/64 scope link
            valid_lft forever preferred_lft forever
 
 이상으로 multiple quantum agent의 간단한 기능을 확인해 봤습니다. 이 기능을 보면서 자동 failover/ load balancing 등의 기능이 있으면 좋겠구나 했지만 그런 기능은 아쉽지만 없네요. 하지만 간단한 작업으로 손쉽게 추가할 수 있을 것으로 보입니다.
 
-update) 이를 자동화한 스크립트 https://gist.github.com/whitekid/5642608#file-os-router-move-sh
+update) 이를 자동화한 스크립트
+
+{% gist 5642608 %}

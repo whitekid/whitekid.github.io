@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=1508
 permalink: /archives/1508
 dsq_thread_id:
   - 2682345286
-categories:
-  - Uncategorized
 tags:
   - neutron
   - OpenStack
@@ -40,29 +38,29 @@ nova.compute.api.API.\_create\_instance에서 requested\_network로 사용자가
 
 nova.compute.api.API.\_create\_instance: 에 아래처럼 request_networks가 없을 경우 scheduling을 처리할 코드를 넣고..
 
-    def _create_instance(self, context, instance_type, ....):  
-      .... foo bar ....  
-      if not requested_networks:  
-      net_id = self.network_api.schedule_network_for_instance(context, max_count)  
-      if net_id: requested_networks = [(net_id, None, None)]  
+    def _create_instance(self, context, instance_type, ....):
+      .... foo bar ....
+      if not requested_networks:
+        net_id = self.network_api.schedule_network_for_instance(context, max_count)
+        if net_id: requested_networks = [(net_id, None, None)]
 
 nova.compute.neutronv2.api.API.schedule\_network\_for\_instance: 에서 실제로 선택하는 기능을 추가합니다.
 
-    def schedule_network_for_instance(self, context, num_instances):  
-      neutron = neutronv2.get_client(context)  
-      nets = self._get_available_networks(context, context.project_id,  
+    def schedule_network_for_instance(self, context, num_instances):
+      neutron = neutronv2.get_client(context)
+      nets = self._get_available_networks(context, context.project_id,
       neutron=neutron)
-      
+
       nets = sorted(nets, key=lambda x: x['name'])
-      
-      quotas = neutron.show_quota(tenant_id=context.project_id)['quota']  
-      ports_needed = num_instances  
-      for net in nets:  
-        ports = neutron.list_ports(tenant_id=context.project_id)['ports']  
+
+      quotas = neutron.show_quota(tenant_id=context.project_id)['quota']
+      ports_needed = num_instances
+      for net in nets:
+        ports = neutron.list_ports(tenant_id=context.project_id)['ports']
       free_ports = quotas.get('port') - len(ports)
-      
-      if free_ports >= ports_needed:  
-      return net['id']  
+
+      if free_ports >= ports_needed:
+        return net['id']
 
 ## 사용 방법
 
@@ -70,13 +68,13 @@ nova.compute.neutronv2.api.API.schedule\_network\_for\_instance: 에서 실제�
 
 자동으로 네트워크를 선택하게 하려면 아래처럼 NIC 옵션을 빼고 명령을 주면, 자동으로 네트워크를 선택해서 만들어 줍니다.
 
-    $ nova boot -flavor m1.tiny -image <image-uuid> test  
+    $ nova boot -flavor m1.tiny -image <image-uuid> test
 
 기존에는 모든 사용 가능한 네트워크에 연결된 인스턴스를 만들었지만요..
 
 당연히 네트워크를 지정하면 해당 네트워크에 연결된 인스턴스를 만듭니다.
 
-    $ nova boot -flavor m1.tiny -image <image-uuid> -nic net-id=<net-uuid> test  
+    $ nova boot -flavor m1.tiny -image <image-uuid> -nic net-id=<net-uuid> test
 
 ## 개선 방향
 
@@ -98,13 +96,13 @@ network에는 subnet이 1:1 관계가 아니라 1:n의 관계입니다.
 
 아래를 보시면 test network에 subnet이 2개가 할당이 되어있습니다.
 
-    $ neutron net-list -name test  
-    +-------------------------------------+------+----------------------------------------------------+  
-    | id | name | subnets |  
-    +-------------------------------------+------+----------------------------------------------------+  
-    | 2e6c7fde-63f1-4289-8bb6-93c5e0d682f7 | test | 20e0d8cc-ff0a-410b-92d1-da5902ff851b 10.10.201.0/24 |  
-    | | | 37f69bb4-0cbb-45ca-8877-0a1189318316 10.10.200.0/24 |  
-    +-------------------------------------+------+----------------------------------------------------+  
+    $ neutron net-list -name test
+    +--------------------------------------+------+-----------------------------------------------------+
+    | id                                   | name | subnets                                             |
+    +--------------------------------------+------+-----------------------------------------------------+
+    | 2e6c7fde-63f1-4289-8bb6-93c5e0d682f7 | test | 20e0d8cc-ff0a-410b-92d1-da5902ff851b 10.10.201.0/24 |
+    |                                      |      | 37f69bb4-0cbb-45ca-8877-0a1189318316 10.10.200.0/24 |
+    +--------------------------------------+------+-----------------------------------------------------+
 
 그렇다면 이 포스트에서 제기하는 IP 문제를 해결할 수 있다고 생각이 드실겁니다. 녜.. 물론 그렇습니다. 그런데, 이건 실제로 네트워크 상에서 구현이 될 때 약간 애매하나 것이 있습니다.
 
@@ -122,33 +120,33 @@ network에는 subnet이 1:1 관계가 아니라 1:n의 관계입니다.
 
 아래 명령으로 확인하면 해당 extension이 있는지 확인할 수 있습니다.
 
-    $ neutron ext-list | grep provider  
-    | provider | Provider Network |  
-    | multi-provider | Multi Provider Network |  
+    $ neutron ext-list | grep provider
+    | provider       | Provider Network       |
+    | multi-provider | Multi Provider Network |
 
 네트워크 생성은 조금 복잡하게 만들어 집니다. 당연히 여러 segmentation을 넣어야되니 그렇겠죠.
 
-    $ neutron net-create test -segments type=dict list=true \  
-    provider:network_type=vlan,provider:physical_network=default,provider:segmentation_id=200 \  
-    provider:network_type=vlan,provider:physical_network=default,provider:segmentation_id=201 \  
-    -shared
+    $ neutron net-create test -segments type=dict list=true \
+        provider:network_type=vlan,provider:physical_network=default,provider:segmentation_id=200 \
+        provider:network_type=vlan,provider:physical_network=default,provider:segmentation_id=201 \
+        -shared
 
-    $ neutron net-show test  
-    +----------------+---------------------------------------------------------------------------------------------------------    ---+  
-    | Field | Value |  
-    +----------------+---------------------------------------------------------------------------------------------------------    ---+  
-    | admin\_state\_up | True |  
-    | id | 2e6c7fde-63f1-4289-8bb6-93c5e0d682f7 |  
-    | name | test |  
-    | router:external | False |  
-    | segments | {"provider:network\_type": "vlan", "provider:physical\_network": "default", "provider:segmentation_id": 200} |      
-    | | {"provider:network\_type": "vlan", "provider:physical\_network": "default", "provider:segmentation_id": 201} |  
-    | shared | True |  
-    | status | ACTIVE |  
-    | subnets | 20e0d8cc-ff0a-410b-92d1-da5902ff851b |  
-    | | 37f69bb4-0cbb-45ca-8877-0a1189318316 |  
-    | tenant_id | 6b3f1bffc77345468198c85d995479a2 |  
-    +----------------+---------------------------------------------------------------------------------------------------------    ---+  
+    $ neutron net-show test
+    +-------------------------------------------+------------------------------------------------------------------------------------------------------------+
+    | Field                                     | Value                                                                                                      |
+    +-------------------------------------------+------------------------------------------------------------------------------------------------------------+
+    | admin_state_up                            | True                                                                                                       |
+    | id                                        | 2e6c7fde-63f1-4289-8bb6-93c5e0d682f7                                                                       |
+    | name                                      | test                                                                                                       |
+    | router:external                           | False                                                                                                      |
+    | segments                                  | {"provider:network_type": "vlan", "provider:physical_network": "default", "provider:segmentation_id": 200} |
+    |                                           | {"provider:network_type": "vlan", "provider:physical_network": "default", "provider:segmentation_id": 201} |
+    | shared                                    | True                                                                                                       |
+    | status                                    | ACTIVE                                                                                                     |
+    | subnets                                   | 20e0d8cc-ff0a-410b-92d1-da5902ff851b                                                                       |
+    |                                           | 37f69bb4-0cbb-45ca-8877-0a1189318316                                                                       |
+    | tenant_id                                 | 6b3f1bffc77345468198c85d995479a2                                                                           |
+    +-------------------------------------------+------------------------------------------------------------------------------------------------------------+
 
 이것도 이 포스트의 문제를 해결할 수 있는 좋은 방법입니다. multi-subnet을 사용하는 것에 비해서 네트워크 엔지니어의 작업 오류를 줄 일 수 있겠죠..
 

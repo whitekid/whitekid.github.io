@@ -7,8 +7,6 @@ guid: http://www.woosum.net/?p=599
 permalink: /archives/599
 dsq_thread_id:
   - 948545208
-categories:
-  - Uncategorized
 tags:
   - pgdbx4
 ---

@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=1108
 permalink: /archives/1108
 dsq_thread_id:
   - 930828049
-categories:
-  - Uncategorized
 tags:
   - bash
 ---
@@ -20,11 +18,11 @@ shell script에서 fork와 비슷한 같은 작업을 하는 것은 간단하다
         sleep 5
         echo "exiting foo $1"
     }
-     
+
     for x in {1..5}; do
         foo $x &
     done
-     
+
     echo 'waiting...'
     wait
 
@@ -43,4 +41,4 @@ foo 함수를 5개 호출하면서 child process로 호출하고, parent에서�
     exiting foo 5
     exiting foo 2
 
-이걸 어디에 사용하냐구요? 그래요 snapshot를 뜨는데, 하나하나 하기가 너무 느려서 백그라운드로 돌릴려구요.. 잘 될려나..</pre>
+이걸 어디에 사용하냐구요? 그래요 snapshot를 뜨는데, 하나하나 하기가 너무 느려서 백그라운드로 돌릴려구요.. 잘 될려나..

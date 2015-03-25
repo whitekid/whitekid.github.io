@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=1024
 permalink: /archives/1024
 dsq_thread_id:
   - 899597479
-categories:
-  - Uncategorized
 tags:
   - proxy
   - ssh
@@ -17,7 +15,7 @@ tags:
 
 프록시 서버는 sshd만 돌고 있으면 된다. 내 데스크탑이 ubuntu이니 당연히 사용중이니 설정 건드릴 것 없고, 사용하려는 컴퓨터에서 프록시 서버로 사용할 컴퓨터로 ssh 접속을 아래와 같이 한다.
 
-    $ ssh -D 9999 <user@192.168.xxx.xxx>  
+    $ ssh -D 9999 <user@192.168.xxx.xxx>
 
 이제 프록시 연결은 끝났다. 프록시를 사용할 컴퓨터에서 아래처럼 설정하고 사용하면 된다.
 
@@ -35,6 +33,6 @@ ps. 왜 이게 필요하냐고? 회사에서는 데스크탑 용 IP와 노트북
 
 참고
 
-  * <http://embraceubuntu.com/2006/12/08/ssh-tunnel-socks-proxy-forwarding-secure-browsing/>
+  * http://embraceubuntu.com/2006/12/08/ssh-tunnel-socks-proxy-forwarding-secure-browsing/
 
  [1]: http://ss5.sourceforge.net/

@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=831
 permalink: /archives/831
 dsq_thread_id:
   - 714722893
-categories:
-  - Uncategorized
 tags:
   - cloud
 ---

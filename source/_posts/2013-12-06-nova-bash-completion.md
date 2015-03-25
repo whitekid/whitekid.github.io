@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=1436
 permalink: /archives/1436
 dsq_thread_id:
   - 2029011954
-categories:
-  - Uncategorized
 tags:
   - bash_completion
   - nova

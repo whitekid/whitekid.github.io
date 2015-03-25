@@ -5,8 +5,6 @@ author: whitekid
 layout: post
 guid: http://blog.woosum.net/?p=1
 permalink: /archives/1
-categories:
-  - Uncategorized
 tags:
   - FreeBSD
   - ports
@@ -21,4 +19,4 @@ WordPress를 블로그로 사용하는 것을 검토하면서(동시에 Drupal�
   * wordpress-mu 지원
   * 배포 파일에 숫자가 들어간것(P2, Greek Park 2) DISTFILES 처리
 
-소스는 여기로 <http://www.woosum.net/ports/www/wordpress-themes>
+소스는 여기로 http://www.woosum.net/ports/www/wordpress-themes

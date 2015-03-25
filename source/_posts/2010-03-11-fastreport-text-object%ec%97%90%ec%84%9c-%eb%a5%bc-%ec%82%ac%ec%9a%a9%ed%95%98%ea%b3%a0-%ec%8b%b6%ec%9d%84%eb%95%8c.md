@@ -7,13 +7,11 @@ guid: http://blog.woosum.net/?p=56
 permalink: /archives/56
 dsq_thread_id:
   - 759657356
-categories:
-  - Uncategorized
 tags:
   - Delphi
   - FastReport
 ---
-FastReport에서 TextObject에서 데이터를 표시할때 [table\_name."column\_name"] 이렇게 사용합니다.  
+FastReport에서 TextObject에서 데이터를 표시할때 [table\_name."column\_name"] 이렇게 사용합니다.
 그런데 [, ] 를 표시하고 싶을때 예를 들면 "[안녕하세요]"라고 표시하고 싶을땐 안됩니다. 뭔가 escape하는 방법이 없을까하고 열심히 해봤지만 안되드라구요. 그래서 문서좀 뒤져봤더니 두가지 방법이 있습니다.
 
 ### Expression을 꺼버리기

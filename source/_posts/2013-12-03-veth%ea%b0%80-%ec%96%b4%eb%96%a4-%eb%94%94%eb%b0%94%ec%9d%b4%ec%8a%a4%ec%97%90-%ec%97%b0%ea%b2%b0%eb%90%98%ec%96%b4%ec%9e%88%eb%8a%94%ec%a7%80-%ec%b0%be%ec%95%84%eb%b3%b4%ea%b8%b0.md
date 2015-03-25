@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=1427
 permalink: /archives/1427
 dsq_thread_id:
   - 2019200825
-categories:
-  - Uncategorized
 tags:
   - OpenStack
   - veth

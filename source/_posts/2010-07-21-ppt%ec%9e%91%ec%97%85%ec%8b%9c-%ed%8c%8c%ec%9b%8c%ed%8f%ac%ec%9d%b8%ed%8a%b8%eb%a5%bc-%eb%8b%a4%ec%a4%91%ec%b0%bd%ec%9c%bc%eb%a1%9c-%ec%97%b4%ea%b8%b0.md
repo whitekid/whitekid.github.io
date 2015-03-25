@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=334
 permalink: /archives/334
 dsq_thread_id:
   - 716396773
-categories:
-  - Uncategorized
 tags:
   - MSOffice
 ---

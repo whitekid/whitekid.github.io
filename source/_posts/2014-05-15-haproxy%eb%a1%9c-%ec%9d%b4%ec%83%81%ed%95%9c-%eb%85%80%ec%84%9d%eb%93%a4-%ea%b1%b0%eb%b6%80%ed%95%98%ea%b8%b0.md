@@ -7,8 +7,6 @@ guid: http://blog.woosum.net/?p=1517
 permalink: /archives/1517
 dsq_thread_id:
   - 2686821042
-categories:
-  - Uncategorized
 tags:
   - haproxy
 ---
@@ -16,8 +14,8 @@ tags:
 
 우리는 haproxy가 전면에 있기 때문에, 그 단에서 막기로 했는데, 생각보다 아주 심플하다.
 
-    acl is-bad-agent hdr(Acunetix-Product) -m reg -i ^WVS  
-    acl is-bad-agent hdr(User-Agent) -m reg (ZmEu|paros|nikto|dirbuster|sqlmap|openvas|w3af|Morfeus|JCE|Zollard)  
-    block if is-bad-agent  
+    acl is-bad-agent hdr(Acunetix-Product) -m reg -i ^WVS
+    acl is-bad-agent hdr(User-Agent) -m reg (ZmEu|paros|nikto|dirbuster|sqlmap|openvas|w3af|Morfeus|JCE|Zollard)
+    block if is-bad-agent
 
 딸랑 3줄~
