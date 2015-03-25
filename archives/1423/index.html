@@ -1,0 +1,227 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Fixed Ip에서 Vip 찾아내기&#8230; - Your wish is my command</title>
+  <meta name="author" content="Choe, Cheng-Dae">
+
+  
+  <meta name="description" content="Quantum으로 인스턴스의 fixed ip를 기준으로 해당 인스턴스의 load balancer에 연결된 vip 얻어오기 from quantumclient.v2_0.client import Client def get_vip_from_fixed_ip(fixed_ip &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://whitekid.github.io/archives/1423">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Your wish is my command" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Your wish is my command</a></h1>
+  
+    <h2>It&#8217;s a long journey</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="whitekid.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Fixed Ip에서 Vip 찾아내기&#8230;</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2013-11-21T00:00:00+09:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>21</span><span class='date-suffix'>st</span>, <span class='date-year'>2013</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Quantum으로 인스턴스의 fixed ip를 기준으로 해당 인스턴스의 load balancer에 연결된 vip 얻어오기</p>
+
+<div><script src='https://gist.github.com/7576376.js'></script>
+<noscript><pre><code>from quantumclient.v2_0.client import Client
+
+def get_vip_from_fixed_ip(fixed_ip):
+    client = Client(
+            username = app.config[&#39;USERNAME&#39;],
+            password = app.config[&#39;PASSWORD&#39;],
+            tenant_name = app.config[&#39;TENANT_NAME&#39;],
+            auth_url = app.config[&#39;AUTH_URL&#39;]
+    )
+    members = client.list_members(address = fixed_ip)[&#39;members&#39;]
+    if not members: return None
+
+    pool_id = members[0][&#39;pool_id&#39;]
+    pool = client.show_pool(pool_id)
+    vip_id = pool[&#39;pool&#39;][&#39;vip_id&#39;]
+
+    vip_ref = client.show_vip(vip_id)
+    vip = vip_ref[&#39;vip&#39;][&#39;address&#39;]
+    return vip
+</code></pre></noscript></div>
+
+
+<ul>
+<li>overlapping ip 환경에서는 안됨&hellip; network을 구분하지 못해서&hellip;</li>
+</ul>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">whitekid</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2013-11-21T00:00:00+09:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>21</span><span class='date-suffix'>st</span>, <span class='date-year'>2013</span></span> <span class='time'>12:00 am</span></time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://whitekid.github.io/archives/1423" data-via="" data-counturl="http://whitekid.github.io/archives/1423" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/archives/1419" title="Previous Post: python 한 줄로 웹서버 만들기..">&laquo; python 한 줄로 웹서버 만들기..</a>
+      
+      
+        <a class="basic-alignment right" href="/archives/1427" title="Next Post: veth가 어떤 디바이스에 연결되어있는지 찾아보기..">veth가 어떤 디바이스에 연결되어있는지 찾아보기.. &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/keystone-bootstrap/">Keystone Bootstrap</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/neutron-default-security-group/">Neutron Default Security Group</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1550">클라우드 네트워킹과 SDN 그리고 OpenStack</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Choe, Cheng-Dae -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

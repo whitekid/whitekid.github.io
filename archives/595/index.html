@@ -1,0 +1,209 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Pkg_version: Comparison Failed - Your wish is my command</title>
+  <meta name="author" content="Choe, Cheng-Dae">
+
+  
+  <meta name="description" content="ports에 업데이트할 것이 있는지 확인하려고 pkg_version -vIL= 을 실행했다. 그런데 갑자기 Comparison failed라는 메시지가 나오면서 아무런 것도 안한다. 수동으로 portsnap fetch update 하면 모든 포트가 없데이트 되었다고 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://whitekid.github.io/archives/595">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Your wish is my command" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Your wish is my command</a></h1>
+  
+    <h2>It&#8217;s a long journey</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="whitekid.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Pkg_version: Comparison Failed</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-11-09T00:00:00+09:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>9</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>ports에 업데이트할 것이 있는지 확인하려고 pkg_version -vIL= 을 실행했다. 그런데 갑자기 Comparison failed라는 메시지가 나오면서 아무런 것도 안한다.</p>
+
+<p>수동으로 portsnap fetch update 하면 모든 포트가 없데이트 되었다고 나온다. 뭔가 잘못된거다. 여기저기 뭔가하고 뒤저보다가&hellip; 무심결에 ls -l /usr/ports 하는 순간..</p>
+
+<p>허걱 /usr/ports/INDEX 파일의 사이즈가 0이다. 뭐 이건 인덱스 다시 빌드하면 되는 것이고.. 또 뒤져보니 /var/db/portsnap 파일의 일부가 사라졌다. 이건 뭣인가? 그래 언젠가부터 ports의 nfs 서버가 이상하긴 했지, 뭐 그녀석 이제 생을 마감할 때도 되었고, 그냥 ports나 서비스 해라 하고 놔두고 있었는데, 그녀석이 하드웨어적인 이유로 재부팅 되면서 몇몇 파일을 날려버렸던 거다.</p>
+
+<p>원인은 파악됐고&hellip; 해결은 간단하다 /var/db/portsnap 지워버리고 portsnap fetch extract 끄읏&hellip;</p>
+
+<p>근데 그 에러난 머신은 어떻하냐구? 말했잖아! 조용히 생을 마감하도록 호스피스 병동에 격리시킬 생각이지요. 이렇게 가끔 ports nfs 서비스 하다가&hellip; 그게 잦아지면 그냥 생을 마감시키려해&hellip; 그래 그녀석 서버로서 지난 8년간의 새월은 참으로 오랜 세월이었지???</p>
+
+<p>너도 젊었을 때는 스펙으론 꽤나 날리던 녀석이었는데, 물론 대형 형님들은 제외하고 말이다&hellip; 그리고 너와 참 많은 일을 했었는데, 아쉽다&hellip;. 그래 그래&hellip; 나도 그 정때문에 널 아직까지 버리지 못하고 있는걸거야&hellip;</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">whitekid</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2010-11-09T00:00:00+09:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>9</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://whitekid.github.io/archives/595" data-via="" data-counturl="http://whitekid.github.io/archives/595" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/archives/589" title="Previous Post: Windows Media Player on Windows 7">&laquo; Windows Media Player on Windows 7</a>
+      
+      
+        <a class="basic-alignment right" href="/archives/599" title="Next Post: TDBXMetaDatabaseColumnNames.SupportsParameterMetadata">TDBXMetaDatabaseColumnNames.SupportsParameterMetadata &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/keystone-bootstrap/">Keystone Bootstrap</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/neutron-default-security-group/">Neutron Default Security Group</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1550">클라우드 네트워킹과 SDN 그리고 OpenStack</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Choe, Cheng-Dae -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

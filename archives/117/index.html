@@ -1,0 +1,217 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Gettext가 업데이트 되었다. - Your wish is my command</title>
+  <meta name="author" content="Choe, Cheng-Dae">
+
+  
+  <meta name="description" content="gettext가 0.18로 업데이트 되었다. 이놈은 항상 무섭다. 엄청나게 많은 ports들이 의존성을 갇고 있기 때문에(portmaster -r gettext로 보면, 직간접적으로 X11이 돌아가는 시스템은 147개, X11이 안돌아가는 놈은 90개) 함부로 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://whitekid.github.io/archives/117">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Your wish is my command" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Your wish is my command</a></h1>
+  
+    <h2>It&#8217;s a long journey</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="whitekid.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Gettext가 업데이트 되었다.</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-05-31T00:00:00+09:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>31</span><span class='date-suffix'>st</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>gettext가 0.18로 업데이트 되었다.</p>
+
+<p>이놈은 항상 무섭다. 엄청나게 많은 ports들이 의존성을 갇고 있기 때문에(portmaster -r gettext로 보면, 직간접적으로 X11이 돌아가는 시스템은 147개, X11이 안돌아가는 놈은 90개) 함부로 업데이트 했다가는 날리가 난다. 그런데 쩝.. 업데이트 된 줄도 모르고 다른거 업데이트 하다가 의존성 때문에 업데이트가 되고 말았다. 이런 실수 실수&hellip;</p>
+
+<p>어쩔수 없이 gettext가 업데이트 된 상황을 반영해야한다.</p>
+
+<p>  portmaster -w -r gettext</p>
+
+<p>하다가 기존의 라이브러리 참조하는에러가 나서 임시로 라이브러리를 기존 것으로 symbolic 걸어놓고 다시 gettext 업데이트 하고 있다.</p>
+
+<p>조심하자&hellip;</p>
+
+<p>추가</p>
+
+<ol>
+<li>portmaster 2.32버전으로 올라가면서 -w옵션이 추가되었는데, 공유 라이브러리는 백업을 하고 업그레이드를 하기 때문에 위처럼 symbolic link를 거는 삽질을 안해도 된다.</li>
+<li>portmaster 걸때 시간도 같이 측정했으면 재밌었을 텐데&hellip; 그냥 하고 있으므로 무시&hellip;</li>
+</ol>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">whitekid</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2010-05-31T00:00:00+09:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>31</span><span class='date-suffix'>st</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://whitekid.github.io/archives/117" data-via="" data-counturl="http://whitekid.github.io/archives/117" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/archives/107" title="Previous Post: Delphi 2009 부터는 Exception에 StackTrace가 있는데?">&laquo; Delphi 2009 부터는 Exception에 StackTrace가 있는데?</a>
+      
+      
+        <a class="basic-alignment right" href="/archives/110" title="Next Post: Indy로 form submit하기 삽질">Indy로 form submit하기 삽질 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/keystone-bootstrap/">Keystone Bootstrap</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/neutron-default-security-group/">Neutron Default Security Group</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1550">클라우드 네트워킹과 SDN 그리고 OpenStack</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Choe, Cheng-Dae -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

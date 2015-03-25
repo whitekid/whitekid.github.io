@@ -1,0 +1,216 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Drag and Drop Component Suite를 이용한 탐색기에 파일 저장 그리고.. - Your wish is my command</title>
+  <meta name="author" content="Choe, Cheng-Dae">
+
+  
+  <meta name="description" content="Drag and Drop Component Suite를 이용해 어제 오늘 놀고 있습니다. 이걸로 ListView에 파일 목록이 있고 이를 탐색기로 Drag&amp;Drop로 저장
+파일의 데이터는 실제 파일이 아니고 Application에서 생성하는 데이터
+Drag& &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://whitekid.github.io/archives/161">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Your wish is my command" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Your wish is my command</a></h1>
+  
+    <h2>It&#8217;s a long journey</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="whitekid.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Drag and Drop Component Suite를 이용한 탐색기에 파일 저장 그리고..</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-06-24T00:00:00+09:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>24</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><a href="http://melander.dk/delphi/dragdrop">Drag and Drop Component Suite</a>를 이용해 어제 오늘 놀고 있습니다. 이걸로</p>
+
+<ol>
+<li>ListView에 파일 목록이 있고 이를 탐색기로 Drag&amp;Drop로 저장</li>
+<li>파일의 데이터는 실제 파일이 아니고 Application에서 생성하는 데이터</li>
+<li>Drag&amp;Drop으로 ListView안에서 위치 조절</li>
+</ol>
+
+
+<p>와 같은 일을 하고자 합니다. 1, 2 번은 Drag&amp;Drop Suite에서 제공해주는 TVirtualFileStreamDataFormat을 이용해서 하면 되는데, 마지막 리스트 안에서 위치조절하는 것은 복잡하네요.</p>
+
+<p>Shell로 Drag&amp;Drop이 없으면 간단히 델파이에서 제공하는 기능을 이용하면 되는데, Drag&amp;Drop Suite와 같이 쓰면 이것이 안됩니다. 둘중에 하나만 사용해야하는 현상이 발생합니다(이것때문에 삽질좀 하고..).</p>
+
+<p>결국은 TCustomDataFormat을 이용해서 2가지 데이터 형태를 같이 사용해서 해결했습니다. 자세한 내용은 코드확인!</p>
+
+<p>[DragDropShellAndVCL][2]</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">whitekid</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2010-06-24T00:00:00+09:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>24</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://whitekid.github.io/archives/161" data-via="" data-counturl="http://whitekid.github.io/archives/161" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/archives/159" title="Previous Post: Cross-application drag-and-drop in Delphi">&laquo; Cross-application drag-and-drop in Delphi</a>
+      
+      
+        <a class="basic-alignment right" href="/archives/164" title="Next Post: TValueListEditor OnValidate">TValueListEditor OnValidate &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/keystone-bootstrap/">Keystone Bootstrap</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/neutron-default-security-group/">Neutron Default Security Group</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1550">클라우드 네트워킹과 SDN 그리고 OpenStack</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Choe, Cheng-Dae -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,291 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>초간단 Chef 설치하기 - Your wish is my command</title>
+  <meta name="author" content="Choe, Cheng-Dae">
+
+  
+  <meta name="description" content="-Ubuntu에서 Chef  초간단 설치하기 입니다. About Chef Chef는 1. 서버 형상 관리 툴 2. 서버 관리 자동화 툴 3. 요세는 클라우드 자동화 툴이라고도 합니다. puppet도 같은 비슷하죠. Chef는 ruby로 작성되어 있으며, 작업하다보면 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://whitekid.github.io/archives/936">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Your wish is my command" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Your wish is my command</a></h1>
+  
+    <h2>It&#8217;s a long journey</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="whitekid.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">초간단 Chef 설치하기</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-07-12T00:00:00+09:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>12</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>-Ubuntu에서 Chef  초간단 설치하기 입니다.</p>
+
+<h2>About Chef</h2>
+
+<p>Chef는 1. 서버 형상 관리 툴 2. 서버 관리 자동화 툴 3. 요세는 클라우드 자동화 툴이라고도 합니다. puppet도 같은 비슷하죠.</p>
+
+<p>Chef는 ruby로 작성되어 있으며, 작업하다보면 rails와 비슷하단 느낌을 많이 받습니다. 근데 저도 아직 잘 chef에 관해서 모릅니다. 공부하고 있는 단계죠. 어쨌든!</p>
+
+<h2>chef-server</h2>
+
+<h3>레포지트리 설정</h3>
+
+<p>Ubuntu나 CentOS로 공식적으로 들어간 chef 패키지는 없고, 개발사인 <a href="http://opscode.com">opscode</a>에서 관리하는 레포지트리를 사용합니다.</p>
+
+<pre><code>$ echo "deb http://apt.opscode.com/ `lsb_release -cs`-0.10 main" | sudo tee /etc/apt/sources.list.d/opscode.list
+</code></pre>
+
+<h4>Repository PGP 키 추가</h4>
+
+<pre><code>$ sudo mkdir -p /etc/apt/trusted.gpg.d
+$ gpg -keyserver keys.gnupg.net -recv-keys 83EF826A
+$ gpg -export packages@opscode.com | sudo tee /etc/apt/trusted.gpg.d/opscode-keyring.gpg &gt; /dev/null
+</code></pre>
+
+<h4>레포지트리 업데이트</h4>
+
+<pre><code>$ sudo apt-get update
+</code></pre>
+
+<h3>Chef 설치</h3>
+
+<pre><code>$ sudo apt-get install chef-server
+</code></pre>
+
+<ul>
+<li>설치하면서 URL을 물어보는데 <a href="http://">http://</a><ip-address>:4040 으로 설정합니다. localhost로 설정하면 나중에 bootstrap으로 클라이언트 설치하는데 오류가 발생합니다.</li>
+</ul>
+
+
+<h4>knife 설정</h4>
+
+<p>knife는 chef를 움직이는 cli 툴입니다. 현재 계정(root가 아닌)에서 knife를 사용하여 명령을 내릴 수 있도록 설정합니다.</p>
+
+<pre><code>$ mkdir -p ~/.chef
+$ sudo cp /etc/chef/validation.pem /etc/chef/webui.pem ~/.chef
+$ sudo chown -R `whoami` ~/.chef
+$ knife configuration -i
+</code></pre>
+
+<ul>
+<li>인증서의 위치는 위에서 복사한 ~/.chef의 경로로 입력</li>
+</ul>
+
+
+<h4>knife 설치 확인</h4>
+
+<pre><code>$ knife client list
+$ knife cookbook list
+</code></pre>
+
+<h2>클라이언트 설치(precise)</h2>
+
+<p>chef bootstrap은 Ubuntu 10.04를 지원하지만, 12.04(precise)를 지원하지 않습니다. 하지만 간단히 그냥 lucid를 precise로 바꾸기만 하면 됩니다. 물론 lucid를 이용하는 경우는 기존 것 그대로 이용하면 됩니다.</p>
+
+<p>  $ cd /usr/lib/ruby/vendor_ruby/chef/knife/bootstrap
+  $ cp ubuntu10.04-apt.erb ubuntu12.04-apt.erb
+  $ sed  -i &rsquo;s/lucid/precise/g&#8217; ubuntu12.04-apt.erb
+  $ knife bootstrap 10.200.1.5 -d ubuntu12.04-apt -sudo -x <user_id> -P <password> -bootstrap-version 0.10</p>
+
+<ul>
+<li>10.200.1.5: chef-client를 설치할 호스트 아이피</li>
+<li>-d: 배포판을 지정한다. lucid인 경우는 ubuntu10.04</li>
+<li>-sudo: sudo를 이용해서 명령을 실행한다.</li>
+<li>-x: ssh로 접속할 사용자를 지정한다. root 계정으로 직접 접근하지 못하는 서버들에 설정한다.</li>
+<li>-P: ssh password</li>
+<li>-bootstrap-version 0.10: bootstrap 설치할 버전</li>
+</ul>
+
+
+<p>에러없이 잘 실행된다면</p>
+
+<pre><code>$ knife node list
+</code></pre>
+
+<p>로 해당 호스트가 등록된 것을 확인할 수 있습니다.</p>
+
+<p>정상적으로 설치가 완료되었는데, 노드가 등록이 안되는 경우는 거의 대부분 시간이 안맞아서 그렇습니다. chef는 ampq를 사용하는데, 여기선 시간이 아주 중요하기 때문이지요. 시간이 안맞다면 ntpdate -u kr.pool.ntp.org 이렇게 시간이 중요하기 때문에 서버를 포함한 모든 노드는 ntpd를 설치하여 시간을 동기화하시기 바랍니다.</p>
+
+<h2>Cookbook 시작하기&hellip;</h2>
+
+<p>이제 Chef 설치는 잘 되었을 것이고, cookbook, knife등을 익힐 차례입니다. <a href="http://wiki.opscode.com/display/chef/Cookbook+Fast+Start+Guide">Cookbook Fast Start Guide</a>에서 시작하기 바랍니다.</p>
+
+<p><a href="http://wiki.woosum.net/Chef">http://wiki.woosum.net/Chef</a></p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">whitekid</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2012-07-12T00:00:00+09:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>12</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://whitekid.github.io/archives/936" data-via="" data-counturl="http://whitekid.github.io/archives/936" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/archives/928" title="Previous Post: ubuntu: eth1에 기본 gateway 두기..">&laquo; ubuntu: eth1에 기본 gateway 두기..</a>
+      
+      
+        <a class="basic-alignment right" href="/archives/965" title="Next Post: 귀찮다. ssh 접속 키 확인 무시하자구!">귀찮다. ssh 접속 키 확인 무시하자구! &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/keystone-bootstrap/">Keystone Bootstrap</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/neutron-default-security-group/">Neutron Default Security Group</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1550">클라우드 네트워킹과 SDN 그리고 OpenStack</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Choe, Cheng-Dae -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

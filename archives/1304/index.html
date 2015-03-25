@@ -1,0 +1,482 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Ceph as OpenStack Instance Storage Backend - Your wish is my command</title>
+  <meta name="author" content="Choe, Cheng-Dae">
+
+  
+  <meta name="description" content="이 전 포스트에서 GlusterFS를 instance storage backend로 사용했었습니다. Ceph는 GlusterFS에 비해서 콤포넌트도 많고, 설치 과정도  복잡해서 &ldquo;보여서&rdquo; 우선 GlusterFS로 했었지요. 이번에는 Ceph로 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://whitekid.github.io/archives/1304">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Your wish is my command" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Your wish is my command</a></h1>
+  
+    <h2>It&#8217;s a long journey</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="whitekid.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Ceph as OpenStack Instance Storage Backend</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2013-06-10T00:00:00+09:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>10</span><span class='date-suffix'>th</span>, <span class='date-year'>2013</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>이 전 포스트에서 <a href="/archives/1292">GlusterFS를 instance storage backend로 사용</a>했었습니다. Ceph는 GlusterFS에 비해서 콤포넌트도 많고, 설치 과정도  복잡해서 &ldquo;보여서&rdquo; 우선 GlusterFS로 했었지요. 이번에는 Ceph로 live migration을 할 수 있게 instance storage backend로 설정해 봤습니다.</p>
+
+<p>GlusterFS와 다르게 Ceph는 swift, {nova,cinder}-volume과 통합도 준비되어 있지만, 현재 목적에 맞지 않기에 여기서는 다루지 않습니다.</p>
+
+<h2>Overview</h2>
+
+<p>설치 전에 우선 Ceph의 구성을 알아보면, mon, mds, osd 세가지 프로세스로 구성되어 있으며, 각각의 기능은 대략 아래와 같습니다.</p>
+
+<ul>
+<li>mon: cluster의 상태등의 데이터를 관리</li>
+<li>mds: CephFS에 제공하는 메타정보 데이터 관리</li>
+<li>osd: 데이터 저장, replication, recovery 등을 제공하고, mon 프로세스에 모니터링 정보를 제공</li>
+</ul>
+
+
+<p>Ceph를 instance storage backend로 사용하기 위해서는 glusterfs와 마찬가지로 /var/lib/nova/instance 디렉토리를 cephfs로 마운트하여 사용합니다. qemu에서 librbd를 이용하여 직접 Ceph를 접근할 것으로 예상했지만 {nova,cinder}-volume은 문서상에 librbd를 이용하도록 나와있는 반면에, instance storage의 경우는 별도의 안내가 없습니다(제가 못찾은건지 모르겠지만&hellip;.).</p>
+
+<p>또한 ceph cluster를 별도로 구성하는 것을 권장하지만, 실험 환경이기 때문에 compute 노드에 osd를 glance 노드에 mon, msd를 구성하기로 합니다.</p>
+
+<p>참고로 권장하는 최소 구성은 아래와 같습니다.</p>
+
+<ul>
+<li>(mon + mds) x 3</li>
+<li>osd x 3</li>
+</ul>
+
+
+<p>권장은 저렇고, 제 테스트 환경에서는 충분한 노드가 없기 때문에 glusterfs 경우처럼 compute node에 osd를 glance 노드에 mon + mds, 그리고  control 노드에 ceph-deploy를 준비합니다.</p>
+
+<h2>설치 준비</h2>
+
+<p>Ceph의 설치는 <a href="https://github.com/ceph/ceph-deploy">ceph-deploy</a>를 이용합니다. 이전 버전에서는 mkcephfs 등의 툴을 이용했었지만, 이제는 ceph-deploy를 이용해서 셋업합니다. ceph-deploy는 ssh로 설치하려는 노드에 접속하여 sudo를 통해 패키지 설치, 설정 등을 자동으로 진행합니다. chef, puppet, juju등 자동화 툴로 설치할 필요가 없다고 설명하고 있습니다.</p>
+
+<p>ceph-deploy를 실행할 노드를 ceph admin 노드라고하고, 여기에서는 아래 준비가 필요합니다.</p>
+
+<ul>
+<li>ceph 계정 만들기</li>
+<li>ceph 계정의 private / public key 만들기</li>
+<li>ceph 패키지 설치</li>
+</ul>
+
+
+<p>ceph가 설치될 mon, mds, osd 가 실행될 노드에는 아래의 준비가 필요합니다.</p>
+
+<ul>
+<li>ceph 계정 만들기</li>
+<li>ceph 계정의 sudo 허용</li>
+<li>admin 노드에서 생성된 public key로 접속 허용</li>
+<li>ceph 패키지 설치: ceph-deploy가 패키지 설치를 하지만, 미러를 사용한다면 직접 설치를..</li>
+</ul>
+
+
+<h2>ceph 패키지 설치: 모든 노드</h2>
+
+<pre><code>$ wget -q -O- 'https://ceph.com/git/?p=ceph.git;a=blob_plain;f=keys/release.asc' | sudo apt-key add - 
+$ echo deb http://ceph.com/debian-cuttlefish/ $(lsb_release -sc) main | sudo tee /etc/apt/sources.list.d/ceph.list
+$ apt-get install ceph
+</code></pre>
+
+<h2>ceph 유저 생성: 모든 노드</h2>
+
+<pre><code>$ useradd -m ceph
+</code></pre>
+
+<h2>sudoer에 등록: 모든 노드</h2>
+
+<p>ceph-deploy는 ssh로 ceph@node로 들어가서 sudo를 이용하여 설정을 하기 때문에 sudoer에 등록한다.</p>
+
+<pre><code>$echo "ceph ALL = (root) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/ceph
+</code></pre>
+
+<h2>ceph keypair 생성: admin 노드</h2>
+
+<pre><code>$ su - ceph
+$ ssh-keygen -t rsa -q -f /home/ceph/.ssh/id_rsa -P ""
+</code></pre>
+
+<h2>ceph-deploy가 실행할 환경 설정</h2>
+
+<p>여기서 생성된 /home/ceph/.ssh/id_rsa.pub 파일을 모든 노드에 /home/ceph/.ssh/authorized_keys로 복사한다. 그리고 admin 노드의 ssh 설정을 아래처럼 하여 ssh hostname으로 ceph 유저로 로그인할 수 있도록 한다. 몰론 ceph-deploy가 접속한 모든 노드 (mon, mds, osd)를 모두 등록한다.</p>
+
+<pre><code>$ more ~/.ssh/config
+Host compute01
+Hostname compute01.stack
+User ceph
+</code></pre>
+
+<p>그리고 처음으로 ssh로 연결하면 ssh key 확인 메시지가 뜨는데, 이를 없애기 위해서 미리 아래처럼 ssh server public key를 등록한다.</p>
+
+<pre><code>$ ssh-keyscan compute01.stack &gt;&gt; .ssh/known_hosts
+</code></pre>
+
+<p>모든게 정상적으로 설정 되었다면 아래 명령을 내렸을 때 아무런 입력 없이 바로 실행이 되어야 한다.</p>
+
+<pre><code>$ ssh compute01 sudo ls /
+</code></pre>
+
+<h2>cluster 생성</h2>
+
+<p>클러스터 생성은 monitor 노드의 호스트를 지정하여 시작합니다. 여기서는 glance 노드를 monitor, mds로 사용하기로 했으므로 아래처럼 합니다.</p>
+
+<pre><code>$ ceph-deploy -v new glance
+$ ls
+ceph.conf ceph.log ceph.mon.keyring
+</code></pre>
+
+<p>실행하면 지정한 모니터로 ceph.conf 파일과 ceph.mon.keyring 파일을 생성합니다. 아직까지는 설정 파일만 만든 상태입니다.</p>
+
+<p>만든 설정 파일을 monitor 호스트로 복사하고, 서비스를 시작하는 명령은 아래와 같습니다.</p>
+
+<pre><code>$ ceph-deploy -v mon create glance
+Deploying mon, cluster ceph hosts glance
+Deploying mon to glance
+Distro Ubuntu codename precise, will use upstart
+</code></pre>
+
+<p>monitor 호스트인 glance에서 프로세스를 보면 ceph-mon 프로세스가 돌아가는 것을 확인할 수 있다. 그리고 glance 호스트에 보면 설정파일이 /etc/ceph/ceph.conf로 복사된 것을 확인할 수 있으며 /etc/ceph/ceph.client.admin.keyring 으로 어드민 키링이 생성된 것을 확인할 수 있다.</p>
+
+<p>gatherkey 명령으로 monitor에 생성된 키를 가져온다.</p>
+
+<pre><code>$ ceph-deploy -v gatherkeys glance
+Checking glance for /etc/ceph/ceph.client.admin.keyring
+Got ceph.client.admin.keyring key from glance.
+Have ceph.mon.keyring
+Checking glance for /var/lib/ceph/bootstrap-osd/ceph.keyring
+Got ceph.bootstrap-osd.keyring key from glance.
+Checking glance for /var/lib/ceph/bootstrap-mds/ceph.keyring
+Got ceph.bootstrap-mds.keyring key from glance.
+</code></pre>
+
+<p>ceph.client.admin.keyring, ceph.bootstrap-osd.keyring, ceph.bootstrap-mds.kerying 파일을 가져왔다. 이 키들은 osd, mds에서 사용된다. 여기서 가저온 ceph.client.admin.keyring은 아래처럼 사용할 수 있다.</p>
+
+<pre><code>$ ceph -c ceph.conf -k ceph.client.admin.keyring mon stat
+e1: 1 mons at {glance=10.100.0.8:6789/0}, election epoch 2, quorum 0 glance
+</code></pre>
+
+<h2>mds 설치: admin 노드</h2>
+
+<p>mds는 cephfs를 사용(cephfs로 마운트)한다면 필요한 것으로, rbd를 사용한다면 설치할 필요는 없다. 우리는 /var/lib/nova/instance를 cephfs로 마운트해서 사용할 것이므로 mds를 설치한다.</p>
+
+<p>마찬가지로 glance host에 설치한다.</p>
+
+<pre><code>$ ceph-deploy -v mds create glance
+Deploying mds, cluster ceph hosts glance:glance
+Distro Ubuntu codename precise, will use upstart
+Deploying mds bootstrap to glance
+Host glance is now ready for MDS use.
+Deploying mds.glance to glance
+</code></pre>
+
+<p>역시 glance 호스트에 보면 ceph-mds 프로세스가 떠있는 것을 확인할 수 있다.</p>
+
+<h2>osd 설치</h2>
+
+<p>osd는 ceph에 저장되는 데이터가 실제로 저장되는 곳입니다. disk와 journal로 구성이 됩니다.</p>
+
+<p>Disk는 block device 또는 directory이고, 별도의 디스크를 권장하지만, 여기서는 /ceph/disk 디렉토리를 사용하겠습니다. 그리고 디렉토리를 사용할 경우 btrfs 또는 xfs를 권장하고 있지만, 여기서는 그냥 기존 파일 시스템에 쓰겠습니다.</p>
+
+<p>Journal은 SSD를 권장하지만, 그냥 파일로 /ceph/journal 을 사용하겠습니다.</p>
+
+<p>따라서 osd 노드에서는 아래처럼 미리 디렉토리를 생성합니다.</p>
+
+<pre><code>$ mkdir -p /ceph/disk
+</code></pre>
+
+<p>이제 osd를 설치합니다.</p>
+
+<pre><code>$ ceph-deploy -v osd create compute01:/ceph/disk:/ceph/journal
+Preparing cluster ceph disks compute01:/ceph/disk:/ceph/journal
+Deploying osd to compute01
+Host compute01 is now ready for osd use.
+Preparing host compute01 disk /ceph/disk journal /ceph/journal activate True
+</code></pre>
+
+<p>패키지가 설정되고, /etc/ceph/ceph.conf 파일이 복사됩니다. 하지만 아직은 osd가 활성화되지는 않았고, 아래처럼 활성화합니다.</p>
+
+<pre><code>$ ceph-deploy -v osd activate compute01:/ceph/disk:/ceph/journal
+Activating cluster ceph disks compute01:/ceph/disk:/ceph/journal
+Activating host compute01 disk /ceph/disk
+Distro Ubuntu codename precise, will use upstart
+</code></pre>
+
+<p>이제 ceph-osd 프로세스가 시작되었으며, 아래처럼 osd가 하나 등록된 것을 확인할 수 있습니다.</p>
+
+<pre><code>$ ceph -c ceph.conf -k ceph.client.admin.keyring osd stat
+e5: 1 osds: 1 up, 1 in
+</code></pre>
+
+<p>그리고 osd 노드에서도 ceph 관련 명령을 수행할 수 있게 admin 키를 보냅니다.</p>
+
+<pre><code>$ ceph-deploy -v admin compute01
+Pushing admin keys and conf to compute01
+</code></pre>
+
+<p>이 키가 있어야 아래처럼 osd 노드에서도 ceph 명령을 수행할 수 있습니다.</p>
+
+<p>ceph@compute01:~$ ceph osd stat
+e5: 1 osds: 1 up, 1 in</p>
+
+<p>마찬가지로 compute02, compute03도 설치합니다.</p>
+
+<h2>instance 디렉토리 마운트</h2>
+
+<p>아래처럼 인스턴스 디렉토리를 마운트 합니다.</p>
+
+<pre><code>$ mount -t ceph 10.100.0.8:6789:/ /var/lib/nova/instances -o name=admin,secretkey=AQA+QrVRYNAnFhAAcN68f1a7xFqBzsSEqXQHmg==
+</code></pre>
+
+<p>10.100.0.8은 monitor 노드이고 secretkey는 /etc/ceph/ceph.admin.client.keyring에 있는 키를 사용합니다.</p>
+
+<h2>live migration</h2>
+
+<p>live migration 설정 및 방법은 glusterfs의 경우와 같습니다. 단 glustefs의 경우에는 VIR_MIGRATE_UNSAFE 옵션이 있어야 했지만, ceph의 경우는 해당 옵션이 없이 기본 값으로도 live migration이 됩니다.</p>
+
+<pre><code>$ nova show cirros1
++-------------------------------------+------------------------------------------------------------+
+| Property                            | Value                                                      |
++-------------------------------------+------------------------------------------------------------+
+| status                              | ACTIVE                                                     |
+| updated                             | 2013-06-10T03:59:04Z                                       |
+| OS-EXT-STS:task_state               | None                                                       |
+| OS-EXT-SRV-ATTR:host                | compute02                                                  |
+| key_name                            | admin                                                      |
+| image                               | cirros-0.3.1-x86_64 (4f494d0b-ebdc-4ebd-8afc-8df804eaaf4e) |
+| hostId                              | 4cf03b72c10726d78424eb6b1a62ddc4762cbbd1b148b8d684020c5b   |
+| OS-EXT-STS:vm_state                 | active                                                     |
+| OS-EXT-SRV-ATTR:instance_name       | instance-00000003                                          |
+| OS-EXT-SRV-ATTR:hypervisor_hostname | compute01.stack                                            |
+| flavor                              | m1.tiny (1)                                                |
+| id                                  | a01a3bd7-6e49-485a-afc3-88c5b7c401d5                       |
+| security_groups                     | [{u'name': u'default'}]                                    |
+| user_id                             | 5700bfc6b03b476f97021e5eede7989e                           |
+| name                                | cirros1                                                    |
+| created                             | 2013-06-10T03:57:17Z                                       |
+| tenant_id                           | 6f524cc90eb54f4b99ac70f3a3c070a7                           |
+| OS-DCF:diskConfig                   | MANUAL                                                     |
+| metadata                            | {}                                                         |
+| admin network                       | 10.250.0.4                                                 |
+| accessIPv4                          |                                                            |
+| accessIPv6                          |                                                            |
+| progress                            | 0                                                          |
+| OS-EXT-STS:power_state              | 1                                                          |
+| OS-EXT-AZ:availability_zone         | nova                                                       |
+| config_drive                        |                                                            |
++-------------------------------------+------------------------------------------------------------+
+
+$ nova live-migration cirros1 compute01
+
+$ nova show cirros1
++-------------------------------------+------------------------------------------------------------+
+| Property                            | Value                                                      |
++-------------------------------------+------------------------------------------------------------+
+| status                              | ACTIVE                                                     |
+| updated                             | 2013-06-10T04:03:03Z                                       |
+| OS-EXT-STS:task_state               | None                                                       |
+| OS-EXT-SRV-ATTR:host                | compute01                                                  |
+| key_name                            | admin                                                      |
+| image                               | cirros-0.3.1-x86_64 (4f494d0b-ebdc-4ebd-8afc-8df804eaaf4e) |
+| hostId                              | beeddd176ef0ed6fdd0c7a04b376ee05dcda276e0596760ea021d649   |
+| OS-EXT-STS:vm_state                 | active                                                     |
+| OS-EXT-SRV-ATTR:instance_name       | instance-00000003                                          |
+| OS-EXT-SRV-ATTR:hypervisor_hostname | compute01.stack                                            |
+| flavor                              | m1.tiny (1)                                                |
+| id                                  | a01a3bd7-6e49-485a-afc3-88c5b7c401d5                       |
+| security_groups                     | [{u'name': u'default'}]                                    |
+| user_id                             | 5700bfc6b03b476f97021e5eede7989e                           |
+| name                                | cirros1                                                    |
+| created                             | 2013-06-10T03:57:17Z                                       |
+| tenant_id                           | 6f524cc90eb54f4b99ac70f3a3c070a7                           |
+| OS-DCF:diskConfig                   | MANUAL                                                     |
+| metadata                            | {}                                                         |
+| admin network                       | 10.250.0.4                                                 |
+| accessIPv4                          |                                                            |
+| accessIPv6                          |                                                            |
+| progress                            | 0                                                          |
+| OS-EXT-STS:power_state              | 1                                                          |
+| OS-EXT-AZ:availability_zone         | nova                                                       |
+| config_drive                        |                                                            |
++-------------------------------------+------------------------------------------------------------+
+</code></pre>
+
+<p>아마도 이 영향인 것인지 live migration이 glusterfs에 비해서 약간 느리다는 인상을 받았습니다.</p>
+
+<p>update) OpenStack 관련 문서에는 없지만, <a href="http://ceph.com/docs/master/rbd/libvirt/">libvirtd 항목</a>에 보면 rbd를 사용할 수 있습니다. 이건 나중에&hellip; ^^;</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">whitekid</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2013-06-10T00:00:00+09:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>10</span><span class='date-suffix'>th</span>, <span class='date-year'>2013</span></span> <span class='time'>12:00 am</span></time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://whitekid.github.io/archives/1304" data-via="" data-counturl="http://whitekid.github.io/archives/1304" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/archives/1292" title="Previous Post: glusterfs as OpenStack instance storage backend">&laquo; glusterfs as OpenStack instance storage backend</a>
+      
+      
+        <a class="basic-alignment right" href="/archives/1312" title="Next Post: keystone token이 너무 많아요..">keystone token이 너무 많아요.. &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/keystone-bootstrap/">Keystone Bootstrap</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/neutron-default-security-group/">Neutron Default Security Group</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1550">클라우드 네트워킹과 SDN 그리고 OpenStack</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Choe, Cheng-Dae -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

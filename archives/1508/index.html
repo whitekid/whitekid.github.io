@@ -1,0 +1,352 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Network Fixed-ip Scheduler? IP Address가 부족해요.. - Your wish is my command</title>
+  <meta name="author" content="Choe, Cheng-Dae">
+
+  
+  <meta name="description" content="24비트 네트워크를 할당하고 사용한다고 합시다&hellip; 그렇다면 256 - 1(Router) - 1(Boradcast) - 1 (dhcp) - 10(Reserved) = 234개의 인스턴스를 생성할 수 있습니다. 물론 LBaaS를 사용한다면 좀더 아이피를 사용할 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://whitekid.github.io/archives/1508">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Your wish is my command" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Your wish is my command</a></h1>
+  
+    <h2>It&#8217;s a long journey</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="whitekid.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Network Fixed-ip Scheduler? IP Address가 부족해요..</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-05-14T00:00:00+09:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>24비트 네트워크를 할당하고 사용한다고 합시다&hellip; 그렇다면 256 - 1(Router) - 1(Boradcast) - 1 (dhcp) - 10(Reserved) = 234개의 인스턴스를 생성할 수 있습니다. 물론 LBaaS를 사용한다면 좀더 아이피를 사용할 수 있겠지요.. 뭐.. 각설하고..</p>
+
+<p>자&hellip; 이렇게 인스턴스가 만들어지다 보면 IP를 소진하게 되고.. IP를 다 사용하면 네트워크를 추가해야 합니다. 그렇다면 NET1, NET2 이렇게 2개의 네트워크가 생성이 되었다면  여기서 문제가 생깁니다.</p>
+
+<h2>인스턴스를 생성할 때 네트워크 선택이 필수 입니다.</h2>
+
+<p>하지만, 사용자 입장에서 어떤 네트워크에 IP가 남아있는지 확인해서, 여유있는 네트워크를 생성해야 합니다. 안그러면 당연히 에러가 나겠죠.. 그러면 인스턴스를 생성할 때 사용자가 체크해야하는 단계가 하나 생기는 겁니다.</p>
+
+<p>네트워크를 선택하지 않으면, Havana이전의 릴리스에서는 모든 네트워크에 연결되어 인스턴스가 생성이 됩니다(Icehouse 버전은 cli에서는 동일하게 동작하고 Horizon에서는 오류가 발생합니다). 일반적으로 특별한 이유가 없으면 이렇게 사용하지 않을 것이므로, 명시적인 사용을 하지 않는 경우가 아니라면 모든 네트워크에 연결되는 인스턴스를 생성하는 것도 좋지 않습니다. 게다가 인터페이스의 순서도 자동으로 설정이 되어 의도하지 않는 결과가 발생할 수 있는 것이죠.</p>
+
+<h2>네트워크 자동 선택이 필요하다.</h2>
+
+<p>그래서 고민고민 하다가, 사용자 입장에서는 AWS처럼 굳이 네트워크를 선택하지 않으면 자동으로 알아서 적당한 네트워크를 선택해서 만들어주면 되겠다고 생각을 했습니다.</p>
+
+<p>이른바 Network Scheduler 기능이 있으면 좋겠죠.. (Network Scheduler로 하면 L2, L3, LB 등등등 많기 때문에 좀 애매하지만..)</p>
+
+<p>당연히도 이런 기능은 nova 또는 neutron에 없습니다. (당연하죠?)</p>
+
+<h2>nova-api를 수정</h2>
+
+<p>처음에는 이러한 기능을 neutron에서 처리할 것으로 생각했지만, 소스를 분석해보니 nova-api에서 network를 지정해주지 않으면 모든 사용 가능한 네트워크에 인터페이스를 생성합니다.</p>
+
+<p>nova.compute.api.API._create_instance에서 requested_network로 사용자가 요청한 네트워크가 없으면 자동으로 인스턴스를 생성 가능한 네트워크로 request_network를 채워주면 되겠다는 생각에 작업해 봤습니다.</p>
+
+<p>nova.compute.api.API._create_instance: 에 아래처럼 request_networks가 없을 경우 scheduling을 처리할 코드를 넣고..</p>
+
+<pre><code>def _create_instance(self, context, instance_type, ....):
+  .... foo bar ....
+  if not requested_networks:
+    net_id = self.network_api.schedule_network_for_instance(context, max_count)
+    if net_id: requested_networks = [(net_id, None, None)]
+</code></pre>
+
+<p>nova.compute.neutronv2.api.API.schedule_network_for_instance: 에서 실제로 선택하는 기능을 추가합니다.</p>
+
+<pre><code>def schedule_network_for_instance(self, context, num_instances):
+  neutron = neutronv2.get_client(context)
+  nets = self._get_available_networks(context, context.project_id,
+  neutron=neutron)
+
+  nets = sorted(nets, key=lambda x: x['name'])
+
+  quotas = neutron.show_quota(tenant_id=context.project_id)['quota']
+  ports_needed = num_instances
+  for net in nets:
+    ports = neutron.list_ports(tenant_id=context.project_id)['ports']
+  free_ports = quotas.get('port') - len(ports)
+
+  if free_ports &gt;= ports_needed:
+    return net['id']
+</code></pre>
+
+<h2>사용 방법</h2>
+
+<p>사용 방법은 동일합니다.</p>
+
+<p>자동으로 네트워크를 선택하게 하려면 아래처럼 NIC 옵션을 빼고 명령을 주면, 자동으로 네트워크를 선택해서 만들어 줍니다.</p>
+
+<pre><code>$ nova boot -flavor m1.tiny -image &lt;image-uuid&gt; test
+</code></pre>
+
+<p>기존에는 모든 사용 가능한 네트워크에 연결된 인스턴스를 만들었지만요..</p>
+
+<p>당연히 네트워크를 지정하면 해당 네트워크에 연결된 인스턴스를 만듭니다.</p>
+
+<pre><code>$ nova boot -flavor m1.tiny -image &lt;image-uuid&gt; -nic net-id=&lt;net-uuid&gt; test
+</code></pre>
+
+<h2>개선 방향</h2>
+
+<h3>scheduling 방법&hellip;</h3>
+
+<p>지금 scheduler는 name을 기준으로 정렬한 후 순차적으로 할당하게 되어있습니다. 아주 단순한 scheduling이죠.. 이를 여러 상황에 맞게 조졀하는 기능이 필요하겠습니다.</p>
+
+<h3>자동 선택 가능한 네트워크..</h3>
+
+<p>상황에 자동으로 선택 가능한 네트워크를 지정할 필요가 있습니다. 특정 네트워크는 개발용도, 특정 내트워크는 프러덕션 용도로 분리된 경우라면요..</p>
+
+<h2>추가&hellip;</h2>
+
+<p>이거 추적하면서 알게된 몇 가지 사항들 추가하죠..</p>
+
+<h3>multi subnet</h3>
+
+<p>network에는 subnet이 1:1 관계가 아니라 1:n의 관계입니다.</p>
+
+<p>아래를 보시면 test network에 subnet이 2개가 할당이 되어있습니다.</p>
+
+<pre><code>$ neutron net-list -name test
++--------------------------------------+------+-----------------------------------------------------+
+| id                                   | name | subnets                                             |
++--------------------------------------+------+-----------------------------------------------------+
+| 2e6c7fde-63f1-4289-8bb6-93c5e0d682f7 | test | 20e0d8cc-ff0a-410b-92d1-da5902ff851b 10.10.201.0/24 |
+|                                      |      | 37f69bb4-0cbb-45ca-8877-0a1189318316 10.10.200.0/24 |
++--------------------------------------+------+-----------------------------------------------------+
+</code></pre>
+
+<p>그렇다면 이 포스트에서 제기하는 IP 문제를 해결할 수 있다고 생각이 드실겁니다. 녜.. 물론 그렇습니다. 그런데, 이건 실제로 네트워크 상에서 구현이 될 때 약간 애매하나 것이 있습니다.</p>
+
+<p>위의 상황은 하나의 네트워크(VLAN) 상에 다른 서브넷의 패킷이 같이 공존하는 상황인데, 네트워크 엔지니어에게 자문을 구해보니 네트워크 상에서는 큰 문제가 없고 실제로 이렇게 운영하는 경우도 있다고 합니다.</p>
+
+<p>다만, 이렇게 하는 경우 switch에서 작업할 때 저렇게 port에 여려 subnet이 있다는 사실을 인지하고 작업을 진행해야하기 때문에, 작업상 실수가 일어날 가능성이 높아서, 가능은 하지만 권장은 하지 않는다고 합니다.</p>
+
+<p>이러한 문제로 실제로 사용하기에는 좀 그렇습니다. 하지만 네트워크 엔지니어가 문제가 없다고 하면 이런 방법도 괜찮은 방법으로 생각합니다.</p>
+
+<h3>multi provider network</h3>
+
+<p>또 다른 방법으로 multi provider network라는 기능이 있습니다.</p>
+
+<p>기존으 provider network은 하나의 segmentation(VLAN)을 사용할 수 있지만, multi provider network을 한 네트워크 안에서 여러 segmentation을 허용할 수  있다고 합니다.</p>
+
+<p>아래 명령으로 확인하면 해당 extension이 있는지 확인할 수 있습니다.</p>
+
+<pre><code>$ neutron ext-list | grep provider
+| provider       | Provider Network       |
+| multi-provider | Multi Provider Network |
+</code></pre>
+
+<p>네트워크 생성은 조금 복잡하게 만들어 집니다. 당연히 여러 segmentation을 넣어야되니 그렇겠죠.</p>
+
+<pre><code>$ neutron net-create test -segments type=dict list=true \
+    provider:network_type=vlan,provider:physical_network=default,provider:segmentation_id=200 \
+    provider:network_type=vlan,provider:physical_network=default,provider:segmentation_id=201 \
+    -shared
+
+$ neutron net-show test
++-------------------------------------------+------------------------------------------------------------------------------------------------------------+
+| Field                                     | Value                                                                                                      |
++-------------------------------------------+------------------------------------------------------------------------------------------------------------+
+| admin_state_up                            | True                                                                                                       |
+| id                                        | 2e6c7fde-63f1-4289-8bb6-93c5e0d682f7                                                                       |
+| name                                      | test                                                                                                       |
+| router:external                           | False                                                                                                      |
+| segments                                  | {"provider:network_type": "vlan", "provider:physical_network": "default", "provider:segmentation_id": 200} |
+|                                           | {"provider:network_type": "vlan", "provider:physical_network": "default", "provider:segmentation_id": 201} |
+| shared                                    | True                                                                                                       |
+| status                                    | ACTIVE                                                                                                     |
+| subnets                                   | 20e0d8cc-ff0a-410b-92d1-da5902ff851b                                                                       |
+|                                           | 37f69bb4-0cbb-45ca-8877-0a1189318316                                                                       |
+| tenant_id                                 | 6b3f1bffc77345468198c85d995479a2                                                                           |
++-------------------------------------------+------------------------------------------------------------------------------------------------------------+
+</code></pre>
+
+<p>이것도 이 포스트의 문제를 해결할 수 있는 좋은 방법입니다. multi-subnet을 사용하는 것에 비해서 네트워크 엔지니어의 작업 오류를 줄 일 수 있겠죠..</p>
+
+<p>하지만, 당연히도(^^) 이 게 잘 되지 않습니다.</p>
+
+<p>이유는 ML2 Plugin에는 구현이 잘 되어있지만, OpenVSWitch Mechnism driver에는 이 지원이 빠져있습니다. (역시나&hellip;)</p>
+
+<p>그래서 실제 구성 및 인스턴스 생성은 잘 되는데, 외부 VLAN과 실제 연결할때 ovs flow control에서 생성할 때 지정한 200, 201 두 가지 vlan에 대한 tag mapping을 설정해 줘야하는데, 하나만 설정하는 문제가 있더군요.. (이건 명백한 버그..)</p>
+
+<p>그래서 이를 구현한 코드를 좀 보니깐&hellip; nicira nvp, cisco 에서 multi provider network을 위한 기능을 추가했고, 이 사람들은 OVS에 기능을 추가하지 않았군요.. ㅎㅎ</p>
+
+<p>뭐.. 조금 더 삽질하면 될 것 같기는 하지만. .여기서는 이만.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">whitekid</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2014-05-14T00:00:00+09:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>12:00 am</span></time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://whitekid.github.io/archives/1508" data-via="" data-counturl="http://whitekid.github.io/archives/1508" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/archives/1501" title="Previous Post: nova stop의 위험성...">&laquo; nova stop의 위험성&#8230;</a>
+      
+      
+        <a class="basic-alignment right" href="/archives/1517" title="Next Post: haproxy로 이상한 녀석들 거부하기">haproxy로 이상한 녀석들 거부하기 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/keystone-bootstrap/">Keystone Bootstrap</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/neutron-default-security-group/">Neutron Default Security Group</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1550">클라우드 네트워킹과 SDN 그리고 OpenStack</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Choe, Cheng-Dae -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,258 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Drupal Themesettingsapi Module - Your wish is my command</title>
+  <meta name="author" content="Choe, Cheng-Dae">
+
+  
+  <meta name="description" content="# This is a shell archive. Save it in a file, remove anything before
+# this line, and then unpack it by entering "sh file". Note, it may
+# create &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://whitekid.github.io/archives/31">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Your wish is my command" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Your wish is my command</a></h1>
+  
+    <h2>It&#8217;s a long journey</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="whitekid.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Drupal Themesettingsapi Module</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-03-08T00:00:00+09:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><pre><code># This is a shell archive. Save it in a file, remove anything before
+# this line, and then unpack it by entering "sh file". Note, it may
+# create directories; files and directories will be owned by you and
+# have default permissions.
+#
+# This archive contains:
+#
+# www/drupal6-themesettingsapi
+# www/drupal6-themesettingsapi/Makefile
+# www/drupal6-themesettingsapi/distinfo
+# www/drupal6-themesettingsapi/pkg-descr
+#
+echo c - www/drupal6-themesettingsapi
+mkdir -p www/drupal6-themesettingsapi &gt; /dev/null 2&gt;&amp;1
+echo x - www/drupal6-themesettingsapi/Makefile
+sed 's/^X//' &gt;www/drupal6-themesettingsapi/Makefile &lt;&lt; 'bcb04d505305fd2621e9906bb6352875&amp;'
+X# New ports collection makefile for: drupal6-themesettingsapi
+X# Date created: 3 Mar 2010
+X# Whom: &lt;whitekid@gmail.com&gt;
+X#
+X# $FreeBSD$
+X#
+X
+XPORTNAME= themesettingsapi
+XDISTVERSION= 6.x-1.4
+XCATEGORIES= www
+X
+XMAINTAINER= &lt;ports@FreeBSD.org&gt;
+XCOMMENT= Add custom settings to you theme for drupal.
+X
+XDRUPAL6_MODULE= yes
+XMODULE_DIRS= translations
+XMODULE_FILES= themesettingsapi.admin.inc themesettingsapi.info \
+X themesettingsapi.module translations/de.po translations/ja.po \
+X translations/themesettingsapi.pot
+XDOC_FILES= CHANGELOG.txt README.txt LICENSE.txt
+X
+X.include &lt;bsd.port.pre.mk&gt;
+X.include "${.CURDIR}/../../www/drupal5/bsd.drupal.mk"
+X.include &lt;bsd.port.post.mk&gt;
+bcb04d505305fd2621e9906bb6352875
+echo x - www/drupal6-themesettingsapi/distinfo
+sed 's/^X//' &gt;www/drupal6-themesettingsapi/distinfo &lt;&lt; '935c639b4a6c51408e999d94bc5cd788&amp;'
+XMD5 (drupal/themesettingsapi-6.x-1.4.tar.gz) = a2b5b5f156ea5b571be9f87638b9f471
+XSHA256 (drupal/themesettingsapi-6.x-1.4.tar.gz) = 62be4dcc9ddae6930c3e985b0b0ffbb62584c9b6652a03202ae62053218315fa
+XSIZE (drupal/themesettingsapi-6.x-1.4.tar.gz) = 9855
+935c639b4a6c51408e999d94bc5cd788
+echo x - www/drupal6-themesettingsapi/pkg-descr
+sed 's/^X//' &gt;www/drupal6-themesettingsapi/pkg-descr &lt;&lt; 'afe1ea8baa59a0619c70f98199a10a5f'
+XPathauto is a Drupal module which automatically generates path aliases for
+Xvarious kinds of content (nodes, categories, users) without requiring the
+Xuser to manually specify the path alias.
+X
+XWWW: http://drupal.org/project/pathauto
+afe1ea8baa59a0619c70f98199a10a5f
+exit
+[/code]
+</code></pre>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">whitekid</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2010-03-08T00:00:00+09:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://whitekid.github.io/archives/31" data-via="" data-counturl="http://whitekid.github.io/archives/31" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/archives/29" title="Previous Post: drupal simply_moderm theme">&laquo; drupal simply_moderm theme</a>
+      
+      
+        <a class="basic-alignment right" href="/archives/40" title="Next Post: drupal6-admin_menu">drupal6-admin_menu &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/keystone-bootstrap/">Keystone Bootstrap</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/neutron-default-security-group/">Neutron Default Security Group</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1550">클라우드 네트워킹과 SDN 그리고 OpenStack</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Choe, Cheng-Dae -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

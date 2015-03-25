@@ -1,0 +1,605 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Your wish is my command</title>
+  <meta name="author" content="Choe, Cheng-Dae">
+
+  
+  <meta name="description" content="Object+Pascal+Style+Guide_kr_20100112.pdf. 그리고 begin 문은  항상 새로운 줄에서 시작합니다. 1
+2
+3
+4
+5
+6
+7
+8
+if IsTrueValue then
+begin DoSomething;
+end
+else
+begin &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://whitekid.github.io/posts/22/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Your wish is my command" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Your wish is my command</a></h1>
+  
+    <h2>It&#8217;s a long journey</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="whitekid.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/279">Object Pascal Style Guide Kr 20100112.pdf</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-07-15T00:00:00+09:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>15</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><a href="http://bit.ly/9n00Pz">Object+Pascal+Style+Guide_kr_20100112.pdf</a>.</p>
+
+<ul>
+<li>그리고 begin 문은  항상 새로운 줄에서 시작합니다.</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>if IsTrueValue then
+</span><span class='line'>begin
+</span><span class='line'>  DoSomething;
+</span><span class='line'>end
+</span><span class='line'>else
+</span><span class='line'>begin
+</span><span class='line'>  DoSomethingElse;
+</span><span class='line'>end;</span></code></pre></td></tr></table></div></figure>
+
+
+<p>이런 경우 end, else 줄이 너무 낭비 같은 느낌이 드는데.. 쩝.. 8.2.3 if 문에선 길게 사용하라는군.. 아님 else를 붙이던지..</p>
+
+<ul>
+<li>메소드는 알파벳 순서에 따라 정렬합니다.</li>
+<li>If 문은 적어도 두 줄에 표현됩니다.</li>
+</ul>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/288">How to Use the TListView OnCustomDrawXXX Events</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-07-15T00:00:00+09:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>15</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><a href="http://www.delphidabbler.com/articles?article=16">How to use the TListView OnCustomDrawXXX events</a>.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/281">AlphaBlend를 사용할 때 리소스 부족</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-07-15T00:00:00+09:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>15</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><a href="http://bit.ly/aFTtpy">Dimmer</a>라는게 있습니다. 다이얼로그가 뜨면, 나머지를 흐리게 표시하는, 요즘 웹에서 많이 보이는 것이죠. 이것을 델파이로 구현한 것이 저 링크인데.. 오늘 사용하다보니 이상하게도 가려진 폼의 전체가 아닌 일부분만 조그만하게 표시되는 겁니다. 이상해서 Spy++로 봐도 윈도의 크기는 원하는데로 있는데, 표시만 저렇게 됩니다.</p>
+
+<p>결국 AlphaBlend처리하는 소스를 보니 <a href="http://bit.ly/96oDXi">SetLayeredWindowAttributes</a>를 사용하는데, 에게 실패하는 것 같아서 확인해보니 역시나입니다. 이게 리소스 부족이라는 메시지를 내면서 실패하더군요.</p>
+
+<p>또한 이럴때 현상을 보면 DimmerForm이 작으면 제대로 되가다 일정 크기가 넘어가면 제대로된 동작을 하지 않던가, 아니면 폼에 일그러진 이미지들이 표시됩니다.</p>
+
+<p>결국 SetLayeredWindowAttributes가 실패하면 Dimmer를 표시하지 않도록 변경했습니다.</p>
+
+<pre><code>procedure TDimmerForm.Display;
+const
+  cUseAlpha: array [Boolean] of Integer = (0, LWA_ALPHA);
+  cUseColorKey: array [Boolean] of Integer = (0, LWA_COLORKEY);
+begin
+  BoundsRect := Application.MainForm.BoundsRect;
+
+  // 여기는 TCustom.SetLayeredAttribs에서 가져옮
+  if SetLayeredWindowAttributes(Handle, ColorToRGB(TransparentColorValue), AlphaBlendValue,
+    cUseAlpha[AlphaBlend] or cUseColorKey[TransparentColor]) then
+    Show;
+</code></pre>
+
+<p>이젠 리소스가 부족하면 차라리 안보이지.. 엉뚱하게 보이지는 않습니다. 아.. 이 리소스 부족에러.. 어떤놈이 리소스를 많이 잡아먹는지 알 수 있거나, 아님 리소스 누스를 만들어 내는 프로그램들을 어떻게 찾을 수 있는 방법 없을까나&hellip;</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/256">트위터 위젯 괜찮은거 없나?</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-07-13T00:00:00+09:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>13</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>WhiteHouse 테마 사용할 때, 테마에 트위터 테마가 있어서 그것 사용했는데, 다른 테마로 바꾸고 나니, 영&hellip; 맘에드는 <a href="http://wordpress.org/extend/plugins/search.php?q=twitter+widget&amp;sort=">트위터 위젯</a>이 없네..</p>
+
+<p>그나마 <a href="http://wordpress.org/extend/plugins/simple-twitter-widget/">Simple Twitter Widget</a>이 가장 심플하고 테마에 어울리는 듯 하다.</p>
+
+<ul>
+<li>내 트윗만 보여주는 게 아닌 Home의 트윗을 보여주면 좋겠다.</li>
+</ul>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/227">Renice에서 우선순위는 항상 헷겔린다..</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-07-12T00:00:00+09:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>12</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>뭐.. 저거 쓸일이 많이 없으니깐 그렇지만 항상 헷갈리는건 0이 더 빠른거야? 20이 더 빠른거야? 우선순위이니간 높으면 더 높은건가? 쉘의 기본값은 5인데 그럼 쉘은 무지 느린거야?</p>
+
+<p>정답은 20은 느린것.. 0은 빠른것.. 항상 헷갈려.. 자 확실하게 적어놉시다.</p>
+
+<p>덧) WordPress의 Press This 링크는 간단한 것 적을 때 정말 편하군요.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/236">Dokan</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-07-12T00:00:00+09:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>12</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><a href="http://dokan-dev.net/en/">Dokan</a> - 한마디로 윈도우용 fusefs다.</p>
+
+<p>참고:</p>
+
+<ul>
+<li><a href="http://www.microsoft.com/whdc/driver/wdf/UMDF.mspx">UMDF: User-Mode Driver Framework</a></li>
+<li><a href="http://stackoverflow.com/questions/1412763/writing-a-user-mode-filesystem-for-windows">http://stackoverflow.com/questions/1412763/writing-a-user-mode-filesystem-for-windows</a></li>
+</ul>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/232">헉&#8230;. 이런 코드를&#8230;.</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-07-12T00:00:00+09:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>12</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><pre><code>function TObject.GetHashCode: Integer;
+begin
+  Result := Integer(Self);
+end;
+</code></pre>
+
+<p>이름으로 봐서 뭔가 거창한 해쉬 알고리즘을 동원할 줄 았았다. 그런데 그냥 포인터다. 멋지군.[</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/221">Wslib V2</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-07-11T00:00:00+09:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><a href="http://code.google.com/p/wslib/wiki/Changes#v2">wslib v2가 릴리스</a> 되었습니다.</p>
+
+<p>TwsListView에서 컬럼을 클릭하면 자동으로 정렬하는 옵션을 추가했네요. 리스트뷰 정렬에 이제 코딩이 하나도 필요없습니다.</p>
+
+<p>덧) 버전을 r2에서 v2로 변경했습니다. Google code 위키에서 r2를 SubVersion revision으로 인식하고 바로 거기로 링크를 해버리네요.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/215">Www/wordpress-themes Ports</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-07-09T00:00:00+09:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>9</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>개인적으로 사용하고 있던<a href="/wordpress_themes/"> wordpress-themes ports</a>를 저는 이미 send-pr했었고 아직 approved가 안된 것으로 알고 있었습니다. 그런데 너무 오래걸린다 하고 혹시나하고 살펴보니 send-pr을 하지 않았더군요. 큭.. 이런 건망증인지..</p>
+
+<p>방금 send-pr 했음</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/191">TPopupMenu의 기본 메뉴 실행하기</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-07-08T00:00:00+09:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><img class="right" src="/images/popup_default_item-177x300.png"></p>
+
+<p>윈도우 탐색기의 팝업 메뉴를 보면 오른쪽 그림처럼 Open 메뉴 아이템은 굵은 폰트로 표시됩니다. 이건 해당 아이템을 더블클릭 또는 엔터키를 누르면 해당 메뉴를 실행하겠다는 Windows의 표현입니다.</p>
+
+<p>당연히 TPopupMenu에서도 지원하지요. TMenuItem.Default 프러퍼티가 있으면 수행하면 됩니다.</p>
+
+<p>그런데 이 기능을 구현하려면 여간 귀찮치요.</p>
+
+<ol>
+<li>키보드 메시지 처리해서 VK_RETURN 메시지 처리하고</li>
+<li>더블클릭했을때도 체크하고</li>
+<li>또한 해당 컨트럴에 연결된 팝업 메뉴도 확인해서 기본 메뉴가 있는지 없는지 확인하고..</li>
+<li>있으면 이벤트 실행하고..</li>
+</ol>
+
+
+<p>컨트럴에 연결된 팝업 메뉴의 기본 액션을 수행하는 것만 보자면..</p>
+
+<pre><code>function TwsControlHelper.ExecuteDefaultPopupAction: Boolean;
+// 팝업 메뉴의 디폴트로 설정된 메뉴 아이템에 설정된 이벤트를 실행한다
+var
+  Item, DefaultItem: TMenuItem;
+begin
+  Result := False;
+  if not Assigned(PopupMenu) then Exit;
+
+  DefaultItem := nil;
+  for Item in PopupMenu.Items do
+    if Item.Default then
+    begin
+      DefaultItem := Item;
+      Break;
+    end;
+
+  if Assigned(DefaultItem) then
+  begin
+    if Assigned(DefaultItem.Action) then
+      Result := DefaultItem.Action.Execute
+    else if Assigned(DefaultItem.OnClick) then
+    begin
+      Result := True;
+      DefaultItem.OnClick(DefaultItem);
+    end;
+  end
+end;
+</code></pre>
+
+<p>TControl의 Helper로 작성했이니 어디서든 저렇게 쓰면 됩니다. 이것을 키보드나 마우스 이벤트 핸들러에 적용해보면..</p>
+
+<pre><code>procedure TwsListView.DblClick;
+begin
+  // 더블클릭에 아무런 이벤트도 연결되어 있지않으면 기본 팝업 액션을 수행
+  if not Assigned(OnDblClick) and Assigned(PopupMenu) then
+    ExecuteDefaultPopupAction else
+    inherited;
+end;
+
+procedure TwsListView.KeyUp(var Key: Word; Shift: TShiftState);
+begin
+  case Key of
+    VK_RETURN:
+      if not FCaptionEditing then
+      begin
+        if not ExecuteDefaultPopupAction then
+          inherited;
+      end else
+        inherited;
+    else inherited;
+  end;
+end;
+</code></pre>
+
+<p>이렇게 됩니다.</p>
+
+<p>TwsListView에 연결된 팝업메뉴에 기본 메뉴가 있으면, 이제 리스트 뷰에서 Enter를 누르거나 아이템을 더블클릭하면 해당 메뉴 이벤트가 자동으로 수행됩니다.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+      <a class="prev" href="/posts/23">&larr; Older</a>
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/posts/21">Newer &rarr;</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/keystone-bootstrap/">Keystone Bootstrap</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/neutron-default-security-group/">Neutron Default Security Group</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1550">클라우드 네트워킹과 SDN 그리고 OpenStack</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Choe, Cheng-Dae -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

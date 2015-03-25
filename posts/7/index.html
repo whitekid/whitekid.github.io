@@ -1,0 +1,1008 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Your wish is my command</title>
+  <meta name="author" content="Choe, Cheng-Dae">
+
+  
+  <meta name="description" content="github에 계정이 2개 있습니다. 하나는 회사것 하나는 개인것&hellip; 물론 public_key도 다르겠지요..
+별 생각없이 사용하면, 개인 레포지트리도 회사의 계정으로 접근을 합니다. 최근까지도 신경안쓰고 있었다가, 개인 레포에 push할 것이 있어서 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://whitekid.github.io/posts/7/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Your wish is my command" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Your wish is my command</a></h1>
+  
+    <h2>It&#8217;s a long journey</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="whitekid.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1189">Github에 계정이 여러개 있을 때.. Push</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-12-14T00:00:00+09:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>github에 계정이 2개 있습니다. 하나는 회사것 하나는 개인것&hellip; 물론 public_key도 다르겠지요..
+별 생각없이 사용하면, 개인 레포지트리도 회사의 계정으로 접근을 합니다. 최근까지도 신경안쓰고 있었다가, 개인 레포에 push할 것이 있어서 했는데, 에러가 나더군요.</p>
+
+<p>어떻게 할까.. 고민하다가.. ssh_config를 조금 손보는 것으로 처리했습니다.</p>
+
+<pre><code>Host github.com
+User git
+HostName github.com
+IdentityFile ~/.ssh/company_id_key.rsa
+
+Host whitekid.github.com
+User git
+HostName github.com
+IdentityFile ~/.ssh/personal_key_rsa
+</code></pre>
+
+<p>위처럼 ~/.ssh/config를 적당히 손봅니다. 이제 ssh github.com하면 첫번째 설정으로 접근하고, ssh whitekid.github.com 하면 두번째 설정으로 접근하게 됩니다.</p>
+
+<p>이렇게 하면 ssh가 구분하여 호스트를 설정하는 것은 되었고 git repository에서는 위의 설정대로 .git/config 파일에서 개인 레포지트르의 호스트 설정을 살짝 바꿔주면 됩니다.</p>
+
+<pre><code>[remote "origin"]
+fetch = +refs/heads/*:refs/remotes/origin/*
+url = &lt;git@whitekid.github.com&gt;:whitekid/openstack-chef.git
+</code></pre>
+
+<p>이제는 어디서든 push 해도 햇갈일 일이 없음~</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1185">Ec2 Instance Start/ Stop Scripts</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-12-13T00:00:00+09:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>13</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>클라우드 관련 일을 하니 역시나 사실상 표준인 ec2를 분석할 일이 생겼고, 인스턴스를 만들고 하는 일이 생겼습니다. 콘솔에서 작업하는 것이 너무 귀찮아서 간단하게 모든 region의 instance에 대해서 start/ stop/ status를 보는 스크립트를 만들어봤네요.</p>
+
+<p>물론 이런 일을 해주는 뭔가가 있겠지만, 아주 간단한 일이라 찾는것도 귀찮아서&hellip;</p>
+
+<pre><code>#!/bin/bash
+export EC2_PRIVATE_KEY=&lt;YOUR EC2 PRIVATE KEY FILE HERE&gt;
+export EC2_CERT=&lt;YOUR EC2 CERT FILE HERE&gt;
+
+this=$0
+cmd="$1"
+shift
+
+function check_expire(){
+    f=$1
+    EXPIRETIME=$2
+
+    [ ! -f $f ] &amp;&amp; return
+
+    NOW=`date +%s` # get current time
+    FCTIME=`stat -c %Y ${f}` # get file last modification time
+    let "AGE=$NOW-$FCTIME"
+    if [[ $AGE -gt $EXPIRETIME ]] ; then
+        rm -f $f # this file age is more than the EXPIRETIME above, we can delete it
+    fi
+}
+
+case "$cmd" in
+stop)
+    $this | while read region instance etc; do
+    ec2-stop-instances -region $region $instance
+    done
+    ;;
+
+start)
+    $this | while read region instance etc; do
+    ec2-start-instances -region $region $instance
+    done
+    ;;
+
+regions)
+    let expire_time=60*60*24*7 # expire in a week
+    region_cache='/var/tmp/ec2-region-cache'
+    check_expire $region_cache $expire_time
+
+    if [ ! -f $region_cache ]; then
+        ec2-describe-regions | awk '{print $2}' &gt; $region_cache
+    fi
+
+    cat $region_cache
+    ;;
+
+    *)
+        for region in `$this regions`; do
+        ec2-describe-instances -region=$region | grep INSTANCE | awk "{print \"$region \" \$2 \" \" \$4 \" \" \$6}"
+        done
+    ;;
+esac
+</code></pre>
+
+<p>흠.. ec2 api .. 엄청 느리군요.. ㅡㅡ</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1173">가상머신 만드는 시간, 15분</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-12-05T00:00:00+09:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>5</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>어제(2012. 12. 4) <a href="http://www.oss.kr/73723">Open Technet, Cloud Computing Technology &amp; Business Conference</a>에서 발표했던 자료 입니다.</p>
+
+<ul>
+<li>Deploy OpenStack with Quantum</li>
+<li>Logical Deploy Model</li>
+<li>Physical Deploy Model</li>
+<li>Quantum Overview and Deploy</li>
+<li>Automation with Chef</li>
+</ul>
+
+
+<iframe src="http://www.slideshare.net/slideshow/embed_code/15493843 " width="595" height="446" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC;border-width:1px 1px 0;margin-bottom:5px" allowfullscreen></iframe>
+
+
+<p></p>
+
+<p>할 이야기는 많고 시간은 부족하고.. 결국은 starting point를 제공하는 기분으로 했습니다~</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1180">Chef: Search Node Role vs Search Node Roles</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-12-05T00:00:00+09:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>5</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>knife를 이용해 특정 role을 가지는 role을 검색하려면 아래처럼 합니다.</p>
+
+<pre><code>$ knife search node role:openstack-compute
+</code></pre>
+
+<p>그런데 다른 소스를 뒤져보다 아래와 같이 queury하는 것을 봤습니다.</p>
+
+<pre><code>$ knife search node roles:openstack-compute
+</code></pre>
+
+<p>뭘까? 하고 그냥 지나치다가 찾아봤죠.. <a href="http://wiki.opscode.com/display/chef/Search#Search-FindNodeswithaRoleintheRunList">Find Nodes with a Role in the Expanded Run List</a>라고 부르는군요.</p>
+
+<p>간단히 예를 들면</p>
+
+<ul>
+<li>nodeA: role-A</li>
+<li>nodeB: role-B</li>
+<li>role-A: recipe[A], role[base]</li>
+<li>role-B: recipe[B], role[base]</li>
+</ul>
+
+
+<p>이라고 되어있을 경우</p>
+
+<pre><code>$ knife search node role:base
+</code></pre>
+
+<p>로 할 경우 role에 직접적으로 base가 지정되어 있지 않기 때문에, 검색결과가 없습니다.</p>
+
+<pre><code>$ knife search nodes role:base
+</code></pre>
+
+<p>로 할 경우는 role-A를 확장하여 role-A, recipe[A], role[base]를 대상으로 찾기 때문에 nodeA, nodeB가 모두 검색이 됩니다.</p>
+
+<p>또한 하나의 side-effect로 role이 expand되는 때는 실제로 chef-client가 실행하면서죠.. 따라서 chef-client가 정상적으로 실행되고 나서야 roles로 검색이 가능합니다. 즉 roles로 검색된 결과는 해당 role로 할당된 노드가 있고, chef-client 정상적으로 cookbook을 실행했다는 의미죠.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1163">OSX의 Resolver의 기능은 Dnsmasq로</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-11-29T00:00:00+09:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>29</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>dnsmasq는 dns forwarder가 기본입니다. 그리고 또 심플한 dns 기능을 가지고 있습니다. 이 기능을 모르고 이전에 <a href="http://blog.woosum.net/archives/1040">twisted를 이용해서 dns proxy를 만들었지만</a>, dnsmasq를 이용하면 보다 간단하게 설정이 가능하니 설명하지요.</p>
+
+<p>첫번째는 특정 도메인을 특정 네임서버에 보내도록하는 예제입니다.</p>
+
+<p>/etc/dnsmasq.d/company.zone:</p>
+
+<pre><code>server=/dev.company.com/192.168.1.199
+server=/myteam.company.com/192.168.1.200
+</code></pre>
+
+<p>다음 예제는 local이라는 나만의 가상 도메인을 만들고 호스트를 지정하는 방법입니다. /etc/hosts에 설정하는 것과 비슷하죠.
+/etc/dnsmasq/local.zone:</p>
+
+<pre><code>address=/local-db.local/10.20.1.4
+address=/local-[www.local/10.20.1.5][2]
+</code></pre>
+
+<p>이렇게해서 dnspost는 역사속으로 사라지는군요.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1152">OpenStack은 정말 복잡한 프로젝트다..</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-11-29T00:00:00+09:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>29</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>문득 얼마나 많은 패키지들이 OpenStack을 위해서 필요한지 단순하게 체크해밨다.</p>
+
+<pre><code>$ apt-get install mysql-server rabbitmq-server \
+    keystone glance-api glance-registry \
+    nova-api nova-scheduler nova-novncproxy nova-cert nova-consoleauth \
+    cinder-api cinder-scheduler cinder-volume \
+    nova-compute \
+    quantum-server quantum-plugin-openvswitch quantum-plugin-openvswitch-agent quantum-l3-agent quantum-dhcp-agent \
+    openstack-dashboard
+</code></pre>
+
+<p>단순하게 전체 구성하는 패키지를 설치하는 명령을 내리면&hellip;</p>
+
+<pre><code>Reading package lists... Done
+Building dependency tree
+Reading state information... Done
+The following extra packages will be installed:
+  apache2 apache2-mpm-worker apache2-utils apache2.2-bin apache2.2-common augeas-lenses binutils bridge-utils cgroup-lite cinder-common cpp cpp-4.6 cpu-checker curl dbconfig-common dkms dnsmasq-base dnsmasq-utils ebtables
+  erlang-asn1 erlang-base erlang-corba erlang-crypto erlang-dev erlang-diameter erlang-docbuilder erlang-edoc erlang-erl-docgen erlang-eunit erlang-ic erlang-inets erlang-inviso erlang-mnesia erlang-nox erlang-odbc
+  erlang-os-mon erlang-parsetools erlang-percept erlang-public-key erlang-runtime-tools erlang-snmp erlang-ssh erlang-ssl erlang-syntax-tools erlang-tools erlang-webtool erlang-xmerl fakeroot gawk gcc gcc-4.6 git git-man
+  glance-common kpartx kvm kvm-ipxe libaio1 libapache2-mod-wsgi libapparmor1 libapr1 libaprutil1 libaprutil1-dbd-sqlite3 libaprutil1-ldap libasound2 libasyncns0 libaugeas0 libavahi-client3 libavahi-common-data libavahi-common3
+  libc-dev-bin libc6-dev libcaca0 libconfig-general-perl libcurl3 libdbd-mysql-perl libdbi-perl liberror-perl libevent-2.0-5 libflac8 libgmp10 libgomp1 libhtml-template-perl libibverbs1 libjs-jquery libjs-sphinxdoc
+  libjs-underscore libjson0 libltdl7 libmpc2 libmpfr4 libmysqlclient18 libnet-daemon-perl libnetcf1 libnetfilter-conntrack3 libnl-route-3-200 libnspr4 libnss3 libnuma1 libodbc1 libogg0 libplrpc-perl libpulse0 libquadmath0
+  librados2 librbd1 librdmacm1 libsctp1 libsdl1.2debian libsgutils2-2 libsigsegv2 libsndfile1 libtidy-0.99-0 libvirt-bin libvirt0 libvorbis0a libvorbisenc2 libxenstore3.0 libxml2-utils libxslt1.1 libyajl1 libyaml-0-2
+  linux-libc-dev lksctp-tools make manpages-dev memcached msr-tools mysql-client-5.5 mysql-client-core-5.5 mysql-common mysql-server-5.5 mysql-server-core-5.5 nova-common nova-compute-kvm open-iscsi open-iscsi-utils
+  openstack-dashboard-ubuntu-theme openvswitch-common openvswitch-datapath-dkms openvswitch-switch patch python-amqplib python-anyjson python-appconf python-boto python-carrot python-cheetah python-cinder python-cinderclient
+  python-cliff python-cloudfiles python-cmd2 python-compressor python-configobj python-crypto python-daemon python-dateutil python-decorator python-dingus python-django python-django-horizon python-eventlet python-feedparser
+  python-formencode python-gevent python-gflags python-glance python-glanceclient python-greenlet python-httplib2 python-iso8601 python-jsonschema python-keyring python-keystone python-keystoneclient python-kombu python-ldap
+  python-libvirt python-libxml2 python-lockfile python-lxml python-m2crypto python-memcache python-migrate python-mysqldb python-netaddr python-nose python-nova python-novaclient python-openid python-openssl
+  python-openstack-auth python-pam python-paramiko python-passlib python-paste python-pastedeploy python-pastescript python-pkg-resources python-prettytable python-pycurl python-pyparsing python-pyudev python-quantum
+  python-quantumclient python-requests python-routes python-scgi python-setuptools python-setuptools-git python-simplejson python-sqlalchemy python-sqlalchemy-ext python-stompy python-suds python-swiftclient python-tempita
+  python-tz python-utidylib python-warlock python-webob python-xattr python-yaml qemu-common qemu-kvm qemu-utils quantum-common seabios sg3-utils ssl-cert tgt vgabios vlan
+Suggested packages:
+  www-browser apache2-doc apache2-suexec apache2-suexec-custom augeas-doc binutils-doc python-ceph cpp-doc gcc-4.6-locales virtual-mysql-client mysql-client postgresql-client erlang erlang-manpages erlang-doc xsltproc fop
+  erlang-ic-java erlang-observer gcc-multilib autoconf automake1.9 libtool flex bison gdb gcc-doc gcc-4.6-multilib libmudflap0-4.6-dev gcc-4.6-doc libgcc1-dbg libgomp1-dbg libquadmath0-dbg libmudflap0-dbg binutils-gold
+  git-daemon-run git-daemon-sysvinit git-doc git-el git-arch git-cvs git-svn git-email git-gui gitk gitweb libasound2-plugins libasound2-python augeas-tools glibc-doc libipc-sharedcache-perl javascript-common libmyodbc
+  odbc-postgresql tdsodbc unixodbc-bin pulseaudio policykit-1 pm-utils radvd make-doc libcache-memcached-perl libmemcached libterm-readkey-perl tinyca mailx novnc ethtool diffutils-doc python-amqplib-doc python-markdown
+  python-pygments python-crypto-dbg python-crypto-doc python-psycopg2 python-psycopg python-flup python-sqlite geoip-database-contrib python-egenix-mxdatetime python-dns python-gevent-doc python-gevent-dbg python-greenlet-dbg
+  python-greenlet-dev python-greenlet-doc python-couchdb python-kombu-doc python-pymongo python-ldap-doc python-lxml-dbg python-mysqldb-dbg ipython python-coverage python-nose-doc python-openssl-doc python-openssl-dbg
+  python-pam-dbg python-pastewebkit libapache2-mod-python libapache2-mod-scgi python-pgsql libjs-mochikit python-cherrypy python-distribute python-distribute-doc libcurl4-gnutls-dev python-pycurl-dbg python-gobject python-qt4
+  python-pyside.qtcore python-sqlalchemy-doc python-kinterbasdb python-pymssql mol-drivers-macosx openbios-sparc ubuntu-vm-builder uml-utilities openssl-blacklist
+The following NEW packages will be installed:
+  apache2 apache2-mpm-worker apache2-utils apache2.2-bin apache2.2-common augeas-lenses binutils bridge-utils cgroup-lite cinder-api cinder-common cinder-scheduler cinder-volume cpp cpp-4.6 cpu-checker curl dbconfig-common dkms
+  dnsmasq-base dnsmasq-utils ebtables erlang-asn1 erlang-base erlang-corba erlang-crypto erlang-dev erlang-diameter erlang-docbuilder erlang-edoc erlang-erl-docgen erlang-eunit erlang-ic erlang-inets erlang-inviso erlang-mnesia
+  erlang-nox erlang-odbc erlang-os-mon erlang-parsetools erlang-percept erlang-public-key erlang-runtime-tools erlang-snmp erlang-ssh erlang-ssl erlang-syntax-tools erlang-tools erlang-webtool erlang-xmerl fakeroot gawk gcc
+  gcc-4.6 git git-man glance-api glance-common glance-registry keystone kpartx kvm kvm-ipxe libaio1 libapache2-mod-wsgi libapparmor1 libapr1 libaprutil1 libaprutil1-dbd-sqlite3 libaprutil1-ldap libasound2 libasyncns0 libaugeas0
+  libavahi-client3 libavahi-common-data libavahi-common3 libc-dev-bin libc6-dev libcaca0 libconfig-general-perl libcurl3 libdbd-mysql-perl libdbi-perl liberror-perl libevent-2.0-5 libflac8 libgmp10 libgomp1
+  libhtml-template-perl libibverbs1 libjs-jquery libjs-sphinxdoc libjs-underscore libjson0 libltdl7 libmpc2 libmpfr4 libmysqlclient18 libnet-daemon-perl libnetcf1 libnetfilter-conntrack3 libnl-route-3-200 libnspr4 libnss3
+  libnuma1 libodbc1 libogg0 libplrpc-perl libpulse0 libquadmath0 librados2 librbd1 librdmacm1 libsctp1 libsdl1.2debian libsgutils2-2 libsigsegv2 libsndfile1 libtidy-0.99-0 libvirt-bin libvirt0 libvorbis0a libvorbisenc2
+  libxenstore3.0 libxml2-utils libxslt1.1 libyajl1 libyaml-0-2 linux-libc-dev lksctp-tools make manpages-dev memcached msr-tools mysql-client-5.5 mysql-client-core-5.5 mysql-common mysql-server mysql-server-5.5
+  mysql-server-core-5.5 nova-api nova-cert nova-common nova-compute nova-compute-kvm nova-consoleauth nova-novncproxy nova-scheduler open-iscsi open-iscsi-utils openstack-dashboard openstack-dashboard-ubuntu-theme
+  openvswitch-common openvswitch-datapath-dkms openvswitch-switch patch python-amqplib python-anyjson python-appconf python-boto python-carrot python-cheetah python-cinder python-cinderclient python-cliff python-cloudfiles
+  python-cmd2 python-compressor python-configobj python-crypto python-daemon python-dateutil python-decorator python-dingus python-django python-django-horizon python-eventlet python-feedparser python-formencode python-gevent
+  python-gflags python-glance python-glanceclient python-greenlet python-httplib2 python-iso8601 python-jsonschema python-keyring python-keystone python-keystoneclient python-kombu python-ldap python-libvirt python-libxml2
+  python-lockfile python-lxml python-m2crypto python-memcache python-migrate python-mysqldb python-netaddr python-nose python-nova python-novaclient python-openid python-openssl python-openstack-auth python-pam python-paramiko
+  python-passlib python-paste python-pastedeploy python-pastescript python-pkg-resources python-prettytable python-pycurl python-pyparsing python-pyudev python-quantum python-quantumclient python-requests python-routes
+  python-scgi python-setuptools python-setuptools-git python-simplejson python-sqlalchemy python-sqlalchemy-ext python-stompy python-suds python-swiftclient python-tempita python-tz python-utidylib python-warlock python-webob
+  python-xattr python-yaml qemu-common qemu-kvm qemu-utils quantum-common quantum-dhcp-agent quantum-l3-agent quantum-plugin-openvswitch quantum-plugin-openvswitch-agent quantum-server rabbitmq-server seabios sg3-utils ssl-cert
+  tgt vgabios vlan
+0 upgraded, 254 newly installed, 0 to remove and 0 not upgraded.
+Need to get 124 MB of archives.
+After this operation, 422 MB of additional disk space will be used.
+Do you want to continue [Y/n]?
+</code></pre>
+
+<p>254개의 패키지가 필요하다. 물론 모든 full stack을 알아야할 필요는 없겠지만, 어느 정도 그들이 어떤 역할을 하는지는 알아 두는 것이 전체 시스템을 이해하는데 도움이 많이 되겠죠.</p>
+
+<p>완전히 기술 분야가 다른 리눅스 네트워킹부터~ django까지&hellip; 후훗&hellip; 질릴정도가?</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1148">Full Stack</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-11-28T00:00:00+09:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>28</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>git, unit test, xp, scrum, gerrit, jenkins, chef, ci, cloud&hellip;. 프로젝트를 시작할라 치면 실제 삽을 들기도 전에 고려하고 생각하고 해야할 일들이 많다. 물론 여기에 빠진것도 많다.</p>
+
+<p>요즈즘은 특히나 인터넷에 나와있는 유명한 회사, 유명한 오픈소스 플로젝트에서 말하는 best practice들을 보고 있노라면 각 단어 하나가 하나의 책으로 구성해도 부족한 것들인데, 이 모든것을 다 잘 해야만 프로젝트가 잘 될것 같은 생각이 들기도 하다. 실제로 그렇게 가야한다고 이야기도 많이 한다.</p>
+
+<p>이 모든 것을 이미 경험해 본 사람이 있는 경우라면 그나마 좋은 경우겠지만, 구성원들의 지식 수준도 아주 다양하고, 게다가 프로젝트에서 풀어야할 문제 자체도 난감한데, 이를 수행하기 위해 기반을 갖추는 것도 아주 험난한 상황이 되는 것 뭐랄까&hellip; 열심히 뭔가를 했지만, 그 것을 사용할 사람에게는 뭔가 보여줄 게 없는 그런 이상한 상황이 오래 지속되는 것 같다.</p>
+
+<p>몇주전에 들었던 야크 세이빙이 떠오르기도 한다&hellip;.</p>
+
+<p>프로젝트의 비전도 명확하고, 모든 구성원이 동의하고, 아주 열정이 있고, 배우려는 의지도 강하고, 프로젝트 일정도 여유가 있으면 하나씩 파면서 제대로 가겠지만, 그러기도 거시기한게.. 각자의 지식 수준도 다양하고, 그리고 각자에게 뭔가 프로젝트에서 자기 담당이라는 것도 암묵적으로 생기면서, 그 사람이 하겠지 하는 그런 생각도 들기도 하고 말이야&hellip; 흠.</p>
+
+<p>내 스타일은 이 모든 것을 갗추어서 제대로 시작하기 보다는 우선은 조그만한 것부터, 작은 성공을 바탕으로 점점 큰 것을 가져나가는 것&hellip; 을 추구하고 계속 그렇게 가면서 새로운 것도 쉽게 쉽게 배우고, 그게 왜 필요한 지도 몸으로 느껴가면서 배웠는데 말이다.</p>
+
+<p>만일 저 full stack을 딱 가져다 놓고, 이에 맞춰서 일 해야되.. 라고 한다면, 뭐랄까 답답함이 엄습해올 것 같다. 뭔가 내가 여기서 움직일 공간이 없이 저 틀에 박혀버리는 것 이 아닐까? 하다가 내가 관심있는 분야에 조금 더 뚝딱뚝딱해보려 하지만, 그를 위해서는 더 다른 부가 적인, 배보다 배꼼이 큰.. 그런 일들을 해야하는 상황들이 발생할 것 같다는 느낌도 들고 말이야&hellip; 후훗&hellip;</p>
+
+<p>이제 혼자가 full stack을 이해하고, 모든 구성원이 케익을 세로롤 자를 수 있으련지.. 뭔가 그렇다&hellip;</p>
+
+<p>그냥 넋두리입니다.. :D</p>
+
+<p>ps. 낼은 또 어떤 spike를 할까???</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1135">Quantum: Metadata Overlapping Patch 적용기</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-11-26T00:00:00+09:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>26</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>quantum의 문제중에 하나인 <a href="https://blueprints.launchpad.net/quantum/+spec/metadata-overlapping-networks">overlapping_ip을 사용할 때 metadata service가 작동하지 않는 문제</a>에 대해서 이전에 언급했었고, <a href="https://review.openstack.org/#/q/topic:bp/metadata-overlapping-networks,n,z">이에 대한 패치</a>가 저번주에 올라왔습니다.</p>
+
+<p>오늘 이를 테스트 해봤는데 대략 잘 동작합니다.</p>
+
+<p>간단한 구조는 다음과 같습니다.</p>
+
+<p><img src="https://docs.google.com/drawings/pub?id=1T4Iq8p2tjnfcqvmfeCxwDVfdlYx7CAOAXJub4TRTe1k&w=822&h=614""></p>
+
+<ol>
+<li>metadata request는 <a href="http://169.254.169.254/latest/metadata">http://169.254.169.254/latest/metadata</a> 형태로 router namespace로 들어온다.</li>
+<li>router namespace의 NAT rule에 의해서 localhost의 port 9697로 redirect 된다.</li>
+<li>9696에서 listen하는 process(quantum-ns-metadata-proxy)는 l3_agent에서 network 생성에 맞춰 관리되며, namespace당 하나씩 생성된다.</li>
+<li>quantum-ns-metadata-proxy는 파라미터로 router_id를 가지므로 자신이 담당하는 network을 알 수 있다.</li>
+<li>quantum-ns-metadata-proxy는 nova-metadata-agent가 필요한 정보를 모아서(instance-id, router-id, network-id) http header에 포함하여 quantum-metadata-agent로 proxy request를 보낸다.</li>
+<li>quantum-metadata-agent는 ns-metadata-proxy에서 넘어온 전보를 바탕으로 instance-id를 확인하고 이를 http header에 포함하여 nova-metadata-api에 보낸다.</li>
+<li>nova-metadata-api는 X-Instace-ID가 있으면 이 아이디를 기준으로 메타데이터를 넘긴다.</li>
+</ol>
+
+
+<p>대략 순서를 정리하면 이렇습니다. 마지막으로 quantum-metadata-agent를 upstart service로 등록하여 작업하는 것 까지하면 대략 쓸만할 것 같습니다.</p>
+
+<p>지금은 우선 테스트라 quantum-metadata-agent가 같은 서버로 들어갔지만, metadata_ip를 줄 수 있으므로 별도의 서버에 운영할 수 있겠습니다.</p>
+
+<h2>삽질기</h2>
+
+<p>위 패치는 nova/ quantum 2개로 구성이 되어있으며, 당연히도 master 소스를 기준으로 작성이 되어있습니다. 그런데 저는 테스트 환경을 ubuntu folsom cloud archive를 사용하기 때문에 folsom 용으로 만들어야 했지요.. git에서 작업하기 위해 몇 가지 삽질을..</p>
+
+<ol>
+<li>master에 patch 적용하고 patch</li>
+<li>stable/folsom 기준으로 branch를 하나 만들고&hellip;</li>
+<li>master의 commit를 cherry picking&hellip;</li>
+<li>다시 folsom에 맞게 소스 수정하고 commit&hellip;</li>
+<li>folsom과 변경된 부분으로 patch 생성&hellip;</li>
+</ol>
+
+
+<p>물론 nova/ quantum도 같이요&hellip;</p>
+
+<ul>
+<li>upstart-job service 등록</li>
+</ul>
+
+
+<h2>Side effect?</h2>
+
+<p>이전에 metadata 접속 방식은 l3 router namespace에서 metadata api로 요청하는 것이었습니다. 이 경우 l3 router namespace 부터는 public ip address이므로 결국 metadata api server의 주소도 public ip address를 가지게 됩니다.</p>
+
+<p>그런데 이 metadata api server는 굳이 외부에서 접속할 필요가 없으므로 public ip를 가질 필요가 없습니다. 따라서 뭔가 꺼림직 했었는데, 이번 패치를 적용하면, quantum-metadata-agent를 내부망에서 운영할 수 있으므로 metadata api server가 내부망에서 운영이 가능합니다.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1121">OpenStack: 가상머신의 네트워크가 안될 때 Quantum의 체크 사항들</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-11-23T00:00:00+09:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>23</span><span class='date-suffix'>rd</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>openstack에서 가상머신을 생성하기는 했는데, nova에서는 생성이 되었다고 리포트되지만 Quantum 네트워크 문제로 가상머신이 연결되지 않은 경우가 있다. 이러한 경우 몇가지 체크할 포인트를 정리해본다. 물론 여기는 모두 folsom에서 OpenVSwitch + GRE Tunneling을 사용할 경우를 가정한다.</p>
+
+<h2>증상들</h2>
+
+<p>quantum의 설정 문제라면 보통 아래의 증상이 나타난다.</p>
+
+<ul>
+<li>nova list를 보면 가상머신에 ip는 할당이 되어 있지만, ping이 가지 않는다.</li>
+<li>ping은 가는데 ssh 접속이 안된다.</li>
+<li>vnc로 접속하면 접속은 된다.</li>
+</ul>
+
+
+<p>nova list에서 가상머신의 ip address가 할당이 되지 않고 생성되는 문제가 있는데, 이는 대부분 quantum의 문제가 아니고 다른 문제였다. 이 경우는 nova-compute의 로그를 확인하면 된다.</p>
+
+<h2>physical network 확인</h2>
+
+<h3>integration bridge가 설정 되어 있는지 확인</h3>
+
+<p>모든 l3-agent, dhcp-agent, ovs-plugin-agent가 동작하는 곳에 br-int bridge가 있는지 확인한다. quantum ovs plugin이 동작하기 위해서는 반드시 br-int bridge가 필요하다. agent가 자동으로 만들어 줄 만 한데 안만들어 주고 있다.(반면에 gre tunnel이 사용하는 br-tun은 알아서 만든다.)</p>
+
+<p>이 경우는 quantum 로그 파일에 br-int bridge가 없다는 에러를 내기 때문에 찾아내기 아주 쉽다.</p>
+
+<h3>external bridge 확인</h3>
+
+<p>l3-agent가 동작하고 있는 곳에 br-ex bridge가 있는지 확인한다. 그리고 br-ex bridge에는 외부와 연결된 interface가 추가되어 있는지 확인한다.</p>
+
+<p>테스트 환경에서의 bridge를 확인하면 아래와 같다. (qg-*는 tenant network의 gateway port다.)</p>
+
+<pre><code>Bridge br-ex
+  Port "qg-5376a58a-a7"
+    Interface "qg-5376a58a-a7"
+      type: internal
+  Port "qg-8be78718-4b"
+    Interface "qg-8be78718-4b"
+      type: internal
+  Port "eth2"
+    Interface "eth2"
+  Port br-ex
+    Interface br-ex
+      type: internal
+</code></pre>
+
+<p>그리고 여기에 연결된 eth2(external nic)에는 ip address가 설정하지 않는다.(물리적 연결을 확인하기 위해서 ip를 추가하고 테스트하기는 한다.)</p>
+
+<h3>datapath-dkms</h3>
+
+<p>openvswitch는 dynamic kernel module support를 사용한다. openvswitch-switch user space daemon과 커널 모듈이 동시에 사용되는 것이다. 의존성에 의해서 자동으로 설치되기는 하지만, 어떠한 경우에는 커널 모듈을 설치하지 않는 경우도 있기 때문에 한 번 쯤은 확인하는 것이 좋다.</p>
+
+<pre><code>root@net-l3:~# dpkg -l | grep datapath-dkms
+ii openvswitch-datapath-dkms 1.4.0-1ubuntu1.3 Open vSwitch datapath module source - DKMS version
+root@net-l3:~# dkms status
+openvswitch, 1.4.0, 3.2.0-33-generic, x86_64: installed
+</code></pre>
+
+<h2>quantum-plugin-openvswitch-agent 동작 확인</h2>
+
+<p>nova-compute, quantum-l3-agent, quantum-dhcp-agent가 동작하는 노드에서는 quantum-plugin-openvswitch-agent가 동작하면서 지속적으로 quantum 서비스를 polling하면서 openvswitch의 설정들을 잡는다. database/ rabbitmq connection이나 keystone 설정들의 문제는 로그파일을 보면 바로 나오니 문제를 파악하기 쉽다. 하지만 gre tunneling을 맺는 것을 명시적으로 오류가 나지 않으므로 이 부분을 확인해야한다.</p>
+
+<p>아래는 테스트 환경에서 gre tunneling 확인한 모습이다. remote_ip=&ldquo;10.130.1.101&rdquo; 처럼 보이는 부분이 있어야하며, 기타 여러 다른 문제로 인해서 여기에 상대방의 ip가 정상적으로 나오지 않는 경우를 많이 경험했다.</p>
+
+<pre><code>root@net-dhcp:~# ovs-vsctl show
+40a579fe-a5ae-4f63-b6ca-6967280a9893
+    Bridge br-tun
+        Port "gre-1"
+            Interface "gre-1"
+                type: gre
+                options: {in_key=flow, out_key=flow, remote_ip="10.130.1.101"}
+        Port patch-int
+            Interface patch-int
+                type: patch
+                options: {peer=patch-tun}
+        Port br-tun
+            Interface br-tun
+                type: internal
+        Port "gre-4"
+            Interface "gre-4"
+                type: gre
+                options: {in_key=flow, out_key=flow, remote_ip="10.130.1.11"}
+        Port "gre-3"
+            Interface "gre-3"
+                type: gre
+                options: {in_key=flow, out_key=flow, remote_ip="10.130.1.10"}
+    Bridge br-int
+        Port patch-tun
+            Interface patch-tun
+                type: patch
+                options: {peer=patch-int}
+        Port br-int
+            Interface br-int
+                type: internal
+        Port "tap9dd6bf73-9a"
+            tag: 2
+            Interface "tap9dd6bf73-9a"
+                type: internal
+        Port "tap063f59a8-7b"
+            tag: 1
+            Interface "tap063f59a8-7b"
+                type: internal
+    ovs_version: "1.4.0+build0"
+</code></pre>
+
+<p>이런 문제가 있는 경우는 remote_ip가 나오지 않는 호스트의 ovs_quantum_plugin.ini의 local_ip 설정이 있는지 확인하고, 정확하게 gre tunneling으로 사용할 ip가 명시되어 있다면 단순히 quantum-plugin-openvswitch-agent 서비스를 재시작하면 대부분 해결 된다.</p>
+
+<h3>dhcp namespace에서 ping이 되는지</h3>
+
+<p>dhcp agent가 동작하는 곳에는 dhcp namespace가 생기고 여기에는 해당 네트워크에 동작하는 dhcp 서버가 동작하게 된다. 일만적으로 172.16.1.2처럼 2번의 ip를 가지게 되고 가상머신은 3번 아이피부터 시작한다. 여기는 외부 네트워크 연결과는 상관없이 내부 네트워크만 동작하면 되므로 우선 여기부터 확인한다.</p>
+
+<pre><code>root@net-dhcp:~# ip netns
+qdhcp-9cbd5dd0-928a-4808-ae34-4cc2563fa619
+qdhcp-55db86bf-7eee-4fac-a928-844218e88a11
+root@net-dhcp:~# ip netns exec qdhcp-9cbd5dd0-928a-4808-ae34-4cc2563fa619 ip addr
+8: tap9dd6bf73-9a: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue state UNKNOWN
+    link/ether fa:16:3e:eb:c1:b3 brd ff:ff:ff:ff:ff:ff
+    inet 172.16.2.2/24 brd 172.16.2.255 scope global tap9dd6bf73-9a
+    inet6 fe80::f816:3eff:feeb:c1b3/64 scope link
+       valid_lft forever preferred_lft forever
+9: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 16436 qdisc noqueue state UNKNOWN
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+root@net-dhcp:~# ip netns exec qdhcp-9cbd5dd0-928a-4808-ae34-4cc2563fa619 ping -c 3 172.16.2.5
+PING 172.16.2.5 (172.16.2.5) 56(84) bytes of data.
+64 bytes from 172.16.2.5: icmp_req=1 ttl=64 time=8.82 ms
+64 bytes from 172.16.2.5: icmp_req=2 ttl=64 time=3.98 ms
+64 bytes from 172.16.2.5: icmp_req=3 ttl=64 time=2.17 ms
+
+--- 172.16.2.5 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2003ms
+rtt min/avg/max/mdev = 2.179/4.996/8.823/2.804 ms
+</code></pre>
+
+<p>가상 머신의 ip로 ping이 간다면 우선 내부 네트워크는 정상적으로 작동한다는 말이다. 더불어 gre tunnel도 정상적으로 잘 된다는 이야기이다.</p>
+
+<h3>l3 namespace에서 네트워크 확인</h3>
+
+<p>l3 namespace는 해당 네트워크의 gateway가 위치(172.16.1.1)하는 곳이다. 당연히 여기서 네트워크가 문제없이 잘 되어야 외부로 나가는 길이 열리는 것이다.</p>
+
+<p>l3 namespace에서 다음 사항을 확인해본다.</p>
+
+<ul>
+<li>instance로의 ping</li>
+<li>default gateway</li>
+</ul>
+
+
+<p>..</p>
+
+<pre><code>root@net-l3:~# ip netns
+qrouter-2c901c4d-eeb3-43b0-a84a-30da10fa74d7
+qrouter-5fce397a-4e9d-4a42-8139-f7748a0f69b6
+root@net-l3:~# ip netns exec qrouter-5fce397a-4e9d-4a42-8139-f7748a0f69b6 ip addr
+8: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 16436 qdisc noqueue state UNKNOWN
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+9: qr-7b757ca9-3f: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue state UNKNOWN
+    link/ether fa:16:3e:23:36:5b brd ff:ff:ff:ff:ff:ff
+    inet 172.16.1.1/24 brd 172.16.1.255 scope global qr-7b757ca9-3f
+    inet6 fe80::f816:3eff:fe23:365b/64 scope link
+       valid_lft forever preferred_lft forever
+10: qg-8be78718-4b: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue state UNKNOWN
+    link/ether fa:16:3e:b7:bc:06 brd ff:ff:ff:ff:ff:ff
+    inet 10.100.1.130/25 brd 10.100.1.255 scope global qg-8be78718-4b
+    inet 10.100.1.131/32 brd 10.100.1.131 scope global qg-8be78718-4b
+    inet6 fe80::f816:3eff:feb7:bc06/64 scope link
+       valid_lft forever preferred_lft forever
+root@net-l3:~# ip netns exec qrouter-5fce397a-4e9d-4a42-8139-f7748a0f69b6 ping -c 3 172.16.1.3
+PING 172.16.1.3 (172.16.1.3) 56(84) bytes of data.
+64 bytes from 172.16.1.3: icmp_req=1 ttl=64 time=10.4 ms
+64 bytes from 172.16.1.3: icmp_req=2 ttl=64 time=0.563 ms
+64 bytes from 172.16.1.3: icmp_req=3 ttl=64 time=0.541 ms
+
+--- 172.16.1.3 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2000ms
+rtt min/avg/max/mdev = 0.541/3.851/10.450/4.666 ms
+root@net-l3:~# ip netns exec qrouter-5fce397a-4e9d-4a42-8139-f7748a0f69b6 route
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+default         10.100.1.129    0.0.0.0         UG    0      0        0 qg-8be78718-4b
+10.100.1.128    *               255.255.255.128 U     0      0        0 qg-8be78718-4b
+172.16.1.0      *               255.255.255.0   U     0      0        0 qr-7b757ca9-3f
+root@net-l3:~# ip netns exec qrouter-5fce397a-4e9d-4a42-8139-f7748a0f69b6 ping -c 3 10.100.1.129
+PING 10.100.1.129 (10.100.1.129) 56(84) bytes of data.
+64 bytes from 10.100.1.129: icmp_req=1 ttl=64 time=22.1 ms
+64 bytes from 10.100.1.129: icmp_req=2 ttl=64 time=0.423 ms
+64 bytes from 10.100.1.129: icmp_req=3 ttl=64 time=0.339 ms
+
+--- 10.100.1.129 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2000ms
+rtt min/avg/max/mdev = 0.339/7.622/22.105/10.241 ms
+</code></pre>
+
+<p>여기서 namespace의 gateway는 quantum을 이용해서 네트워크를 생성할때 만들어준 네트워크에서 알아서 잡는 것이다. 따라서 해당 주소는 미리 있어야한다. 위에서는 external network의 subnet을 10.100.1.128/25로 주었기 때문에 해당 네트워크의 첫번째 아이피인 10.100.1.129로 gateway가 자동으로 잡혔다.</p>
+
+<p>또한 10.100.1.130은 해당 네트워크의 nat로 외부 접속할 대표 아이피이고 10.100.1.131은 floatingip로 설정된 것이다.</p>
+
+<h3>metadata</h3>
+
+<p>어쨌든 가상 머신으로 ping까지 잘 가지만 ssh로 로그인할 수 없는 경우가 있다. 이런 경우는 대부분 가상머신이 metadata를 가져오지 못해서 생기는 문제로 가상머신의 로그나 vnc로 접근해서 확인하면 확인할 수 있다.</p>
+
+<p>ubuntu 가상 머신의 경우는 아래와 같은 메시지가 남는다.</p>
+
+<pre><code>root@c-01-01:~# tail /var/lib/nova/instances/instance-00000003/console.log
+cloud-init start-local running: Thu, 22 Nov 2012 15:07:50 +0000. up 3.37 seconds
+no instance data found in start-local
+ci-info: lo    : 1 127.0.0.1       255.0.0.0       .
+ci-info: eth0  : 1 172.16.2.4      255.255.255.0   fa:16:3e:78:fa:03^M
+ci-info: route-0: 0.0.0.0         172.16.2.1      0.0.0.0         eth0   UG
+ci-info: route-1: 172.16.2.0      0.0.0.0         255.255.255.0   eth0   U
+cloud-init start running: Thu, 22 Nov 2012 15:07:54 +0000. up 7.01 seconds
+2012-11-22 15:08:48,306 - util.py[WARNING]: 'http://169.254.169.254/2009-04-04/meta-data/instance-id' failed [51/120s]: url error [timed out]
+2012-11-22 15:09:39,360 - util.py[WARNING]: 'http://169.254.169.254/2009-04-04/meta-data/instance-id' failed [102/120s]: url error [timed out]
+2012-11-22 15:09:56,379 - util.py[WARNING]: 'http://169.254.169.254/2009-04-04/meta-data/instance-id' failed [119/120s]: url error [timed out]
+</code></pre>
+
+<p>로그를 보면 dhcp를 통해서 ip를 받아왔지만 cloud-init에서 metadata server롤 접속하지 못해서 ssh key를 받아오지 못해 ssh 인증키를 가상머신에 설치하지 못해서 이다. <a href="http://blog.woosum.net/archives/1077">이 문제에 관해서는 이전에 적었으니 참고하시면 되고</a>, 간단하게 말한다면 l3 agent namespace에서도 metadata server에 접속할 수 있어야되고, 반대로 metadata server에서도 가상 머신에 접속할 수 있어야 합니다. management / data / external / tenant network을 모두 같은 네트워크에서 구성했다면 문제가 안생기겠지만, 별도의 분리된 네트워크나 private network을 사용했다면 직접 연결되는 경로가 없기 때문에 만들어 줘야 합니다.</p>
+
+<p>간단하게 한다면 metadata api server에서 아래처럼 하면 됩니다.</p>
+
+<pre><code>root@api $ route add -net &lt;tenant subnet&gt; gw &lt;tenant default public ip&gt;;
+root@api $ route add -net 172.16.1.0/24 gw 10.100.1.130
+</code></pre>
+
+<p>참고로 metadata_ip는 external network에서 접근 가능한 ip여야 합니다. metadata server를 접근하는 곳이 l3 namespace인데 여기는 이미 external network 영역이기 때문입니다. 여기서 management나 기타 다른 영역으로 들어가는 것은 구성상 바람직 하지 않습니다.</p>
+
+<h2>기타 다른 이유들&hellip;</h2>
+
+<ul>
+<li>keystone
+
+<ul>
+<li>설정 오류</li>
+<li>quantum user의 권한 문제: quantum user는 admin role이 있어야 한다.</li>
+</ul>
+</li>
+<li>glance 이미지 설정 오류
+
+<ul>
+<li>glance의 설정이 잘못되어 있으면 가상 머신의 상태가 build에서 멈춰있습니다. nova-compute 쪽 로그를 보면 이미지를 찾을 수 없다고 나옵니다.</li>
+<li>glace 이미지 오류: glance에서 이미지를 추가할 때 뭔가 잘못하여 active가 아닌 queued 상태인 이미지가 만들어 질 수 있는데, 이 이미지로 가상머신을 만들면 역시 build 상태에서 멈춰 있습니다.</li>
+</ul>
+</li>
+<li>quantum-service startup error</li>
+<li>가끔 nova-network을 설치해놓고선 quantum service가 왜 안뜨냐고 투덜인 분이 있습니다. 녜&hellip;. quantum은 nova-network을 완전해 대체할 목적으로 만들어 졌기에 같이 공존할 수 없습니다. nova-volume과 cinder와의 관계와 같습니다.  /etc/nova/nova.conf에 enabled_apis=ec2,osapi_compute,metadata 처럼 몇몇 서비스를 내리세욧</li>
+</ul>
+
+
+<h2>&hellip;..</h2>
+
+<p>quantum은 openstack의 마지막에 있습니다. 무슨 말이냐 keystone, glance, nova-* 등 여러 openstack 요소들이 동작을 제대로 한 이후에 quantum의 동작을 확인할 수 있습니다. 네트워크가 안된다는 것은 단순 네트워크 문제로 보이지만 다른 여러 요인들이 겹쳐서 생기는 문제가 더 많습니다. 경험상 정작 quantum 자체의 문제보다는 다른쪽의 문제가 더 많았습니다.</p>
+
+<p>감이 오시나요? quantum을 하려면 다른 것도 어느 정도 대충 알아야한다는 이야기입니다. 그러지 않고서는 quantum은 문제 없어!! 라고 끝내버리는 경우가 생길 수 있는데, 이건 팀워크에서는 하면 안되는 것이죠.. 음.. 이상한..</p>
+
+<p>어쨌든 끝~</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1114">Bash: Simple Job Control</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-11-20T00:00:00+09:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>20</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>bash에서 child process를 돌릴 필요가 생겨서 잠깐 테스트 삼아 작성해본 background로 프로세스 돌리고, 죽이기 스크립트</p>
+
+<pre><code>#!/bin/bash
+set -m
+
+function sig_int(){
+        echo "sig_int"
+
+        kill `jobs -p`
+}
+
+function child_process() {
+        echo "enter child pid:$$, $1"
+        sleep 5
+        echo "exit someting $1"
+}
+
+# run several jobs
+for x in {1..3}; do
+        #(something $x &amp;) # parallel executation
+        child_process $x &amp; # background executation
+done
+
+trap sig_int SIGINT
+
+wait
+</code></pre>
+
+<ul>
+<li>$$는 shell의 pid로 child process에서 같은 값이 나온다.</li>
+<li>parallel executation은 child process가 아닌 현재 스크립트와 동일한 레벨로 생성된다.</li>
+</ul>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+      <a class="prev" href="/posts/8">&larr; Older</a>
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/posts/6">Newer &rarr;</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/keystone-bootstrap/">Keystone Bootstrap</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/neutron-default-security-group/">Neutron Default Security Group</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1550">클라우드 네트워킹과 SDN 그리고 OpenStack</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Choe, Cheng-Dae -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

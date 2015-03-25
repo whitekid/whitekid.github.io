@@ -1,0 +1,851 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Your wish is my command</title>
+  <meta name="author" content="Choe, Cheng-Dae">
+
+  
+  <meta name="description" content="24비트 네트워크를 할당하고 사용한다고 합시다&hellip; 그렇다면 256 - 1(Router) - 1(Boradcast) - 1 (dhcp) - 10(Reserved) = 234개의 인스턴스를 생성할 수 있습니다. 물론 LBaaS를 사용한다면 좀더 아이피를 사용할 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://whitekid.github.io/posts/2/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Your wish is my command" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Your wish is my command</a></h1>
+  
+    <h2>It&#8217;s a long journey</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="whitekid.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1508">Network Fixed-ip Scheduler? IP Address가 부족해요..</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-05-14T00:00:00+09:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>24비트 네트워크를 할당하고 사용한다고 합시다&hellip; 그렇다면 256 - 1(Router) - 1(Boradcast) - 1 (dhcp) - 10(Reserved) = 234개의 인스턴스를 생성할 수 있습니다. 물론 LBaaS를 사용한다면 좀더 아이피를 사용할 수 있겠지요.. 뭐.. 각설하고..</p>
+
+<p>자&hellip; 이렇게 인스턴스가 만들어지다 보면 IP를 소진하게 되고.. IP를 다 사용하면 네트워크를 추가해야 합니다. 그렇다면 NET1, NET2 이렇게 2개의 네트워크가 생성이 되었다면  여기서 문제가 생깁니다.</p>
+
+<h2>인스턴스를 생성할 때 네트워크 선택이 필수 입니다.</h2>
+
+<p>하지만, 사용자 입장에서 어떤 네트워크에 IP가 남아있는지 확인해서, 여유있는 네트워크를 생성해야 합니다. 안그러면 당연히 에러가 나겠죠.. 그러면 인스턴스를 생성할 때 사용자가 체크해야하는 단계가 하나 생기는 겁니다.</p>
+
+<p>네트워크를 선택하지 않으면, Havana이전의 릴리스에서는 모든 네트워크에 연결되어 인스턴스가 생성이 됩니다(Icehouse 버전은 cli에서는 동일하게 동작하고 Horizon에서는 오류가 발생합니다). 일반적으로 특별한 이유가 없으면 이렇게 사용하지 않을 것이므로, 명시적인 사용을 하지 않는 경우가 아니라면 모든 네트워크에 연결되는 인스턴스를 생성하는 것도 좋지 않습니다. 게다가 인터페이스의 순서도 자동으로 설정이 되어 의도하지 않는 결과가 발생할 수 있는 것이죠.</p>
+
+<h2>네트워크 자동 선택이 필요하다.</h2>
+
+<p>그래서 고민고민 하다가, 사용자 입장에서는 AWS처럼 굳이 네트워크를 선택하지 않으면 자동으로 알아서 적당한 네트워크를 선택해서 만들어주면 되겠다고 생각을 했습니다.</p>
+
+<p>이른바 Network Scheduler 기능이 있으면 좋겠죠.. (Network Scheduler로 하면 L2, L3, LB 등등등 많기 때문에 좀 애매하지만..)</p>
+
+<p>당연히도 이런 기능은 nova 또는 neutron에 없습니다. (당연하죠?)</p>
+
+<h2>nova-api를 수정</h2>
+
+<p>처음에는 이러한 기능을 neutron에서 처리할 것으로 생각했지만, 소스를 분석해보니 nova-api에서 network를 지정해주지 않으면 모든 사용 가능한 네트워크에 인터페이스를 생성합니다.</p>
+
+<p>nova.compute.api.API._create_instance에서 requested_network로 사용자가 요청한 네트워크가 없으면 자동으로 인스턴스를 생성 가능한 네트워크로 request_network를 채워주면 되겠다는 생각에 작업해 봤습니다.</p>
+
+<p>nova.compute.api.API._create_instance: 에 아래처럼 request_networks가 없을 경우 scheduling을 처리할 코드를 넣고..</p>
+
+<pre><code>def _create_instance(self, context, instance_type, ....):
+  .... foo bar ....
+  if not requested_networks:
+    net_id = self.network_api.schedule_network_for_instance(context, max_count)
+    if net_id: requested_networks = [(net_id, None, None)]
+</code></pre>
+
+<p>nova.compute.neutronv2.api.API.schedule_network_for_instance: 에서 실제로 선택하는 기능을 추가합니다.</p>
+
+<pre><code>def schedule_network_for_instance(self, context, num_instances):
+  neutron = neutronv2.get_client(context)
+  nets = self._get_available_networks(context, context.project_id,
+  neutron=neutron)
+
+  nets = sorted(nets, key=lambda x: x['name'])
+
+  quotas = neutron.show_quota(tenant_id=context.project_id)['quota']
+  ports_needed = num_instances
+  for net in nets:
+    ports = neutron.list_ports(tenant_id=context.project_id)['ports']
+  free_ports = quotas.get('port') - len(ports)
+
+  if free_ports &gt;= ports_needed:
+    return net['id']
+</code></pre>
+
+<h2>사용 방법</h2>
+
+<p>사용 방법은 동일합니다.</p>
+
+<p>자동으로 네트워크를 선택하게 하려면 아래처럼 NIC 옵션을 빼고 명령을 주면, 자동으로 네트워크를 선택해서 만들어 줍니다.</p>
+
+<pre><code>$ nova boot -flavor m1.tiny -image &lt;image-uuid&gt; test
+</code></pre>
+
+<p>기존에는 모든 사용 가능한 네트워크에 연결된 인스턴스를 만들었지만요..</p>
+
+<p>당연히 네트워크를 지정하면 해당 네트워크에 연결된 인스턴스를 만듭니다.</p>
+
+<pre><code>$ nova boot -flavor m1.tiny -image &lt;image-uuid&gt; -nic net-id=&lt;net-uuid&gt; test
+</code></pre>
+
+<h2>개선 방향</h2>
+
+<h3>scheduling 방법&hellip;</h3>
+
+<p>지금 scheduler는 name을 기준으로 정렬한 후 순차적으로 할당하게 되어있습니다. 아주 단순한 scheduling이죠.. 이를 여러 상황에 맞게 조졀하는 기능이 필요하겠습니다.</p>
+
+<h3>자동 선택 가능한 네트워크..</h3>
+
+<p>상황에 자동으로 선택 가능한 네트워크를 지정할 필요가 있습니다. 특정 네트워크는 개발용도, 특정 내트워크는 프러덕션 용도로 분리된 경우라면요..</p>
+
+<h2>추가&hellip;</h2>
+
+<p>이거 추적하면서 알게된 몇 가지 사항들 추가하죠..</p>
+
+<h3>multi subnet</h3>
+
+<p>network에는 subnet이 1:1 관계가 아니라 1:n의 관계입니다.</p>
+
+<p>아래를 보시면 test network에 subnet이 2개가 할당이 되어있습니다.</p>
+
+<pre><code>$ neutron net-list -name test
++--------------------------------------+------+-----------------------------------------------------+
+| id                                   | name | subnets                                             |
++--------------------------------------+------+-----------------------------------------------------+
+| 2e6c7fde-63f1-4289-8bb6-93c5e0d682f7 | test | 20e0d8cc-ff0a-410b-92d1-da5902ff851b 10.10.201.0/24 |
+|                                      |      | 37f69bb4-0cbb-45ca-8877-0a1189318316 10.10.200.0/24 |
++--------------------------------------+------+-----------------------------------------------------+
+</code></pre>
+
+<p>그렇다면 이 포스트에서 제기하는 IP 문제를 해결할 수 있다고 생각이 드실겁니다. 녜.. 물론 그렇습니다. 그런데, 이건 실제로 네트워크 상에서 구현이 될 때 약간 애매하나 것이 있습니다.</p>
+
+<p>위의 상황은 하나의 네트워크(VLAN) 상에 다른 서브넷의 패킷이 같이 공존하는 상황인데, 네트워크 엔지니어에게 자문을 구해보니 네트워크 상에서는 큰 문제가 없고 실제로 이렇게 운영하는 경우도 있다고 합니다.</p>
+
+<p>다만, 이렇게 하는 경우 switch에서 작업할 때 저렇게 port에 여려 subnet이 있다는 사실을 인지하고 작업을 진행해야하기 때문에, 작업상 실수가 일어날 가능성이 높아서, 가능은 하지만 권장은 하지 않는다고 합니다.</p>
+
+<p>이러한 문제로 실제로 사용하기에는 좀 그렇습니다. 하지만 네트워크 엔지니어가 문제가 없다고 하면 이런 방법도 괜찮은 방법으로 생각합니다.</p>
+
+<h3>multi provider network</h3>
+
+<p>또 다른 방법으로 multi provider network라는 기능이 있습니다.</p>
+
+<p>기존으 provider network은 하나의 segmentation(VLAN)을 사용할 수 있지만, multi provider network을 한 네트워크 안에서 여러 segmentation을 허용할 수  있다고 합니다.</p>
+
+<p>아래 명령으로 확인하면 해당 extension이 있는지 확인할 수 있습니다.</p>
+
+<pre><code>$ neutron ext-list | grep provider
+| provider       | Provider Network       |
+| multi-provider | Multi Provider Network |
+</code></pre>
+
+<p>네트워크 생성은 조금 복잡하게 만들어 집니다. 당연히 여러 segmentation을 넣어야되니 그렇겠죠.</p>
+
+<pre><code>$ neutron net-create test -segments type=dict list=true \
+    provider:network_type=vlan,provider:physical_network=default,provider:segmentation_id=200 \
+    provider:network_type=vlan,provider:physical_network=default,provider:segmentation_id=201 \
+    -shared
+
+$ neutron net-show test
++-------------------------------------------+------------------------------------------------------------------------------------------------------------+
+| Field                                     | Value                                                                                                      |
++-------------------------------------------+------------------------------------------------------------------------------------------------------------+
+| admin_state_up                            | True                                                                                                       |
+| id                                        | 2e6c7fde-63f1-4289-8bb6-93c5e0d682f7                                                                       |
+| name                                      | test                                                                                                       |
+| router:external                           | False                                                                                                      |
+| segments                                  | {"provider:network_type": "vlan", "provider:physical_network": "default", "provider:segmentation_id": 200} |
+|                                           | {"provider:network_type": "vlan", "provider:physical_network": "default", "provider:segmentation_id": 201} |
+| shared                                    | True                                                                                                       |
+| status                                    | ACTIVE                                                                                                     |
+| subnets                                   | 20e0d8cc-ff0a-410b-92d1-da5902ff851b                                                                       |
+|                                           | 37f69bb4-0cbb-45ca-8877-0a1189318316                                                                       |
+| tenant_id                                 | 6b3f1bffc77345468198c85d995479a2                                                                           |
++-------------------------------------------+------------------------------------------------------------------------------------------------------------+
+</code></pre>
+
+<p>이것도 이 포스트의 문제를 해결할 수 있는 좋은 방법입니다. multi-subnet을 사용하는 것에 비해서 네트워크 엔지니어의 작업 오류를 줄 일 수 있겠죠..</p>
+
+<p>하지만, 당연히도(^^) 이 게 잘 되지 않습니다.</p>
+
+<p>이유는 ML2 Plugin에는 구현이 잘 되어있지만, OpenVSWitch Mechnism driver에는 이 지원이 빠져있습니다. (역시나&hellip;)</p>
+
+<p>그래서 실제 구성 및 인스턴스 생성은 잘 되는데, 외부 VLAN과 실제 연결할때 ovs flow control에서 생성할 때 지정한 200, 201 두 가지 vlan에 대한 tag mapping을 설정해 줘야하는데, 하나만 설정하는 문제가 있더군요.. (이건 명백한 버그..)</p>
+
+<p>그래서 이를 구현한 코드를 좀 보니깐&hellip; nicira nvp, cisco 에서 multi provider network을 위한 기능을 추가했고, 이 사람들은 OVS에 기능을 추가하지 않았군요.. ㅎㅎ</p>
+
+<p>뭐.. 조금 더 삽질하면 될 것 같기는 하지만. .여기서는 이만.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1501">Nova Stop의 위험성&#8230;</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-04-29T00:00:00+09:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>29</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>nova stop 명령은 당연히도 인스턴스를 shutdown하는 명령입니다. 근데 여기에는 약간은 당황스런 이슈가 숨어있군요.</p>
+
+<p>nova stop은 결국은 libvirt.destroy()를 호출하게 되는데 여기에는 아래와 같은 코멘트가 있습니다.</p>
+
+<blockquote><p>already and all resources used by it are given back to the hypervisor. This
+does not free the associated virDomainPtr object.
+This function may require privileged access.</p>
+
+<p>virDomainDestroy first requests that a guest terminate
+(e.g. SIGTERM), then waits for it to comply. After a reasonable
+timeout, if the guest still exists, virDomainDestroy will
+forcefully terminate the guest (e.g. SIGKILL) if necessary (which
+may produce undesirable results, for example unflushed disk cache
+in the guest). To avoid this possibility, it&rsquo;s recommended to
+instead call virDomainDestroyFlags, sending the
+VIR_DOMAIN_DESTROY_GRACEFUL flag.</p></blockquote>
+
+<p>If the domain is transient and has any snapshot metadata (see
+virDomainSnapshotNum()), then that metadata will automatically
+be deleted when the domain quits.</p>
+
+<p>SIGTERM으로 인스턴스에 죽으라는 시그널을 날려주고, 적당한 시간 이후에도 인스턴스가 그대로 살아있을 경우는 SIGKILL로 인스턴스를 강제로 죽입니다. 그런데 이 경우 unflush된 디스크 캐쉬가 발생할 수 있다는 내용이죠.. 이를 피하기 위해서는 virDomainDestroyFlags로 VIR_DOMAIN_DESTORY_GRACEFUL 플레그를 설정하라고 되어있습니다.</p>
+
+<p>nova.virt.driver.ComputeDriver.destroy()를 사용하는 명령, stop, migrate, resize 등은 이러한 위험성을 내포하고 있지요.</p>
+
+<p>이러한 문제를 해결하기 위한 버그는 <a href="https://bugs.launchpad.net/nova/+bug/1196924">Stop and Delete operations should give the Guest a chance to shutdown 등록</a>되어 있구요.. 하지만 icehouse에는 포함되지 않은 상태입니다.</p>
+
+<p>disk i/o가 많은 인스턴스를 migrate, resize하는 경우 주의가 필요합니다.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1494">LibvirtHybridOVSBridgeDriver -> LibvirtGenericVIFDriver</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-04-25T00:00:00+09:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>25</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>OpenStack IceHouse Release에서는 LibvirtHybridOVSBridgeDriver가 deprecated되고 LibvirtGenericVIFDriver가 사용됩니다. 그래서 LibvirtGenericVIFDriver 설정하고 인스턴스를 생성하면 havana이전에 LibvirtHybridOVSBridgeDriver에서 생성한 openvswitch - linux bridge를 사용하여 포트를 구성하죠..</p>
+
+<p>그런데 havana에서 부터 있던 인스턴스는 이렇게 생성되지 않고, LibvirtOpenVswitchDriver로 생성한 것 처럼 ovs - kvm으로 직접 연결됩니다. 이렇게 되니 아래의 문제가 생기게 되죠..</p>
+
+<ul>
+<li>당연히 security group이 작동하지 않음</li>
+<li>havana에서 upgrade한 인스턴스가 stop / resume / restart 등을 한 이후에는 네트워크가 되지 않음..</li>
+</ul>
+
+
+<p>이게 뭘까 좀 추적해 봤습니다.</p>
+
+<p>LibvirtGenericVIFDriver에서는 vif.is_hybrid_plug_enabled()에서 해당 포트가 hybrid인지 아닌지 판단하고 있습니다. 즉 여기까지 보면 이전에는 driver에 따라서 vif 구성이 결정되었지만, 이제는 vif port의 설정에 따라서 구성이 되는 것으로 보입니다.</p>
+
+<p>그러면 이 설정은 어디 있을까.. 추적해보면</p>
+
+<p>nova.network.mode.VIF 에서 아래처럼 하고 있습니다.</p>
+
+<pre><code>def is_hybrid_plug_enabled(self):
+    return self['details'].get(VIF_DETAIL_OVS_HYBRID_PLUG, False)
+</code></pre>
+
+<p>vif의 detail이라는 property로 들어 있는 것이죠.. 그럼 이거는 어디 있을까.. 찾아보면..</p>
+
+<pre><code>mysql&gt; select * from ml2_port_bindings where port_id = 'e14dbfd5-670e-405f-aaec-3796d1df1c34' \G
+*************************** 1. row ***************************
+    port_id: e14dbfd5-670e-405f-aaec-3796d1df1c34
+       host: compute000
+   vif_type: ovs
+     driver: openvswitch
+    segment: d3685732-365f-4a5b-baed-8adb7b2decf3
+  vnic_type: normal
+vif_details: {"port_filter": true, "ovs_hybrid_plug": true}
+    profile:
+1 row in set (0.00 sec)
+</code></pre>
+
+<p>이렇게 DB의 설정값으로 고히 모셔져 있군요.. 이 값은</p>
+
+<pre><code> class OpenvswitchMechanismDriver(mech_agent.SimpleAgentMechanismDriverBase):
+   def __init__(self):
+     super(OpenvswitchMechanismDriver, self).__init__(
+       constants.AGENT_TYPE_OVS,
+       portbindings.VIF_TYPE_OVS,
+       {portbindings.CAP_PORT_FILTER: True,
+        portbindings.OVS_HYBRID_PLUG: True})
+</code></pre>
+
+<p>이렇게 기본값이 True로 설정되어 DB에 들어가고 있습니다. 하지만 아래를 보면 port에 따라서 vif_details가 들어가있지 않는 포트가 있고</p>
+
+<pre><code>mysql&gt; select port_id, vif_details from ml2_port_bindings;
++--------------------------------------+------------------------------------------------+
+| port_id                              | vif_details                                    |
++--------------------------------------+------------------------------------------------+
+| 0cc863d2-adf4-49b7-9c28-1d0cf0ffd7d4 |                                                |
+| 2f2782dd-cb6b-4a37-a384-8c4883e7243d |                                                |
+| 30cb2d41-62df-44db-9faf-d6638438e71c |                                                |
+| 901b564b-5250-4215-bcad-2630b7701a85 |                                                |
+| c157a2bb-0a42-4e2a-8354-ec0560d9e28b |                                                |
+| c5ab2b09-b8cb-4381-83d4-a14a7207fdeb | {"port_filter": true, "ovs_hybrid_plug": true} |
+| c8e328fd-0279-46ff-ba45-177b95b97103 |                                                |
+| e14dbfd5-670e-405f-aaec-3796d1df1c34 | {"port_filter": true, "ovs_hybrid_plug": true} |
++--------------------------------------+------------------------------------------------+
+</code></pre>
+
+<p>이 포트는 기존 havana에서 생성된 인스턴스에 연결된 포트죠..</p>
+
+<p>자 그럼 이 값을 똑같이 바꾸면 어떻게 될까요..</p>
+
+<pre><code>mysql&gt; update ml2_port_bindings
+        set vif_details = '{"port_filter": true, "ovs_hybrid_plug": true}';
+</code></pre>
+
+<p>녜.. 예상하는데로.. vif가 hybrid 형태로 잘 연결됩니다. ^^;</p>
+
+<p>이전에는 nova reboot -hard &lt;uuid> 하면 인스턴스의 네트워크가 안되던 것이.. 이제는 잘 됩니다. ^^;</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1489">-Wunused-command-line-argument-hard-error-in-future 오류</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-04-08T00:00:00+09:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>OSX에서 brew, pip, gem 등으로 패키지 설치할 때 위와 같은 컴파일 오류가 나는 경우가 있다. 이건 Xcode가 업데이트 되면서 오류를 만들어 내는 것으로 간단히 해당 옵션을 무시하면 된다.</p>
+
+<pre><code>$ export ARCHFLAGS="-Wno-error=unused-command-line-argument-hard-error-in-future"
+$ pip install foobar
+</code></pre>
+
+<ul>
+<li><a href="https://langui.sh/2014/03/10/wunused-command-line-argument-hard-error-in-future-is-a-harsh-mistress/">https://langui.sh/2014/03/10/wunused-command-line-argument-hard-error-in-future-is-a-harsh-mistress/</a></li>
+</ul>
+
+
+<p>sudo도 실행할 경우는 -E 옵션을 준다.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1486">Random Password Generator</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-03-26T00:00:00+09:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>26</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>간단하게 랜덤 암호 생성기&hellip;</p>
+
+<p>OSX인 경우는 중간에 &ldquo;LC_CTYPE=C&#8221;이 필요함&hellip;</p>
+
+<div><script src='https://gist.github.com/9777588.js'></script>
+<noscript><pre><code>#!/bin/sh
+genpasswd() {
+  local l=$1
+  [ &quot;$l&quot; == &quot;&quot; ] &amp;&amp; l=16
+  cat /dev/urandom | LC_CTYPE=C tr -dc A-Za-z0-9_ | head -c ${l}
+  echo
+}
+
+genpasswd &quot;$@&quot;
+</code></pre></noscript></div>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1477">Nova-scheduler: 무조건 적인 평등은 좋지 않다.</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-03-25T00:00:00+09:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>25</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>어느 순간 알림이 옵니다. m1.large 인스턴스를 #개 만들 수 있는 여유밖에 없습니다. 지속적으로 인스턴스를 만들다 보니 컴퓨팅 리소스가 부족해진 것이지요.. 우선 급하게 nova-compute용 장비 집어넣고 가만히 상황을 살펴 보자니, 상황이 조금 이상합니다.</p>
+
+<p>m1.large의 인스턴스를 만들 메모리가 있는 하드웨어는 없지만, 전체 여유 메모리를 보면 충분히 m1.large를 수용할 만큼 남아있습니다.</p>
+
+<p>아래와 같은 상황을 봅시다.</p>
+
+<p><img src="https://docs.google.com/drawings/d/1dh0fy7raVF-zcFTQO9vXikOCdtgLvh-tkirE93KI-zU/pub?w=498&h=210"></p>
+
+<p>이 상황에서 메모리가 3G인 인스턴스 만든다면 Host D에 인스턴스를 만들 수 있습니다. 하지만 1G 인스턴스를 먼저 만들면 Host D에 인스턴스가 생성되어 아래처럼 됩니다.</p>
+
+<p><img src="https://docs.google.com/drawings/d/1JUMp1Hb4IImNjupH4c4LaENjPQfQP3eJRIwnVvMecrg/pub?w=498&h=210"></p>
+
+<p>다시 메모리 3G 인스턴스를 만든다면 3G 메모리가 여유있는 컴퓨팅 노드가 없기 때문에 인스턴스를 만들 수 없습니다. 하지만 메모리의 총량은 1+2+1+2=6G로 충분히 3G짜리 인스턴스를 2개 만들 수 있는데도 말입니다.</p>
+
+<p>이렇게 되는 이유는 nova-scheduler에서 인스턴스가 만들어질 호스트를 선택하는 scheduling을 이해하면 간단한 산수로 조정할 수 있습니다.</p>
+
+<h2>filter scheduler &amp; weigher</h2>
+
+<p><a href="http://docs.openstack.org/developer/nova/devref/filter_scheduler.html">nova developer documentation</a>의 아래 그림을 보면 쉽게 이해가 가능합니다.</p>
+
+<p><img src="http://docs.openstack.org/developer/nova/_images/filteringWorkflow1.png"></p>
+
+<p>nova-scheduler는 컴퓨트 노드 중에서 생성하려는 인스턴스를 위치시킬 호스트를 선택합니다. 대략 과정을 보면..</p>
+
+<p>첫 번째로 nova.conf의 scheduler_default_filters 설정된 필터로 위치시키면 안되는 호스트를 제외합니다. RamFilter는 메모리가 부족한 것을 제외.. ComputeFilter는 vCPU가 부족한 호스트를 제외합니다.</p>
+
+<p>두 번째로, 선택된 호스트 중에서 scheduler_weight_classes에 지정된 가중치를 준 후, 그 중에서 가장 높은 점수를 가진 호스트를 선택합니다.  기본값은 nova.scheduler.weights.all_weigher로 모든 weigher를 적용합니다. 하지만 weigher는 RAMWeigher만 존재하고, 즉 메모리만 가중치를 주게 되어있습니다. 즉 최종적으로는 아래처럼 가중치를 계산합니다.</p>
+
+<blockquote><p>weight = 1.0 x host.free_ram_mb</p></blockquote>
+
+<p>즉.. 인스턴스는 가장 메모리가 여유가 많은 호스트에 위치합니다. 이게 평균적으로 합리적인 것 같지만, 처음 이슈 제기처럼 총 메모리는 여유 있어도, 메모리가 많이 필요한 인스턴스를 만들 수 없습니다. ^^;</p>
+
+<h2>weigher를 조절</h2>
+
+<p>그럼 위 문제를 해결하기 위해서 1G의 작은 인스턴스는 메모리가 많이 할당된 것으로 보내는 방법으로 가면 어떨까요? 간단히 weighting을 메모리 역순으로 한다면?</p>
+
+<p>이 것도 문제가 발생하죠. 한 호스트에 인스턴스가 만들어지면, 해당 호스트는 메모리가 가장 작을 것이므로, 다음 인스턴스도 그 호스트에 만들어집니다. 결국 한 호스트의 메모리가 다 차면, 다음 호스트에 만드는 현상이 발생합니다. 문서에서는 spread와 stack으로 표현하고 있습니다.</p>
+
+<p>결국 이 것도 해결 방법이 아닙니다. 따라서 아래의 결론에 다다릅니다.</p>
+
+<ul>
+<li>메모리가 작게 필요한 인스턴스는 메모리가 작게 남은 호스트에 위치한다.</li>
+<li>메모리가 크게 필요한 인스턴스는 전과 같게 메모리가 큰 호스트에 위치한다.</li>
+</ul>
+
+
+<p>즉, 아래 그림처럼 1G 인스턴스를 Host A에 만들어서, Host B 또는 Host D에 만들어져, 3G 인스턴스를 만들 여유 메모리를 소모하지 않고, 다음에 Host B, D를 만들 수 있게 합니다.</p>
+
+<p><img src="https://docs.google.com/drawings/d/1r3CwVZ4IQKzWH-90ZmJpG5xeI4fbGlVtpKBz6ID8ZAI/pub?w=498&h=210"></p>
+
+<h2>RAMStackWeigher</h2>
+
+<p>이 것을 weigher로 만들면 아래처럼 몇 줄 안되는 weigher가 됩니다. 코드는 머 대충 돌아갑니다. ^^;</p>
+
+<pre><code>class RAMStackWeigher(weights.BaseHostWeigher):
+  def _weight_multiplier(self):
+    return 1.0
+
+def _weigh_object(self, host_state, weight_properties):
+  instance_type = weight_properties['instance_type']
+  instance_memory_mb = instance_type['memory_mb']
+  free_ram_mb = host_state.free_ram_mb
+
+  if instance_memory_mb &gt; CONF.ram_weight_stack_min:
+    return free_ram_mb
+  else:
+    if free_ram_mb &lt;= CONF.ram_weight_stack_host_free_ram:
+      return - free_ram_mb
+    else:
+      return free_ram_mb - CONF.ram_weight_stack_host_free_ram - (1024 * 256)
+[/code]
+</code></pre>
+
+<p>참고) weigher는 모든 호스트에 대해서 _weigh_object를 호출하고 _weight_multiplier 순으로 호출됩니다.</p>
+
+<p>scheduler_weight_classes는 ListOpt 이므로 다른 weight를 주고 싶다면, 다른 weigher를 만들어서 옵션에 등록하면 됩니다.</p>
+
+<h2>결론&hellip;</h2>
+
+<p>기본 nova-scheduler는 평등을 지향합니다. 평등은 좋은 것 처럼 보이지만, 자원을 효율적으로 사용하지는 못하는 문제가 있습니다. 효율화를 위해서는 약간(?)의 차별은 필요합니다.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1474">Libvirt LIEFCYCLE_EVENT</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-01-22T00:00:00+09:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>22</span><span class='date-suffix'>nd</span>, <span class='date-year'>2014</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>nova-compute 로그 파일에 life cycle event가 숫자로 나오는데.. 이거 찾아보기 귀찮아서</p>
+
+<pre><code>EVENT_LIFECYCLE_STARTED = 0
+EVENT_LIFECYCLE_STOPPED = 1
+EVENT_LIFECYCLE_PAUSED = 2
+EVENT_LIFECYCLE_RESUMED = 3
+</code></pre>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1467">Openvswitch Bridge에 Vlan Port 추가</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2013-12-17T00:00:00+09:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>17</span><span class='date-suffix'>th</span>, <span class='date-year'>2013</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>OpenVSwitch는 기본으로 trunk 모드로 동작한다. 이 경우 특정 vlan에 대한 interface를 추가하는 작업은.. 아래처럼.</p>
+
+<pre><code>$ ovs-vsctl add-port &lt;bridge&gt; &lt;port&gt; tag=&lt;vlan-id&gt; \
+    --- set Interface &lt;port&gt; type=internal
+</code></pre>
+
+<p>ex</p>
+
+<pre><code>$ ovs-vsctl add-port br0 vlan1000 tag=1000 \
+    --- set Interface vlan1000 type=internal
+</code></pre>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1417">Quantum Lbaas</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2013-12-11T00:00:00+09:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2013</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>create pool</p>
+
+<pre><code>$ NET_ID=e5768970-4e96-467d-9be1-e0e0b789f025
+$ quantum lb-pool-create --name test --lb-method \
+  ROUND_ROBIN --protocol TCP --subnet-id=$NET_ID
+
+quantum lb-pool-list
++--------------------------------------+------+-------------+----------+----------------+----------------+
+| id                                   | name | lb_method   | protocol | admin_state_up | status         |
++--------------------------------------+------+-------------+----------+----------------+----------------+
+| 044208a8-9e29-4fee-b41b-9b58567f3874 | test | ROUND_ROBIN | TCP      | True           | PENDING_CREATE |
++--------------------------------------+------+-------------+----------+----------------+----------------+
+</code></pre>
+
+<p>create vip</p>
+
+<pre><code>$ quantum lb-vip-create --name test-vip1 --protocol-port 80 --protocol TCP --subnet-id=$NET_ID test
+$ quantum lb-vip-list
++--------------------------------------+-----------+-------------+----------+----------------+--------+
+| id                                   | name      | address     | protocol | admin_state_up | status |
++--------------------------------------+-----------+-------------+----------+----------------+--------+
+| 515fa2c5-a135-4b59-b247-803e844383f1 | test-vip1 | 10.10.100.5 | TCP      | True           | ACTIVE |
++--------------------------------------+-----------+-------------+----------+----------------+--------+
+</code></pre>
+
+<p>여기서 pool도 status가 ACTIVE로 바뀌고.. lbaas가 동작하는 노드에 qlbaas- 로 ip namespace가 생긴다.</p>
+
+<p>생성된 vip에&hellip; 다른 port로 만들면 오류가 발생</p>
+
+<pre><code>$ quantum lb-vip-create -name test-vip-https -protocol-port 443 -protocol TCP -subnet-id=$NET_ID test -address=10.10.100.5
+Another Vip already exists for pool 044208a8-9e29-4fee-b41b-9b58567f3874
+</code></pre>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1182">Kvm: Linux Bridge 대신 Openvswitch 사용하기</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2013-12-11T00:00:00+09:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2013</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>/etc/default/openvswitch-switch</p>
+
+<pre><code>BRCOMPAT=yes
+</code></pre>
+
+<p>bridge 호환 모듈, 데몬</p>
+
+<pre><code>$ apt-get install openvswitch-brcompat
+</code></pre>
+</div>
+  
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+      <a class="prev" href="/posts/3">&larr; Older</a>
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/index.html">Newer &rarr;</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/keystone-bootstrap/">Keystone Bootstrap</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/neutron-default-security-group/">Neutron Default Security Group</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1550">클라우드 네트워킹과 SDN 그리고 OpenStack</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Choe, Cheng-Dae -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,708 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Your wish is my command</title>
+  <meta name="author" content="Choe, Cheng-Dae">
+
+  
+  <meta name="description" content="postfix mail archiving을 진행하면서 메시지 헤더를 처리할 일이 생겼지요. 보내는 사람에 따라서 archiving을 하지 않으려구오. 뭐&hellip; cron에서 보내는거 daily 체크 메일등등 저장할 필요 없잖아요. 그런데 이거 하다보니 헤더 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://whitekid.github.io/posts/21/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Your wish is my command" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Your wish is my command</a></h1>
+  
+    <h2>It&#8217;s a long journey</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="whitekid.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/367">Python Email Header 인코딩 오류 수정l</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-08-25T00:00:00+09:00'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>25</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><a href="/2010/08/postfix-mail-archiving/">postfix mail archiving</a>을 진행하면서 메시지 헤더를 처리할 일이 생겼지요. 보내는 사람에 따라서 archiving을 하지 않으려구오. 뭐&hellip; cron에서 보내는거 daily 체크 메일등등 저장할 필요 없잖아요.</p>
+
+<p>그런데 이거 하다보니 헤더 디코딩이 안된 것들이 간간히 들어옵니다. 언듯 봐서는 잘된것 처럼 보이는데 그래서 좀 찾아보니 python의 오류가 아니고, 아예 잘못된 헤더랍니다.</p>
+
+<pre><code>=?UTF-8?B?6rmA7ZiV7ISd?=&lt;&lt;XXXX@naver.com&gt;&gt;'
+=?UTF-8?B?6rmA7ZiV7ISd?= &lt;&lt;XXXX@naver.com&gt;&gt;'
+</code></pre>
+
+<p>첫번째 것은 잘못 인코딩 된 것이고, 두번째 것은 제대로 인코딩 된 것입니다.<a href="http://bugs.python.org/issue8132"> RFC에 따르면 &ldquo;?=&rdquo; 다음에 스페이스를 넣게 되어있다는군요</a>.</p>
+
+<p>그래서 이거 해결하는 코드 간략하게 만들어 봤습니다. 아주 간단!!</p>
+
+<pre><code>def decode_header(s):
+    ret = []
+    for header, encoding in email.header.decode_header(s):
+        if (encoding is None) and re.search(r'\?=.+', header):
+            header = re.sub(r'([^\?.]{2})(\?=)(.{1})', r'\1\2 \3', header)
+            ret.extend(email.header.decode_header(header))
+            continue
+        ret.append((header, encoding))
+    return ret
+</code></pre>
+
+<p>근데.. 이런 오류는 꼭 NAVER에서 온 메일만 그래요&hellip; ㅡㅡ</p>
+
+<p>ps. re.sub에서 [a-zA-Z0-9]는 \w로 바꿀 수 있다구요? 예 유니코드 환경이 아니면 맞는 이야기인데, 유니코드면 약간 다르더군요. Python 메뉴얼에는 이렇게 나와있습니다.</p>
+
+<blockquote><p>\w
+When the LOCALE and UNICODE flags are not specified, matches any alphanumeric character and the underscore; this is equivalent to the set [a-zA-Z0-9_]. With LOCALE, it will match the set [0-9_] plus whatever characters are defined as alphanumeric for the current locale. If UNICODE is set, this will match the characters [0-9_] plus whatever is classified as alphanumeric in the Unicode character properties database.</p></blockquote>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/354">Postfix Mail Archiving</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-08-24T00:00:00+09:00'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>24</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><a href="/2010/08/postfix-outgoing-mail-moderation/">메일을 보낼때 검토</a>받아서 보내는 부분은 보류되었습니다. 역시나 하나가 끝나면 하나가 다시 오는법&hellip; 검토는 하지않지만 주고받은 메일을 archiving하는 것으로 선회했습니다. moderation은 영 정말로 껄그럽지만, archiving은 그보다는 좀 낫네요.</p>
+
+<p>가장 간단한 방법은 모든 <a href="http://www.postfix.org/postconf.5.html#always_bcc">always_bcc</a>으로 모든 메일 메시지를 특정 계정으로 보내면 됩니다. archiving용 계정 하나 만들고 모두 보내면 되니깐 편하겠지요.</p>
+
+<p>그런데 모든 메일입니다. archiving에 필요없는 메시지도 가는 것이지요. 뭐 메일 root@로 날아오는 관리일이나 각종 보안 검사메일, cron 명령 메일등등 이런것을 굿이 archiving할 필요가 없는데 말입니다. 그래서 가장 간단하지만 always_bcc를 사용하지 않기로하고, 그런 다음에 눈에 들어온게 content_filter입니다.</p>
+
+<p>content_filter를 만들어서 거기서 메일을 저장하면 되겠지요. 간단한 내용이지만 이거 메커니즘 이해하느라 상당히 고생했습니다. <a href="http://www.postfix.org/FILTER_README.html">postfix 샘플</a>대로 하니 안됩니다. 계속 loop를 돌아서 에러를&hellip; ㅡㅜ;</p>
+
+<h2>설정</h2>
+
+<p>archiver 필터를 archiver라고 하면</p>
+
+<p>main.cf:</p>
+
+<pre><code>content_filter = archiver
+</code></pre>
+
+<p>이제 모든 메시지는 archiver 서비스를 통해서 전달됩니다.</p>
+
+<p>master.cf:</p>
+
+<pre><code>archiver   unix -       n       n       -       10      pipe
+   flags=Rq user=whitekid null_sender=
+   argv=/usr/local/bin/python /home/whitekid/work/postfix-archiver/archiver.py 127.0.0.1 20026 ${sender} ${recipient}
+
+127.0.0.1:20026 inet n - - - - smtpd
+        -o content_filter=
+        -o receive_override_options=no_unknown_recipient_checks,no_header_body_checks,no_milters
+        -o smtpd_helo_restrictions=
+        -o smtpd_client_restrictions=
+        -o smtpd_sender_restrictions=
+        -o smtpd_recipient_restrictions=permit_mynetworks,reject
+        -o mynetworks=127.0.0.0/8
+        -o smtpd_authorized_xforward_hosts=127.0.0.0/8
+</code></pre>
+
+<ul>
+<li>archiver 서비스에서 필터를 실행합니다.</li>
+<li>그리고 파라미터들은 필터를 처리하고 난 다음의 action들을 지정하는데 archiver 필터를 처리한 후 127.0.0.1:20026 서비스를 호출하기 위해 파라미터를 전달해줍니다. 이 파라미터는 archiver.py에서 받아서 다음 서비스에 전달합니다. 아래 서비스가 smtpd이므로 smtp로 메일을 보내는 것 처럼 합니다.</li>
+</ul>
+
+
+<p>content_filter -(pipe)-> archiver -(smtp)-> 127.0.0.1:20026 의 순서로 메시지가 전달됩니다.</p>
+
+<h2>archiver.py</h2>
+
+<p>이제 archiver.py의 대략적인 소스를 보면&hellip;</p>
+
+<pre><code>import sys
+import smtplib
+import email
+
+EX_OK   = 0
+EX_TEMPFAIL = 75
+EX_UNAVAILABLE = 69
+
+def main():
+    host, port, sender, recipient  = sys.argv[1], int(sys.argv[2]), sys.argv[3], sys.argv[4:]
+    msg = email.message_from_string(sys.stdin.read())
+    msg['X-Archive-Status'] = 'Archived'
+
+    server = smtplib.SMTP(host, port)
+    for r in recipient:
+        server.sendmail(sender, r, msg.as_string())
+    server.quit()
+
+if __name__ == '__main__':
+    try:
+        main()
+        sys.exit(EX_OK)
+    except Exception, e:
+        print e
+        sys.exit(EX_TEMPFAIL)
+</code></pre>
+
+<p>내용은 아주 간단합니다. stdin에서 받은 내용에서 약간의 메시지 조작을 하고, 그 메시지를 다시 파라미터로 받은 smtp로 연결해서 넘김니다. 자 이렇게고 maillog를 보면</p>
+
+<pre><code>Aug 24 14:23:39 freebsd postfix/qmgr[22880]: 537F51705A: from=&lt;root@freebsd.woosum.net&gt;, size=1013, nrcpt=1 (queue active)
+Aug 24 14:23:39 freebsd postfix/pipe[22890]: 3D3E217030: to=&lt;whitekid@freebsd.woosum.net&gt;, relay=archiver, delay=0.1, delays=0.01/0.01/0/0.09, dsn=2.0.0, status=sent (delivered via archiver service)
+Aug 24 14:23:39 freebsd postfix/qmgr[22880]: 3D3E217030: removed
+Aug 24 14:23:39 freebsd postfix/local[22894]: 537F51705A: to=&lt;whitekid@freebsd.woosum.net&gt;, relay=local, delay=0.01, delays=0.01/0/0/0, dsn=2.0.0, status=sent (delivered to mailbox)
+Aug 24 14:23:39 freebsd postfix/qmgr[22880]: 537F51705A: removed
+</code></pre>
+
+<p>음 archiver 서비스를 이용해서 mailbox가지 간게 보이나요? 보이면 OK!</p>
+
+<h2>amavisd-new와 공존</h2>
+
+<p>amavisd도 content_filter를 사용합니다. 그런데 이게 2개가 적용되지 않습니다. content_filter는 1개인것이고, 이게 chain으로 역여서 돌아가는 것이지요. 이렇게 chain에 넣어야하는데, 그건 간단하게&hellip;</p>
+
+<pre><code>amavis unix - - - - 2 smtp
+   -o smtp_data_done_timeout=1200
+   -o smtp_send_xforward_command=yes
+
+127.0.0.1:10025 inet n - - - - smtpd
+-o content_filter=archiver
+</code></pre>
+
+<p>처럼 content_filter에 archiver를 넣어주면 됩니다.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/343">Postfix Outgoing Mail Moderation</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-08-20T00:00:00+09:00'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>20</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>이메일 서버를 postfix를 사용하고 있습니다. 이런 중에 외부로 나가는 메일을 허락받고 보내는 솔루션을 검토할 필요가 생겼습니다. MS Outtlook에서는 email modeeration이라는 기능으로 이무 구현이 되어있더군요. 그런데 postfix용으로 이런게 있는지 뒤져보는데, 역시나 없습니다. 물론 하고자하는 일이 영 껄그런기능이라 그런지 그런 질문에 부정적인 답볃도 많구요. CCTV를 설치하고 감시하는게 어떠냐는 등등.. ^^;</p>
+
+<p>어찌되었던간 postfix로 간단하게 구현했습니다.</p>
+
+<p>smtpd_data_restriction에서 check_policy_service를 이용해서 처리하고, 검토되어야하는 메일일 경우에는 메시지를 HOLD하고 moderator에게 확인 메시지를 보내고 그 결과에 따라서 처리합니다.</p>
+
+<h2>main.cf:</h2>
+
+<pre><code>smtpd_data_restrictions = check_policy_service unix:private/moderation
+</code></pre>
+
+<p>smtp_data_restriction을 이용한건 다른 곳에서는 해당 메시지의 queue id가 넘어오지 않아서 입니다.</p>
+
+<h2>master.cf:</h2>
+
+<pre><code>moderation         unix  -      n       n       -       0       spawn
+ user=nobody argv=/usr/local/bin/python /home/whitekid/work/postfix-moderation/postfix-moderation.py
+</code></pre>
+
+<p>이렇게 주면 smtp에서 데이터가 넘어올때 master.cf에 설정된 moderation 서버스에 의해서 메시지가 처리됩니다.</p>
+
+<h2>posfix-moderation.py</h2>
+
+<p>postfix-moderation.py는 smtpd policy 서비스를 하는 것으로 자세한 프로토콜은 <a href="http://www.postfix.org/SMTPD_POLICY_README.html">Postfix 웹사이트</a>에 있습니다. sender, recipient를 읽어서 외부로 나가는지 확인하고 정상적이면 action=dunno를 아니면 action=hold를 리턴하면 됩니다. 소스는 아주 간단합니다. 약 주석을 포함해서도 100줄 정도 되는군요</p>
+
+<p>여기서 hold된 상태들은 PostgreSQL에 관리된 DB에 들어갑니다(간단한 것이라 SQLite등 보다 가벼운 것으로 할 수 있지만, PostgreSQL이 설치되 사용중이라 그걸로 했습니다.).</p>
+
+<h2>cron.py:</h2>
+
+<p>이렇게 DB에 메시지들이 설정되면 cron.py에서 메일 보내가나 큐를 조작하는 일들을 합니다. 1분 간격으로 실행되면서 DB를 검토해서 새로운 검토가 필요한 메시지면 moderator에 메시지를 보내고, moderator가 allow 또는 deny한 것들을 처리힙니다.</p>
+
+<p>큐에서 postcat -bh [queue_file]을 이용해서 큐의 메시지를 이메일 메시지로 얻어오고 이 정보로 확인하죠.</p>
+
+<pre><code>email.message_from_file(os.popen('/usr/local/sbin/postcat -bh /var/spool/postfix/hold/%s' % queue_id))
+</code></pre>
+
+<p>또 문제되었던게 원본 메시지를 포함하여 moderator에게 메일을 보내는 건데..</p>
+
+<pre><code>def attach_message(msg, attach):
+    base = MIMEBase('message', 'rfc822')
+    base.attach(attach)
+    msg.attach(base)
+
+msg = MIMEMultipart()
+msg['From'] = 'moderation@' + MY_DOMAIN
+msg['To'] = moderator
+msg['Subject'] = u'[메일 전송 확인] %s' % subject
+msg.attach(MIMEText(message.encode('utf-8'), _subtype='html', _charset='utf-8'))
+
+attach_message(msg, orig_message)
+server = smtplib.SMTP()
+server.connect('localhost')
+server.sendmail('moderation@' + MY_DOMAIN, moderator, msg.as_string())
+server.close()
+</code></pre>
+
+<p>이런식으로 보냅니다.</p>
+
+<p>메일 큐 조작은 postsuper를 이용하면 됩니다. -H 옵션은 홀드된 메시지를 다시 보내는 것이고, -d 옵션은 큐를 지웁니다. 따라서 allow된 것은 release하고 postqueue -i [queue_id]로 바로 보내도록 설정합니다.</p>
+
+<h2>cgi/moderate.py</h2>
+
+<p>cron에서 moderator에게 메일을 보내면 여기에는 allow/deny 링크가 포함됩니다. moderator는 이 링크를 이용해서 메일을 허락 또는 거부하죠.</p>
+
+<p>물론 여기에서는 DB를 조작하는 것 빼고는 아무것도 없습니다. 당연히 모든 작업은 cron.py에서 하니깐요.</p>
+
+<pre><code>Alias /moderate "/home/whitekid/work/postfix-moderation/cgi/moderate.cgi"
+
+&lt;Directory "/home/whitekid/work/postfix-moderation/cgi"&gt;
+ AddHandler cgi-script .cgi
+ Options NONE +ExecCGI
+ Order allow,deny
+ Allow from all
+&lt;/Directory&gt;
+</code></pre>
+
+<p>정신없이 대충 적어서 무슨 말인지 도저히 저도 모르겠군요. ^^; 소스요? 그건 좀 소스정리좀 하구요&hellip;</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/336">Windows 7 Keyboard Shortcuts to Increase Productivity</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-07-27T00:00:00+09:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>27</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><a href="http://www.hongkiat.com/blog/windows-7-keyboard-shortcuts-to-increase-productivity/">Windows7 단축키</a> 중에서 내가 필요한 몇 가지</p>
+
+<p>Win + Shift + Left Arrow Jump to left monitor
+Win + Shift + Right Arrow Jump to right monitor
+Ctrl + Shift + N Create new folder</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/334">PPT작업시 파워포인트를 다중창으로 열기</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-07-21T00:00:00+09:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>21</span><span class='date-suffix'>st</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>도데체 왜? PPT는 하나만 편집하라는 거냐구!!! Copy&amp;Paste하지 말라는 이야기? 아님 뭐냐구!</p>
+
+<p><a href="http://towis.net/2690208">PPT작업시 파워포인트를 다중창으로 열기</a>.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/331">How Does Firefox Version 3 Invoke the Anti-virus Feature on Windows to Scan a Download? - Stack Overflow</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-07-21T00:00:00+09:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>21</span><span class='date-suffix'>st</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><a href="http://msdn.microsoft.com/en-us/library/bb776297%28VS.85%29.aspx">IAttachmentExecute</a>를 사용하면 <a href="http://stackoverflow.com/questions/3295478/how-does-firefox-version-3-invoke-the-anti-virus-feature-on-windows-to-scan-a-dow">바이러스 스캐닝</a>을 할 수 있다는구나. 하지만 <a href="http://stackoverflow.com/questions/3292216/execute-antivirus-program-programmatically-using-delphi">대부분의 AntiVirus 소프트웨어들이 파일을 접근할 때 자동으로 검사하기 때문에 그냥 놔두라는 의견</a>이 대세인듯.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/315">FreeBSD 8.1 Release?</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-07-19T00:00:00+09:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>19</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><img src="/images/freebsd-8.1-release.png""></p>
+
+<p>기념 빌드 중&hellip;</p>
+
+<p>덧) 블드 해봤는데&hellip;</p>
+
+<pre><code>[whitekid@10446 ~]$ uname -a
+FreeBSD woosum.net 8.1-PRERELEASE FreeBSD 8.1-PRERELEASE #0: Tue Jul 20 11:56:57 KST 2010     root@10446.woosum.net:/usr/obj/usr/src/sys/GENERIC  i386
+[whitekid@10446 ~]$
+</code></pre>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/306">Firefox 4.0 Beta 1 설치</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-07-19T00:00:00+09:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>19</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><a href="http://twitter.com/channyun/status/18759272027">channy님의 트윗</a>을 보고 생각난김에 <a href="http://developer.mozilla.org/devnews/index.php/2010/07/06/firefox-4-beta-1-available-for-download/">Firefox 4.0 Beta 1을 설치</a>했습니다. 뭐 저야 리뷰어는 아니니 그냥 간단하게&hellip;</p>
+
+<ul>
+<li>탭이 아주 깔끔하네요. <img src="/images/firefox4-b1-toolbar-300x43.png"></li>
+<li>메뉴바를 숨길 수 있는 기능이 있군요. 메뉴바 솔직히 많이 볼 필요는 없었는데, 좋습니다. 3.6에서 Add-on으로 해결했는데, 이젠 기본 기능, 메뉴바가 안보일 땐 위의 그림처럼 Firefox 버튼이 생깁니다.</li>
+<li>역시나 호환안되는 Add-on이 많습니다. 시간이 해결하겠죠.</li>
+<li>Add-on 페이지가 확 바뀌었군요. 적응하려면 시간이 걸리겠네요.<img src="/images/firefox4-b1-addon-150x150.png"></li>
+<li>왠지 속도가 빨라진 것 같습니다(몇몇 add-on이 disable되어서 그럴지도 모르지요).</li>
+</ul>
+
+
+<p>나머지는 좀 더 써보면서&hellip;</p>
+
+<ul>
+<li>글을 쓰는데 오타난 곳에 빨간 물결 모양이 나타나는 군요. 한글은 아무런 영향도 없네요. <img src="/images/firefox4-b1-spell-check1.png"></li>
+</ul>
+
+
+<p>추가)</p>
+
+<ul>
+<li>이전엔 탭 위치 이동할때 화살표 가이드가 나온것 같은데, 이제는 안보이네요.</li>
+<li>갑자기 특정 며며 키가 안먹는 ㄷㅇ작이 발생합니다. (인ㅉㄱ글은 ㅇ타가 아닙니다. 정학하게 입력하는데, firefox에서 안먹ㅇ요. 줏입력 란엗 안먹는거 ㅂ니 firefox의 문제가 학실합니다.)</li>
+</ul>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/292">Delphi IDE에서의 정규식&#8230;</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-07-16T00:00:00+09:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>16</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><pre><code>hi=:param
+</code></pre>
+
+<p>을</p>
+
+<pre><code>hi = :param
+</code></pre>
+
+<p>으로 변경하고 싶습니다. 정규식을 써야겠지요? 그래서 Replace에서 정규식을 적었더니 이상하게 잘 못 찾습니다. 도움말을 봤죠. 그랬더니 약간 제가 알고 있던 정규식과는 이상한 부분이 있데요.</p>
+
+<blockquote><p>{ } Braces group characters or expressions. Groups can be nested, with a maximum number of 10 groups in a single pattern. For the Replace operation, groups are referred to by a backslash and a number, according to the position in the &ldquo;Text to find&rdquo; expression, beginning with 0. For example, given the text to find and replacement strings, Find: {[0-9]}{[a-c]*}, Replace: NUM\1, the string 3abcabc is changed to NUMabcabc.</p></blockquote>
+
+<p>그냥 괄호&#8221;()&ldquo;를 쓰는게 일반적인 정규식으로 알고 있었는데, 여기선 중괄호&rdquo;{}&ldquo;를 사용하네요.</p>
+
+<blockquote><p>Text to find: {[a-zA-Z]}=:{[a-zA-Z]}
+Replace with : \0 = :\1</p></blockquote>
+
+<p><img src="/images/delphi-ide-replace-regex-300x238.png"></p>
+
+<p>ps 1. 그리고 IDE 검색기능에 전체 프로젝트 파일에서 찾는것까진 정말 좋습니다. 그런데 여기서 추가로 찾은 것에 대해서 바꾸기나 프로젝트 전체에서 바꾸기 그런거 있으면 좋겠네요. 또한 dfm 파일에서도 찾을 수 있으면 좋겠네요.</p>
+
+<p>물론 다른 에디터를 실행해서 할 순 있지만, 귀찮을 때가 있어요.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/301">Delphi의 새로운 라이센스 정책</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-07-16T00:00:00+09:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>16</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>델파이의 라이센스 정책에 <a href="http://blog.marcocantu.com/blog/delphi_toolcloud_many_versions.html">새로운 라이센스 타입이 추가</a>되었다는군요. 이름 재밌네요 TagCloud 라이센스. 뭐. 대략 읽어본 봐로는 하나의 라이센스를 가지면 Delphi 2007, Delphi 2010을 모두 설치할 수 있다고 합니다. 물론 일반 라이센스보다 25% 비싸답니다.</p>
+
+<p>이거 참 반가운 일입니다.</p>
+
+<p>새로운 버전의 기능을 쓰고싶은데, 라이센스 부담으로 설치못하고, 지금 것도 잘 되잖아라는 것에 반박할 거리 찾아내고.</p>
+
+<p>새로운 버전으로 마이그레이션 하고 싶은데, 트라이얼 버전에 제한된 시간으론 완벽한 테스트가 불가능하고,</p>
+
+<p>이러한 문제점을 일거에 해결할 수 있겠군요. 그런데.. 다른 새로운 버전이 나왔을 경우도 적용되는지에 대해선 언급이 없어 아쉽네요.</p>
+
+<p>덧) 제가 잘못 알고 있었던 것도 있었군요. 자세한 것은 임프님 댓글로 <a href="http://www.borlandforum.com/impboard/impboard.dll?action=read&amp;db=free&amp;no=18437">http://www.borlandforum.com/impboard/impboard.dll?action=read&amp;db=free&amp;no=18437</a></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+      <a class="prev" href="/posts/22">&larr; Older</a>
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/posts/20">Newer &rarr;</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/keystone-bootstrap/">Keystone Bootstrap</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/neutron-default-security-group/">Neutron Default Security Group</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1550">클라우드 네트워킹과 SDN 그리고 OpenStack</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Choe, Cheng-Dae -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

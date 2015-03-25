@@ -1,0 +1,392 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Quantum Provider Network - Your wish is my command</title>
+  <meta name="author" content="Choe, Cheng-Dae">
+
+  
+  <meta name="description" content="Provider Network은 문서상에 나와있는 내용을 그대로 빌리자면, OpenStack 네트워킹 네트워크를 데이터 센터의 physical network와 직접적으로  mapping하는 네트워크 입니다. 즉, 데이터 센터에서 제공하는 네트워크를 바로 tenant &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://whitekid.github.io/archives/1351">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Your wish is my command" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Your wish is my command</a></h1>
+  
+    <h2>It&#8217;s a long journey</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="whitekid.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Quantum Provider Network</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2013-07-23T00:00:00+09:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>23</span><span class='date-suffix'>rd</span>, <span class='date-year'>2013</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><a href="http://docs.openstack.org/trunk/openstack-network/admin/content/provider_networks.html">Provider Network</a>은 문서상에 나와있는 내용을 그대로 빌리자면, OpenStack 네트워킹 네트워크를 데이터 센터의 physical network와 직접적으로  mapping하는 네트워크 입니다. 즉, 데이터 센터에서 제공하는 네트워크를 바로 tenant network에 사용하는 것입니다.</p>
+
+<p>일반적으로 데이터센터에서 제공하는 네트워크는 vlan으로 구분하여 제공하게 됩니다. 이런 상황에서 하나의 vlan을 하나의 tenant에 전용으로 할당하는 것은 효율적이지 않습니다. 이는 vlan이라는 성격상 4096개의 제한도 있겠지만, 데이터 센터의 네트워크 계획에 따라서 vlan을 할당하므로 사용자가 직접 네트워크를 만드는 모델은 적합지 안습니다. provider network 생성 자체를 admin 권한으로 생성하는 것이 아마 이것과 관련있을지 모르겠습니다.</p>
+
+<p>물론 보안 요구사항등의상황에 따라서 특정 provider network을 특정 tenant에 할당하여 사용할 수 있지만, 이 경우는 ip address 낭비를 위하여 subnet mask를 적절히 조절해야 되겠습니다.</p>
+
+<p>provider network으로 네트워크를 디자인한다면&hellip;</p>
+
+<ul>
+<li>vlan 4개를 24비트로 데이터 센터에서 할당 받음
+
+<ul>
+<li>vlan 100: 10.10.100.0/24</li>
+<li>vlan 101: 10.10.101.0/24</li>
+<li>vlan 200: 10.10.200.0/24</li>
+<li>vlan 201: 10.10.201.0/24</li>
+</ul>
+</li>
+<li>각 vlan의 gateway는 각 주소의 1번(e.g. 10.10.100.1)으로 설정됨</li>
+<li>admin 계정으로 각 vlan에 해당되는 네트워크를 provider network으로 생성</li>
+<li>tenant들이 해당 네트워크에 인스턴스를 만들 수 있다록 shared network으로 생성</li>
+</ul>
+
+
+<p>이를 하기 위한 physical node의 네트워크 연결은 network, compute 노드 모두</p>
+
+<ul>
+<li>eth0: management</li>
+<li>eth1: vlan tagging 100, 101, 200, 201, 물론 해당 gateway까지 연결 가능해야함.</li>
+</ul>
+
+
+<p>그리고 shard network을 사용하고, private network을 사용하지 않기 때문에 l3-agent는 사용하지 않습니다. 그렇기 때문에 private network을 사용했을 때와 같이 external network용 NIC가 필요없습니다.</p>
+
+<h2>OpenStack Settings</h2>
+
+<p>/etc/quantum/plugins/openvswitch/ovs_quantum_plugin.ini</p>
+
+<pre><code>tenant_network_type = vlan
+network_vlan_ranges = default:100:101,default:200:201
+bridge_mappings=default:br-eth1
+</code></pre>
+
+<h3>tenant_network_type = vlan</h3>
+
+<p>provider network으 vlan으로 제공되기 때문에 vlan으로 설정합니다.</p>
+
+<h3>network_vlan_ranges = default:100:101,default:200:201</h3>
+
+<p>데이터 센터의 상황에 따라서는 연속적인 vlan을 사용할 수 없을 수 있습니다. 그런 경우를 테스트하기 위해서 위처럼 따로 떨어진 범위의 vlan을 설정해봤으며, 이 두 개를 설정하는 것은 위의 예제처럼 컴마(,)로 분리하면 됩니다.</p>
+
+<h3>bridge_mappings=default:br-eth1</h3>
+
+<p>network_vlan_range에서 설정한 네트워크가 어떤 ovs bridge와 mapping이 될 지 설정합니다. 이 bridge는 openvswitch-agent에서 자동으로 만들어지므로, 별도의 작업은 필요 없습니다.</p>
+
+<h2>Create Network</h2>
+
+<p>provider network은 admin 권한으로만 생성이 가능합니다. 따라서 admin user에서 생성합니다. 그리고 provider network은 horizon에서 만드는 기능이 없습니다. quantum cli로 아래처럼 만듭니다.</p>
+
+<p>vlan tag 번호와, -shared 옵션을 확인하기 바랍니다.</p>
+
+<pre><code>$ quantum net-create pub100 -provider:network_type vlan -provider:segmentation_id=100 -shared
+$ quantum net-create pub101 -provider:network_type vlan -provider:segmentation_id=101 -shared
+$ quantum net-create pub200 -provider:network_type vlan -provider:segmentation_id=200 -shared
+$ quantum net-create pub201 -provider:network_type vlan -provider:segmentation_id=201 -shared
+</code></pre>
+
+<p>그리고 만들어진 네트워크에 아래처럼 subnet을 할당합니다.</p>
+
+<pre><code>$ quantum subnet-create pub100 10.10.100.0/24
+$ quantum subnet-create pub101 10.10.101.0/24
+$ quantum subnet-create pub200 10.10.200.0/24
+$ quantum subnet-create pub201 10.10.201.0/24
+</code></pre>
+
+<p>subnet을 생성할 때는, 반드시 데이터 센터에서 할당핟은 network cidr을 잘 맞춰서 생성해야 합니다.</p>
+
+<p>일반 사용자에서 quantum net-list 명령으로 보면 shared network이기 때문에 방금 생성한 네트워크의 정보를 확인할 수 있습니다.</p>
+
+<pre><code>$ quantum net-list
++-------------------------------------+-------+----------------------------------------------------+
+| id | name | subnets |
++-------------------------------------+-------+----------------------------------------------------+
+| 546f14c5-b837-41ef-964a-0eba46aa23f9 | pub101 | 34b28d6f-5398-46ed-ba9e-f848ef6269b0 10.10.101.0/24 |
+| 7b455fae-a2a5-4204-b04a-4859f335580d | pub100 | 238340a8-7d9c-4a5b-ac34-d8047e1c3f5a 10.10.100.0/24 |
+| ce24e1ec-f256-4d81-b99d-668847d7a472 | pub200 | 48df6481-b952-4c92-a8f3-6293ecb4186c 10.10.200.0/24 |
+| fc427218-8244-4284-b68c-d3429c8cccec | pub201 | 82274a91-95fb-42cf-895e-e70efff4b062 10.10.201.0/24 |
++-------------------------------------+-------+----------------------------------------------------+
+</code></pre>
+
+<p>물론 shared network이므로 network의 subnet 정보도 확인 할 수 있습니다.</p>
+
+<h2>Create Instance</h2>
+
+<p>Instance를 생성하는 것은 동일합니다.</p>
+
+<p>다만, 여기서는 생성할 수 있는 네트워크가 4가지가 되는데, 사용가자 생성할 때 4가지 중에 하나의 네트워크를 선택해야합니다. 개인적인 의견으로는 아무 네트워크나 자동으로 골라서 만들어주는 옵션이 있으면 좋겠는데, 아직 그런 기능이 없군요.</p>
+
+<p>뭐, 간단한 스크립팅으로 가능은 하겠지만요..</p>
+
+<h2>Metadata problem&hellip;</h2>
+
+<p>인스턴스는 잘 생성이 됩니다. dhcp에서도 ip를 잘 받아옵니다. 그런데 ssh로 연결이 안됩니다. 인스턴스 로그에서 보면 바로 확인할 수 있는데, metadata를 받아오지 못하기 때문입니다.</p>
+
+<p>private network을 사용했던 경우에는 l3-agent가 동작하는 tenant의 default gateway에서 169.254.169.254/32로 가는 요청을 잡아서 quantum-metadata-agent로 보내고, 여기서 다시 nova-api에서 서비스되는 메타데이터 서버로 proxy를 하는 작업을 거칩니다.</p>
+
+<p>그런데 여기서 생성했던 provider network은 l3-agent가 없습니다. 즉, 169.254.169.254로 가는 트래픽은, 데이터 센터에서 제공해주는 physical 라우터로 향하게 됩니다. OpenStack이 관할하는 곳을 벗어나서, metadata를 얻어오지 못하는 것이죠.</p>
+
+<p>그런데, 이 경우에도 대비해서 quantum을 잘 살펴보면 dhcp-agent에서 metadata-ns-metadata-proxy를 띄울 수 있는 옵션이 있습니다.</p>
+
+<h3>dhcp_agent에서 quantum-ns-metadata-proxy 띄우기</h3>
+
+<p>설정은 간단합니다. 아래처럼 설정해주고,</p>
+
+<p>/etc/qantum/dhcp_agent.ini:</p>
+
+<pre><code>enable_isolated_metadata = True
+</code></pre>
+
+<p>설정하고, dhcp-agent를 재시작한 후, dhcp-agent가 동작하는 namespace를 보면 아래처럼 169.254.169.254/16 이라는 ip address가 설정된 것을 확인할 수 있습니다.</p>
+
+<pre><code>$ ip netns exec qdhcp-7b455fae-a2a5-4204-b04a-4859f335580d ip a
+50: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 16436 qdisc noqueue state UNKNOWN
+link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+inet 127.0.0.1/8 scope host lo
+inet6 ::1/128 scope host
+valid_lft forever preferred_lft forever
+51: ns-61eaed6f-d0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc pfifo_fast state UP qlen 1000
+link/ether fa:16:3e:ad:73:bb brd ff:ff:ff:ff:ff:ff
+inet 10.10.100.3/24 brd 10.10.100.255 scope global ns-61eaed6f-d0
+inet 169.254.169.254/16 brd 169.254.255.255 scope global ns-61eaed6f-d0
+inet6 fe80::f816:3eff:fead:73bb/64 scope link
+valid_lft forever preferred_lft forever
+</code></pre>
+
+<p>이제 instance에서 아래처럼 확인하면 meta-data를 가져오는 것을 확인할 수 있습니다.</p>
+
+<pre><code>$ curl http://10.10.100.3/latest/meta-data/
+</code></pre>
+
+<p>근데&hellip; 헐.. 169.254.169.25로 호출하지 않고, 10.10.100.3으로 요청을 했네요. 혹시나 하고 169.254.169.25로 요청하면 여전히 안됩니다. 여전히 metadata 요청 패킷은 저 멀리 안드로메다로 가고 있습니다.</p>
+
+<h3>host routing&hellip;</h3>
+
+<p>안드로메다로 가는 메타데이터 트래픽을 10.10.100.3으로 보내기 위해서는, l3-agent에서 하는 방법으로는 gateway에서 다른 호스트로 redirect하는 방법이 있습니다. 근데 provider router는 phisycal router를 사용하므로, 거기의 routing table을 OpenStack이 수정할 수 없습니다. 만일 수정할 수 있다고 해도, provider network이 만들어 질 때마다, routing table 추가 작업을 요청해야하기 때문에 그리 좋은 방법은 아닙니다. 물론 OpenStack Agent가 하는 기능을 뚝딱 만들면 되겠지만요.</p>
+
+<p>OpenStack way로 해결하는 방법은 subnet을 생성할 때 host-route 옵션을 주는 것입니다.</p>
+
+<pre><code>$ quantum subnet-create -host-route \
+  destination=169.254.0.0/16,nexthop=10.10.100.3 pub100 10.10.100/24
+</code></pre>
+
+<p>또는 기존의 subnet을 업데이트 하려면&hellip; 쬐끔 복잡하게..</p>
+
+<pre><code>$ quantum subnet-update \
+  -host-routes type=dict list=true destination=169.254.0.0/16,nexthop=10.10.100.3
+</code></pre>
+
+<p>이렇게하면, 인스턴스가 dhcp에서 정보를 가져올 때 routing table까지 가져오므로 instance의 routing table에 의해서 meta-data에 접근이 가능합니다.</p>
+
+<h4>cirros bug</h4>
+
+<p>그런데 cirros에서 <a href="https://bugs.launchpad.net/cirros/+bug/1190372">routing table을 dhcp에서 요청하지 않기 때문</a>에 동작하지 않습니다.</p>
+
+<p>cirros의 경우는 부팅 후 routing table을 직접 수정하여 확인하세요.</p>
+
+<pre><code>$ route add -net 169.254.0.0 netmask 255.255.0.0 gw 10.10.100.3 dev eth0
+</code></pre>
+
+<p>ubuntu cloud 이미지는 아주 잘 동작합니다. 다만 꺼림직하게 인스턴스 routing table이 하나 추가된다는 것 빼구요. 이거 없애려면, 위에서 언급했던, physical router에서 routing table을 추가하면 됩니다.</p>
+
+<h4>CentOS 5.x의 문제</h4>
+
+<p>CentOS 5.8에서도 dhclient가 static routing을 요청하지 않아서 문제가 발생합니다. 이 경우는 <a href="http://jcape.name/2009/07/17/distributing-static-routes-with-dhcp/">http://jcape.name/2009/07/17/distributing-static-routes-with-dhcp/</a> 를 참고하세요.</p>
+
+<h3>dhcp-agent의 ip address고정&hellip;</h3>
+
+<p>이렇게 해서 pub100 네트워크는 잘 되었고, pub101에서 하다보면 뭔가 다른 것을 발견하게 됩니다.</p>
+
+<p>pub100에서의 dhcp-agent가 동작하는 port의 ip address는 10.10.100.3인 반면에 pub101에서는 10.10.101.2으로 할당됩니다. 당연히 인스턴스의 ip address도 10.10.100.2, 10.10.101.3으로 서로 다릅니다. 아마도 인스턴스를 생성하고, dhcp-agent의 포트를 생성하는 순서의 문제인 것 같은데, subnet 생성 후에 dhcp-agent의 포트를 강제로 만들어 주면 되겠습니다.</p>
+
+<pre><code>$ quantum dhcp-agent-network-add &lt;agent_id&gt; &lt;network_id&gt;
+</code></pre>
+
+<h2>결론</h2>
+
+<ul>
+<li>provider network은 SPoF인 l3-agent을 사용하지 않습니다.</li>
+<li>모든 네트워크가 physical network으로 구현되어, 기존의 네트워크 인프라에서 운영될 수 있습니다.</li>
+<li>private network을 사용하기 않기 때문에, 기존 데이터 센터의 인프라와 자연스럽게 통합됩니다.</li>
+</ul>
+
+
+<p>이를 종합하면, 기존 데이터센터와 통합해야할 필요가 있는 환경에서는 Provider Network이 가장 맞는 선택인 것 같습니다.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">whitekid</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2013-07-23T00:00:00+09:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>23</span><span class='date-suffix'>rd</span>, <span class='date-year'>2013</span></span> <span class='time'>12:00 am</span></time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://whitekid.github.io/archives/1351" data-via="" data-counturl="http://whitekid.github.io/archives/1351" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/archives/1345" title="Previous Post: chef-client using lots of memory">&laquo; chef-client using lots of memory</a>
+      
+      
+        <a class="basic-alignment right" href="/archives/1366" title="Next Post: proxy 설정">proxy 설정 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/keystone-bootstrap/">Keystone Bootstrap</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/neutron-default-security-group/">Neutron Default Security Group</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1550">클라우드 네트워킹과 SDN 그리고 OpenStack</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Choe, Cheng-Dae -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

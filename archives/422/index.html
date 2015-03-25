@@ -1,0 +1,257 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Python으로 iCalendar 만들기 - Your wish is my command</title>
+  <meta name="author" content="Choe, Cheng-Dae">
+
+  
+  <meta name="description" content="Python으로 iCalendar를 만드는건 vobject을 이용하면됩니다. 다른 iCalendar 라이브러리인 py-iCalendar도 있는데, 이벤트 각 필드에 parameter를 주는데 문제가 있어서 잘 안됩니다. # -*- encoding: utf8 -*- &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://whitekid.github.io/archives/422">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Your wish is my command" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Your wish is my command</a></h1>
+  
+    <h2>It&#8217;s a long journey</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="whitekid.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Python으로 iCalendar 만들기</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-09-10T00:00:00+09:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>10</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Python으로 <a href="http://tools.ietf.org/html/rfc2445">iCalendar</a>를 만드는건 <a href="http://vobject.skyhouseconsulting.com/">vobject</a>을 이용하면됩니다. 다른 iCalendar 라이브러리인 <a href="http://codespeak.net/icalendar/">py-iCalendar</a>도 있는데, 이벤트 각 필드에 parameter를 주는데 문제가 있어서 잘 안됩니다.</p>
+
+<pre><code># -*- encoding: utf8 -*-
+import vobject
+from datetime import datetime
+
+cal = vobject.iCalendar()
+event = cal.add('vevent')
+event.add('summary').value = u'이벤트 하나'
+event.add('description').value = u'이벤트 하나\n\n모두 참석해주세요...'
+event.add('dtstart').value = datetime(2010, 9, 9, 18, 0, 0)
+event.add('dtend').value = datetime(2010, 9, 9, 20, 0, 0)
+event.add('dtstamp').value = datetime(2010, 9, 9, 18, 0, 0)
+event.add('location').value = u'회의실'
+
+o = event.add('organizer')
+o.value = u'&lt;organizer@gmail.com&gt;'
+o.params['CN'] = [u'오거나이저']
+
+o = event.add('attendee')
+o.value = u'&lt;must@gmail.com&gt;'
+o.params['CN'] = [u'필수 참석자']
+o.params['ROLE'] = [u'REQ-PARTICIPANT']
+
+o = event.add('attendee')
+o.value = u'&lt;optinal@gmail.com&gt;'
+o.params['CN'] = [u'옵션 참석자']
+o.params['ROLE'] = [u'OPT-PARTICIPANT']
+
+o = event.add('attendee')
+o.value = u'&lt;optinal1@gmail.com&gt;'
+o.params['CN'] = [u'옵션 참석자1&amp;']
+o.params['ROLE'] = [u'OPT-PARTICIPANT']
+
+file('example.ics', 'wb').write(cal.serialize())
+</code></pre>
+
+<p>이코드로 만들어진 파일은 아래와 같습니다.</p>
+
+<pre><code>BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//PYVOBJECT//NONSGML Version 1//EN
+BEGIN:VEVENT
+UID:20100910T025017Z-99461@woosum.net
+DTSTART:20100909T180000
+DTEND:20100909T200000
+ATTENDEE;ROLE=REQ-PARTICIPANT;CN=필수 참석자:must@gmail.com
+ATTENDEE;ROLE=OPT-PARTICIPANT;CN=옵션 참석자:optinal@gmail.com
+ATTENDEE;ROLE=OPT-PARTICIPANT;CN=옵션 참석자1:optinal1@gmail.com
+DESCRIPTION:이벤트 하나\n\n모두 참석해주세요...
+DTSTAMP:20100909T180000
+LOCATION:회의실
+ORGANIZER;CN=오거나이저:organizer@gmail.com
+SUMMARY:이벤트 하나
+END:VEVENT
+END:VCALENDAR
+</code></pre>
+
+<p>이제 이 파일을 Outlook 인터넷 일정으로 등록하여 공유할 수 있고, 다른 여러 용도로 사용할 수 있겠지요.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">whitekid</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2010-09-10T00:00:00+09:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>10</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://whitekid.github.io/archives/422" data-via="" data-counturl="http://whitekid.github.io/archives/422" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/archives/428" title="Previous Post: Outlook의 iCalendar는 ldap를 지원하지 않는군">&laquo; Outlook의 iCalendar는 ldap를 지원하지 않는군</a>
+      
+      
+        <a class="basic-alignment right" href="/archives/431" title="Next Post: awstats로 로그 분석할때 newsyslog가 처리해버린 로그는???">awstats로 로그 분석할때 newsyslog가 처리해버린 로그는??? &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/keystone-bootstrap/">Keystone Bootstrap</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/neutron-default-security-group/">Neutron Default Security Group</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1550">클라우드 네트워킹과 SDN 그리고 OpenStack</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Choe, Cheng-Dae -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,227 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Python Email Header 인코딩 오류 수정l - Your wish is my command</title>
+  <meta name="author" content="Choe, Cheng-Dae">
+
+  
+  <meta name="description" content="postfix mail archiving을 진행하면서 메시지 헤더를 처리할 일이 생겼지요. 보내는 사람에 따라서 archiving을 하지 않으려구오. 뭐&hellip; cron에서 보내는거 daily 체크 메일등등 저장할 필요 없잖아요. 그런데 이거 하다보니 헤더 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://whitekid.github.io/archives/367">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Your wish is my command" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Your wish is my command</a></h1>
+  
+    <h2>It&#8217;s a long journey</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="whitekid.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Python Email Header 인코딩 오류 수정l</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-08-25T00:00:00+09:00'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>25</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><a href="/2010/08/postfix-mail-archiving/">postfix mail archiving</a>을 진행하면서 메시지 헤더를 처리할 일이 생겼지요. 보내는 사람에 따라서 archiving을 하지 않으려구오. 뭐&hellip; cron에서 보내는거 daily 체크 메일등등 저장할 필요 없잖아요.</p>
+
+<p>그런데 이거 하다보니 헤더 디코딩이 안된 것들이 간간히 들어옵니다. 언듯 봐서는 잘된것 처럼 보이는데 그래서 좀 찾아보니 python의 오류가 아니고, 아예 잘못된 헤더랍니다.</p>
+
+<pre><code>=?UTF-8?B?6rmA7ZiV7ISd?=&lt;&lt;XXXX@naver.com&gt;&gt;'
+=?UTF-8?B?6rmA7ZiV7ISd?= &lt;&lt;XXXX@naver.com&gt;&gt;'
+</code></pre>
+
+<p>첫번째 것은 잘못 인코딩 된 것이고, 두번째 것은 제대로 인코딩 된 것입니다.<a href="http://bugs.python.org/issue8132"> RFC에 따르면 &ldquo;?=&rdquo; 다음에 스페이스를 넣게 되어있다는군요</a>.</p>
+
+<p>그래서 이거 해결하는 코드 간략하게 만들어 봤습니다. 아주 간단!!</p>
+
+<pre><code>def decode_header(s):
+    ret = []
+    for header, encoding in email.header.decode_header(s):
+        if (encoding is None) and re.search(r'\?=.+', header):
+            header = re.sub(r'([^\?.]{2})(\?=)(.{1})', r'\1\2 \3', header)
+            ret.extend(email.header.decode_header(header))
+            continue
+        ret.append((header, encoding))
+    return ret
+</code></pre>
+
+<p>근데.. 이런 오류는 꼭 NAVER에서 온 메일만 그래요&hellip; ㅡㅡ</p>
+
+<p>ps. re.sub에서 [a-zA-Z0-9]는 \w로 바꿀 수 있다구요? 예 유니코드 환경이 아니면 맞는 이야기인데, 유니코드면 약간 다르더군요. Python 메뉴얼에는 이렇게 나와있습니다.</p>
+
+<blockquote><p>\w
+When the LOCALE and UNICODE flags are not specified, matches any alphanumeric character and the underscore; this is equivalent to the set [a-zA-Z0-9_]. With LOCALE, it will match the set [0-9_] plus whatever characters are defined as alphanumeric for the current locale. If UNICODE is set, this will match the characters [0-9_] plus whatever is classified as alphanumeric in the Unicode character properties database.</p></blockquote>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">whitekid</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2010-08-25T00:00:00+09:00'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>25</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://whitekid.github.io/archives/367" data-via="" data-counturl="http://whitekid.github.io/archives/367" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/archives/354" title="Previous Post: postfix mail archiving">&laquo; postfix mail archiving</a>
+      
+      
+        <a class="basic-alignment right" href="/archives/342" title="Next Post: TLinkLabel에 WordWrap 적용하기">TLinkLabel에 WordWrap 적용하기 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/keystone-bootstrap/">Keystone Bootstrap</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/neutron-default-security-group/">Neutron Default Security Group</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1550">클라우드 네트워킹과 SDN 그리고 OpenStack</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Choe, Cheng-Dae -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

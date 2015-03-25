@@ -1,0 +1,223 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Ironic 테스트 1차 정리 - Your wish is my command</title>
+  <meta name="author" content="Choe, Cheng-Dae">
+
+  
+  <meta name="description" content="Ironic이 아직 인큐베이팅이라서 그런지 아직 안되는게 많네요. 이미지를 ami 형태로 가야하네요. 기존 qcow라면 이미지를 이중으로 관리해야하는..
+노드의 spec을 일일이 지정해야 한다는&hellip; 노드마다 spec이 다르면 지옥이겠네요
+당연할지 모르지만 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://whitekid.github.io/archives/1544">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Your wish is my command" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Your wish is my command</a></h1>
+  
+    <h2>It&#8217;s a long journey</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="whitekid.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Ironic 테스트 1차 정리</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-06-19T00:00:00+09:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>19</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Ironic이 아직 인큐베이팅이라서 그런지 아직 안되는게 많네요.</p>
+
+<ul>
+<li>이미지를 ami 형태로 가야하네요. 기존 qcow라면 이미지를 이중으로 관리해야하는..</li>
+<li>노드의 spec을 일일이 지정해야 한다는&hellip; 노드마다 spec이 다르면 지옥이겠네요</li>
+<li>당연할지 모르지만 ironic은 snapshot을 지원하지 않습니다. (SoftLayer baremetal은 되는데)</li>
+<li>deploy 이미지와 부팅 이미지는 별도로 가야하는&hellip; 이중 부팅이라 어쩔 수 없죠</li>
+<li>근데 tftp로 전송되는 이미지는 생각보다 커서.. 문제가 될 듯</li>
+<li>pxe에 사용되는 tftp는 직접 설정해야 하지만, tftpd-hpa와는 호환 안됨</li>
+<li>막상 설정을 마치고 배포해야 하는데 cli가 없어서 API를 직접 호출.. ㅎㅎ</li>
+<li>undeploy.. 즉. 회수하고 다른 이미지로 설치하는 방법이 없음&hellip; 블루프린트도 아직 안 나왔군요</li>
+<li>nova와 연계가 아직&hellip; Ironic에서 만든 노드는 nova에서 안보이고, nova에서 ironic으로 지정해서 부팅하려면 버그 투성이고 ㅠㅠ</li>
+<li>neutron 과의 연계가 잘 안되네요.. 그래서 pxe 부팅을 시작하기 위해 neutron에 삽질을&hellip;</li>
+<li>특정 tenant의 네트워크에 ironic 노드를 만들 수 없어요.. 이걸 하려면 switch 설정하는 것도 ironic에 필요할텐데&hellip; 전혀  없죠^^ 여기에. sdn이 필요할까요?</li>
+<li>가상화 하는 곳과 별도의 cell로 구성이 필요</li>
+<li>물론 문서대로 하면 잘 안되고, 소스 보면서 해야 됩니다. ㅎㅎ</li>
+<li>그리고 당연히 버그도 많아요 ㅠㅠ</li>
+</ul>
+
+
+<p>근데 아마 가장 첫번째로 닥치는 문제는 개발환경 만들기군요 ㅎㅎ</p>
+
+<p>정신 건강을 위해서 아직 시도하지 않는게 좋을 듯 합니다.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">whitekid</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2014-06-19T00:00:00+09:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>19</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>12:00 am</span></time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://whitekid.github.io/archives/1544" data-via="" data-counturl="http://whitekid.github.io/archives/1544" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/archives/1540" title="Previous Post: 만일 내가 회사를 세운다면..">&laquo; 만일 내가 회사를 세운다면..</a>
+      
+      
+        <a class="basic-alignment right" href="/archives/1550" title="Next Post: 클라우드 네트워킹과 SDN 그리고 OpenStack">클라우드 네트워킹과 SDN 그리고 OpenStack &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/keystone-bootstrap/">Keystone Bootstrap</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/neutron-default-security-group/">Neutron Default Security Group</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1550">클라우드 네트워킹과 SDN 그리고 OpenStack</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Choe, Cheng-Dae -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

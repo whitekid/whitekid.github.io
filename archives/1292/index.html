@@ -1,0 +1,352 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Glusterfs as OpenStack Instance Storage Backend - Your wish is my command</title>
+  <meta name="author" content="Choe, Cheng-Dae">
+
+  
+  <meta name="description" content="OpenStack에서 Live migration을 지원하려면 기본적으로 shared storage가 있어야 한다. 지금 요구사항 중의 하나가 장애에 대비한 live migration이라 shared storage를 설정해야했다. 요즘 대세는 Ceph이라고, 저번 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://whitekid.github.io/archives/1292">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Your wish is my command" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Your wish is my command</a></h1>
+  
+    <h2>It&#8217;s a long journey</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="whitekid.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Glusterfs as OpenStack Instance Storage Backend</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2013-06-03T00:00:00+09:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>3</span><span class='date-suffix'>rd</span>, <span class='date-year'>2013</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>OpenStack에서 Live migration을 지원하려면 기본적으로 shared storage가 있어야 한다. 지금 요구사항 중의 하나가 장애에 대비한 live migration이라 shared storage를 설정해야했다.</p>
+
+<p>요즘 대세는 Ceph이라고, 저번 오픈스택 모임에서 그랬는데, 잠깐 Ceph를 시도해본 결과, 설치과정이 그리 맘에 들지 않습니다. 그래요 완전히 개인적인 생각입니다.</p>
+
+<p>그래서 상대적으로 쉬운 GlusterFS를 먼저 해보고려 합니다.</p>
+
+<p>GlusterFS를 한다면 <a href="http://www.gluster.org/2013/05/glusterfs-is-ready-for-openstack/">GlusterFS is Ready for OpenStack</a>이라고 발표를 했는데, 문제는 아직 Beta 단계인 3.4 이야기이고, 자신들의 OpenStack Distribution인 <a href="http://openstack.redhat.com">RDO</a>에 테스트 해 봤다는 이야기입니다.</p>
+
+<p>내용을 보면 Instance Storage도 libgfapi를 이용해서 glusterfs에 직접 IO를 통해서 합니다. 그래서 중간의 파일 시스템에서 생기는 성능/ 캐쉬 등등의 문제를  없앴죠. Ceph도 그렇구요. 이거 제대로 된다면 바로 적용해 보려고 했지만&hellip; Ubuntu Package가 아직 없어요.. 그래서 정식 버전이 나오기 전에는 3.2에서 테스트 하기로 했습니다. 아고 서론이 길었어요.</p>
+
+<h3>Overview</h3>
+
+<p>테스트 환경에서는 별도의 glusterfs cluster를 구성하지 않고 glusterfs server는 compute node에 설치하기로 했습니다(아마도 별 문제 없으면 실제로도 그렇게 갈 생각이구요). 그리고 각 compute node는 /var/lib/nova/instance를 glusterfs localhost로 마운트 합니다.</p>
+
+<h3>Gluster FS 설치</h3>
+
+<p>간단히 각 compute node에서 설치합니다.</p>
+
+<pre><code>$ apt-get install glusterfs-server
+</code></pre>
+
+<h3>Peer probe</h3>
+
+<pre><code>$ gluster peer probe compute02.stack
+$ gluster peer probe compute03.stack
+</code></pre>
+
+<h3>Volume create</h3>
+
+<pre><code>$ gluster volume create vm-instances replica 3 \
+    compute01.stack:/gluster/instances \
+    compute02.stack:/gluster/instances \
+    compute03.stack:/gluster/instances
+</code></pre>
+
+<p>물론 각 compute node에는 만드려는 brick의 디렉토리인 /gluster/instance를 미리 만들어야합니다.</p>
+
+<h3>Volume start</h3>
+
+<pre><code>$ gluster volume start vm-instances
+</code></pre>
+
+<h3>마운트</h3>
+
+<p>마운트 하기 전에 아무런 인스턴스들이 생성되지 않은 상태로 합니다.</p>
+
+<pre><code>$ mount -t glusterfs localhost:vm-instances /var/lib/nova/instances
+</code></pre>
+
+<p>마운트하면 인스턴스 디렉토리의 소유권이 root.root가 되는데, nova.nova로 수정합니다. 신기하게도 이거 바꾸면 다른 노드도 같이 수정이 되는군요.</p>
+
+<pre><code>$ chown nova.nova /var/lib/nova/instances
+</code></pre>
+
+<p>한쪽 compute 노드에서 파일을 생성하면, 다른 컴퓨터 노드에도 같이 보이는 것을 확인할 수 있습니다.</p>
+
+<h3>nova.conf 설정</h3>
+
+<p>live migration을 하지 않는다면, 별도로 수정할 내용은 없습니다. 파일 권한이 제대로 되어있다면 바로 인스턴스를 생성 가능하고, 생셩된 인스턴스 파일은 다른 컴퓨트 노드에서 잘 보입니다.</p>
+
+<h3>live migration</h3>
+
+<p>Live Migration을 하려면 우선 <a href="http://docs.openstack.org/trunk/openstack-compute/admin/content/configuring-migrations.html">OpenStack에 있는데로 설정</a>합니다. 그런데 이 상태로 live migration을 하면 바로 아래처럼 오류가 발생합니다.</p>
+
+<pre><code>2013-06-03 11:52:20.743 11492 ERROR nova.virt.libvirt.driver \[-\] \[instance: 4717b4d4-61a7-4f4d-b5fc-5ff526822e89\] Live Migration failure: Unsafe migration: Migration may lead to data corruption if disks use cache != none
+</code></pre>
+
+<p>이것은 libvirt가 live migration을 할 때 안정성을 이유로 디스크 캐쉬가 된 상태에서는 live migration을 수행하지 않습니다. nova.conf에서 disk_modes=file=none,block=none 형태로 캐쉬를 안해주면 되겠지만, 이렇게 하고 하면 인스턴스를 생성할 때 부터 문제가 생깁니다. ㅎㅎ</p>
+
+<p>그래서 불안정하게라도 live migration 하겠다고 하면 디스크가 캐쉬가 된 상태도 라이브 마이그레이션을 지원합니다. 이를 설정하면 nova.conf에 아래처럼 설정합니다.</p>
+
+<pre><code>live_migration_flag=VIR_MIGRATE_UNDEFINE_SOURCE, \
+                    VIR_MIGRATE_PEER2PEER, \
+                    VIR_MIGRATE_LIVE, \
+                    VIR_MIGRATE_UNSAFE
+</code></pre>
+
+<p>마지막의 VIR_MIGRATE_UNSAFE가 그것이죠.</p>
+
+<p>어렇게 하고 live migration을 하면 잘 되는 것이죠.</p>
+
+<pre><code>root@control:~# nova show cirros1
++-------------------------------------+------------------------------------------------------------+
+| Property                            | Value                                                      |
++-------------------------------------+------------------------------------------------------------+
+| status                              | ACTIVE                                                     |
+| updated                             | 2013-06-03T07:17:53Z                                       |
+| OS-EXT-STS:task_state               | None                                                       |
+| OS-EXT-SRV-ATTR:host                | compute01                                                  |
+| key_name                            | admin_key                                                  |
+| image                               | cirros-0.3.1-x86_64 (f81518a9-9dc2-4a2a-aeaf-331cc074d063) |
+| hostId                              | a2b92d1a2237ab4772f395b2fde3e462bfad9420e0ffc33ad3d1a19d   |
+| OS-EXT-STS:vm_state                 | active                                                     |
+| OS-EXT-SRV-ATTR:instance_name       | instance-00000011                                          |
+| OS-EXT-SRV-ATTR:hypervisor_hostname | compute01.stack                                            |
+| flavor                              | m1.tiny (1)                                                |
+| id                                  | 2991ad7d-b33e-4d3c-828b-da07338119f1                       |
+| security_groups                     | [{u'name': u'default'}]                                    |
+| user_id                             | 8f5b56a6a51c45338b0c1ba7cd7d9ebb                           |
+| name                                | cirros1                                                    |
+| created                             | 2013-06-03T06:21:27Z                                       |
+| tenant_id                           | b5db61c3fa3845848b0f15c010dd500c                           |
+| OS-DCF:diskConfig                   | MANUAL                                                     |
+| metadata                            | {}                                                         |
+| admin network                       | 10.250.0.2                                                 |
+| accessIPv4                          |                                                            |
+| accessIPv6                          |                                                            |
+| progress                            | 0                                                          |
+| OS-EXT-STS:power_state              | 1                                                          |
+| OS-EXT-AZ:availability_zone         | nova                                                       |
+| config_drive                        |                                                            |
++-------------------------------------+------------------------------------------------------------+
+</code></pre>
+
+<p>cirros1은 compute01에 있습니다. 이를 compute02로 옮긴다면..</p>
+
+<pre><code>root@control:~# nova live-migration cirros1 compute02
+</code></pre>
+
+<p>이제 compute02로 이사갔어요&hellip;</p>
+
+<pre><code>root@control:~# nova show cirros1
++-------------------------------------+------------------------------------------------------------+
+| Property                            | Value                                                      |
++-------------------------------------+------------------------------------------------------------+
+| status                              | MIGRATING                                                  |
+| updated                             | 2013-06-03T07:18:59Z                                       |
+| OS-EXT-STS:task_state               | migrating                                                  |
+| OS-EXT-SRV-ATTR:host                | compute01                                                  |
+| key_name                            | admin_key                                                  |
+| image                               | cirros-0.3.1-x86_64 (f81518a9-9dc2-4a2a-aeaf-331cc074d063) |
+| hostId                              | a2b92d1a2237ab4772f395b2fde3e462bfad9420e0ffc33ad3d1a19d   |
+| OS-EXT-STS:vm_state                 | active                                                     |
+| OS-EXT-SRV-ATTR:instance_name       | instance-00000011                                          |
+| OS-EXT-SRV-ATTR:hypervisor_hostname | compute01.stack                                            |
+| flavor                              | m1.tiny (1)                                                |
+| id                                  | 2991ad7d-b33e-4d3c-828b-da07338119f1                       |
+| security_groups                     | [{u'name': u'default'}]                                    |
+| user_id                             | 8f5b56a6a51c45338b0c1ba7cd7d9ebb                           |
+| name                                | cirros1                                                    |
+| created                             | 2013-06-03T06:21:27Z                                       |
+| tenant_id                           | b5db61c3fa3845848b0f15c010dd500c                           |
+| OS-DCF:diskConfig                   | MANUAL                                                     |
+| metadata                            | {}                                                         |
+| accessIPv4                          |                                                            |
+| accessIPv6                          |                                                            |
+| admin network                       | 10.250.0.2                                                 |
+| OS-EXT-STS:power_state              | 1                                                          |
+| OS-EXT-AZ:availability_zone         | nova                                                       |
+| config_drive                        |                                                            |
++-------------------------------------+------------------------------------------------------------+
+</code></pre>
+
+<p>Update: Andrew님의 제보에 의하면 3.2 버전에서는 파일 싱크할 때 파일이 read only로 걸려서 instance도 read lock이 걸리는 현상이 있다는군요. 3.3 부터는 OK</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">whitekid</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2013-06-03T00:00:00+09:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>3</span><span class='date-suffix'>rd</span>, <span class='date-year'>2013</span></span> <span class='time'>12:00 am</span></time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://whitekid.github.io/archives/1292" data-via="" data-counturl="http://whitekid.github.io/archives/1292" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/archives/1284" title="Previous Post: OpenStack havana에 기대하는 몇가지...">&laquo; OpenStack havana에 기대하는 몇가지&#8230;</a>
+      
+      
+        <a class="basic-alignment right" href="/archives/1304" title="Next Post: ceph as OpenStack instance storage backend">ceph as OpenStack instance storage backend &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/keystone-bootstrap/">Keystone Bootstrap</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/neutron-default-security-group/">Neutron Default Security Group</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1550">클라우드 네트워킹과 SDN 그리고 OpenStack</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Choe, Cheng-Dae -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

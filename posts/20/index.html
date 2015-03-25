@@ -1,0 +1,634 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Your wish is my command</title>
+  <meta name="author" content="Choe, Cheng-Dae">
+
+  
+  <meta name="description" content="psycopg2에서 쿼리의 결과는 client_encoding에 따른 그 형태 그대로 옮니다. 이 경우 인코딩을 처리하면서 해야하면 상당한 불편함이 따르지요. 무식하게 하나하나 unicode(row[0], &lsquo;utf8&rsquo;)로 인코딩해가면서 하고 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://whitekid.github.io/posts/20/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Your wish is my command" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Your wish is my command</a></h1>
+  
+    <h2>It&#8217;s a long journey</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="whitekid.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/438">Psycopg2 쿼리 결과를 유니코드로 받기</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-09-14T00:00:00+09:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>psycopg2에서 쿼리의 결과는 client_encoding에 따른 그 형태 그대로 옮니다. 이 경우 인코딩을 처리하면서 해야하면 상당한 불편함이 따르지요.</p>
+
+<p>무식하게 하나하나 unicode(row[0], &lsquo;utf8&rsquo;)로 인코딩해가면서 하고 있었습니다. 진짜 무식하게..</p>
+
+<p>근데 설마 있겠지.. 하고 찾아봤더니 역시나 있군요.</p>
+
+<pre><code>import psycopg2
+from lib import *
+
+psycopg2.extensions.register_type(psycopg2.extensions.UNICODE)
+cursor = get_cursor()
+cursor.execute('select subject from messages order by id desc limit 1')
+
+for row in cursor:
+    print type(row[0])
+</code></pre>
+
+<p>실행 결과는&hellip;</p>
+
+<pre><code>$ python test.py
+&lt;type 'unicode'&gt;
+</code></pre>
+
+<p>역시.. 사람은 공부해야 손발이 고생하지 않는다.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/431">Awstats로 로그 분석할때 Newsyslog가 처리해버린 로그는???</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-09-13T00:00:00+09:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>13</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>awstats로 로그를 가끔 보는데, 갑자기 노파심이 듭니다.
+newsyslog로 로그 파일을 관리하는데, awstats가 로데이트 된 로그파일을 처리할 수 없기 때문에, newsyslog 실행되고 다름 로그파일로 넘어갔을때, 이전 로그는 분석이 안되는 걸 어떻게 하나라는 완전 씰때없는 생각이 들었습니다. 그래봤자 이 사이트에 누가 들어온다고 말이지요.. ^^;</p>
+
+<p>근데 awstats가 훌륭하게도 로그 파일에 command pipe를 지정할 수 있게 되어있네요. 그래서 다음처럼 삽질을 했더니 잘됩니다. ㅋㅋ</p>
+
+<pre><code>LogFile="(bzcat /var/log/httpd-access.log.0.bz2 ; cat /var/log/httpd-access.log)|"
+</code></pre>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/422">Python으로 iCalendar 만들기</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-09-10T00:00:00+09:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>10</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Python으로 <a href="http://tools.ietf.org/html/rfc2445">iCalendar</a>를 만드는건 <a href="http://vobject.skyhouseconsulting.com/">vobject</a>을 이용하면됩니다. 다른 iCalendar 라이브러리인 <a href="http://codespeak.net/icalendar/">py-iCalendar</a>도 있는데, 이벤트 각 필드에 parameter를 주는데 문제가 있어서 잘 안됩니다.</p>
+
+<pre><code># -*- encoding: utf8 -*-
+import vobject
+from datetime import datetime
+
+cal = vobject.iCalendar()
+event = cal.add('vevent')
+event.add('summary').value = u'이벤트 하나'
+event.add('description').value = u'이벤트 하나\n\n모두 참석해주세요...'
+event.add('dtstart').value = datetime(2010, 9, 9, 18, 0, 0)
+event.add('dtend').value = datetime(2010, 9, 9, 20, 0, 0)
+event.add('dtstamp').value = datetime(2010, 9, 9, 18, 0, 0)
+event.add('location').value = u'회의실'
+
+o = event.add('organizer')
+o.value = u'&lt;organizer@gmail.com&gt;'
+o.params['CN'] = [u'오거나이저']
+
+o = event.add('attendee')
+o.value = u'&lt;must@gmail.com&gt;'
+o.params['CN'] = [u'필수 참석자']
+o.params['ROLE'] = [u'REQ-PARTICIPANT']
+
+o = event.add('attendee')
+o.value = u'&lt;optinal@gmail.com&gt;'
+o.params['CN'] = [u'옵션 참석자']
+o.params['ROLE'] = [u'OPT-PARTICIPANT']
+
+o = event.add('attendee')
+o.value = u'&lt;optinal1@gmail.com&gt;'
+o.params['CN'] = [u'옵션 참석자1&amp;']
+o.params['ROLE'] = [u'OPT-PARTICIPANT']
+
+file('example.ics', 'wb').write(cal.serialize())
+</code></pre>
+
+<p>이코드로 만들어진 파일은 아래와 같습니다.</p>
+
+<pre><code>BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//PYVOBJECT//NONSGML Version 1//EN
+BEGIN:VEVENT
+UID:20100910T025017Z-99461@woosum.net
+DTSTART:20100909T180000
+DTEND:20100909T200000
+ATTENDEE;ROLE=REQ-PARTICIPANT;CN=필수 참석자:must@gmail.com
+ATTENDEE;ROLE=OPT-PARTICIPANT;CN=옵션 참석자:optinal@gmail.com
+ATTENDEE;ROLE=OPT-PARTICIPANT;CN=옵션 참석자1:optinal1@gmail.com
+DESCRIPTION:이벤트 하나\n\n모두 참석해주세요...
+DTSTAMP:20100909T180000
+LOCATION:회의실
+ORGANIZER;CN=오거나이저:organizer@gmail.com
+SUMMARY:이벤트 하나
+END:VEVENT
+END:VCALENDAR
+</code></pre>
+
+<p>이제 이 파일을 Outlook 인터넷 일정으로 등록하여 공유할 수 있고, 다른 여러 용도로 사용할 수 있겠지요.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/428">Outlook의 iCalendar는 Ldap를 지원하지 않는군</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-09-10T00:00:00+09:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>10</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>iCalendar에는 <Directory Entry Reference>를 지원합니다. 아래와 같은 형식이죠.</p>
+
+<pre><code>ORGANIZER;DIR="ldap://host.com:6666/o=eDABC%20Industries,c=3DUS??
+  (cn=3DBJim%20Dolittle)":jimdo@host1.com
+</code></pre>
+
+<p>이렇게 iCalendar를 만들고 Outlook에서 가져오면, 역시나 아웃룩에서 안가져오고 무시해버립니다. 역시나 2% 부족한 MS에요.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/407">iPhone에 Custom Root Certificate 설치하기</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-09-08T00:00:00+09:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><a href="http://nsayer.blogspot.com/2009/01/iphone-supports-alternate-ca-root-keys.html">iPhone supports alternate CA root certs!</a>을 보면 iPhone에 내가 만든 루트 인증서를 추가할 수 있다. 간단히 pem 파일을 사파리로 열고 거기서 등록하면 된다.</p>
+
+<p>이렇게하면서 iPhone으로 회사메일을 확인하고, 보낼 수 있게 되었다.</p>
+
+<p>추가로 회사에서는 아웃룩으로 pop3를 사용하는데, 여기서는 아이폰에서는 imap을 사용한다. 즉.. 아이폰을 이용해서 보낸 메일은 imap상의 보낸 편지함에 보관되겠지만, 회사 아웃룩에는 보관이 안되는 상태가 된다.</p>
+
+<p>이 문제는 아이폰에서 보낼때 아래처럼 &ldquo;자신을 항상 숨은 참조로&#8221;를 설정해놓고, 아웃룩에서 pop3로 받을 때 규칙으로 보낸 편지함으로 옮기면 되겠네요.</p>
+
+<p><img src="/images/iphone_bcc.png"></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/399">iPhone 팁이라고나 할까..</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-09-07T00:00:00+09:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>7</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><ul>
+<li>수신 거부는 전화가 오면 Sleep 버튼 또는 볼륨 버튼, 슬립버튼은 수신 거부, 볼륨 버튼은 수신 벨 내지 않기</li>
+<li>스팸차단은 Show에 있는 스팸 관리 설정으로&hellip;</li>
+<li>음력 생일은 ihappydays</li>
+<li><a href="http://twitter.com/kiddtm/status/23191991727">우리나라 공유일 추가</a> : 꼬옥 사파리로 할것</li>
+</ul>
+
+
+<p>쓸만한 어플?</p>
+
+<ul>
+<li><a href="http://itunes.apple.com/kr/app/id352684056?mt=8">오늘만 무료</a></li>
+<li>유가정보는 다음지도로..</li>
+</ul>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/391">Vim 실행 결과를 편집기로&#8230;</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-09-01T00:00:00+09:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>1</span><span class='date-suffix'>st</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>사용하지 않는 명령어는 잊어버리게 마련이다. 이것도 그렇다 vim에서 명령을 실행하고 그 결과를 바로 현재 버퍼에 넣고싶다면&hellip; 뭔가 있었는데.. 하고 한참 시도하다가 역시나 구글링해서 찾았다.</p>
+
+<pre><code>:r !ls -al
+</code></pre>
+
+<p>이렇게 하면 ls -al 한 결과가 현재 버퍼에 추가된다. 역시나 기억 확인용 포스팅.. :!와의 차이는 다음고 같다.</p>
+
+<ul>
+<li>:!{cmd} : Execute {cmd} with the shell</li>
+<li>:r !{cmd} : Execute {cmd} and insert it&rsquo;s stardard output below the cursor or specified line.</li>
+</ul>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/372">zen.spamhaus.org</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-08-30T00:00:00+09:00'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>30</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>이전까지 스팸 호스트 막으려고 spamlist.or.kr와 sbl.spamhaus.org를 두가지 사용하고 있었다. 그런데 점점 스팸이 늘어나고, 그 패턴을 보니 내용으로 검사하기엔 힘들다. 헤더에 특별한 내용도 없고, 제목도 항상 바뀌고, 딸랑 링크 한줄에 그 링크 주소도 계속 바뀌고, 링크 클릭하면 한곳으로 redirect되고&hellip; 역시나 대부분 러시아 산이다.</p>
+
+<p>무식하게 access, body_check에 넣으려다 다시 spamhaus의 rbl을 또 공부해봤는데&hellip; sbl뿐문 아니고 다른 것도 많다. 또 그때 했었던 서버스 말고 다른 서비스도 많이 늘었다. 그래서 바꿨더니 아직 하루도 되지 않았지만 상당한 성과가 있네..</p>
+
+<p>하는 김에 더 많이 넣어버렸다.</p>
+
+<pre><code>smtpd_client_restrictions = foo bar...
+        reject_rbl_client spamlist.or.kr
+        reject_rbl_client zen.spamhaus.org
+        reject_rbl_client cbl.abuseat.org
+        reject_rbl_client dnsbl.sorbs.net
+</code></pre>
+
+<p>5시간 정도 적용한 결과다..</p>
+
+<pre><code>$ grep spamhaus /var/log/maillog | wc -l
+      28
+$ grep spamlist /var/log/maillog | wc -l
+      78
+ grep abuseat /var/log/maillog | wc -l
+       2
+$ grep sorbs /var/log/maillog | wc -l
+       3
+</code></pre>
+
+<p>(하루 지나니 보니 192, 99, 2, 7로 변했음) 이게 많은지 모르면.. 이 전날 통계를 보면&hellip;</p>
+
+<pre><code>$ bzgrep -E -o  'blocked using ([a-zA-Z\.]+)' /var/log/maillog.1.bz2 | sort | uniq -c
+ 65 blocked using spamlist.or.kr
+</code></pre>
+
+<p>대략 괜찮은 듯..</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/381">메일이 읽음 확인 메일인가?</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-08-30T00:00:00+09:00'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>30</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>메일 메시지가 읽은 확인 메시지(Message Disposition Notification: MDN)인지 확인하려면</p>
+
+<ul>
+<li>RFC<a href="http://www.faqs.org/rfcs/rfc3798.html">3798</a>, RFC<a href="http://www.faqs.org/rfcs/rfc2298.html">2298</a>에 따르면 top-level의  content type이 Content-Type: multipart/report;
+report-type=disposition-notification;
+인 것이다. : RoundCube, JavaMail(SNU)&hellip;</li>
+<li>역시나 MS는 나름데로 방법이다. RFC는 안지키는 것같고 Content-Type: application/ms-tnef;
+name=&ldquo;winmail.dat&rdquo; 형식의 mime에 첨부파일이 있다.</li>
+</ul>
+
+
+<p>ps. 정말로 오랜만에.. 근 10년 되었나? RFC보니 정말로 느낌이 새롭네.. 거참&hellip;</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/342">TLinkLabel에 WordWrap 적용하기</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-08-26T00:00:00+09:00'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>26</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>TLinkLabel은 사용하기 따라서 상당히 유용합니다. 근디 WordWrap이 없군요. 이게 없으니깐 AutoSize를 줘도 한줄로 길게 쭈욱 나와버립니다. TLabel의 WordWrap과 같이 동작하면 참 편하겠는데 말이지요. 어찌 되었건 아래처럼 MaxWidth 변수가 사용되는 부분만 몇줄 추가하면 원하는데로 됩니다.</p>
+
+<pre><code>procedure TnxLinkLabel.AdjustBounds;
+var
+  DC: HDC;
+  SaveFont: HFont;
+  TextSize: TSize;
+  Parsed: string;
+  MaxWidth: Integer;
+begin
+  if not (csLoading in ComponentState) and FAutoSize then
+  begin
+    if CheckWin32Version(6) and UseThemes then
+    begin
+      if HandleAllocated then
+      begin
+        if FWordWrap then
+          MaxWidth := ClientWidth else
+          MaxWidth := MaxInt;
+
+        SendGetStructMessage(Handle, LM_GETIDEALSIZE, MaxWidth, TextSize);
+        SetBounds(Left, Top, TextSize.cx + (GetSystemMetrics(SM_CXBORDER) * 4),
+          TextSize.cy + (GetSystemMetrics(SM_CYBORDER) * 4));
+      end;
+    end
+    else
+</code></pre>
+
+<p>TCustomLinkLabel.AdjustBounds를 단 몇 줄 수정하면 되는데, AdjustBounds가 virtual로만 되어있어도 편한데 그게 아니라서 이렇게 수정만 해서는 안됩니다. 그렇다고 vcl을 직접 다시 컴파일하기도 그렇고..</p>
+
+<p>결국은 TCustomLinkLabel, TLinkLabel을 모두 몽땅 가져다가 새 이름으로 콤포넌트를 등록해버렸군요. 찝찝하지만 Go~</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+      <a class="prev" href="/posts/21">&larr; Older</a>
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/posts/19">Newer &rarr;</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/keystone-bootstrap/">Keystone Bootstrap</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/neutron-default-security-group/">Neutron Default Security Group</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1550">클라우드 네트워킹과 SDN 그리고 OpenStack</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Choe, Cheng-Dae -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

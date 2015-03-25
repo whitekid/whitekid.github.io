@@ -1,0 +1,240 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>CalDav가지고 몇일 놀아봤다. - Your wish is my command</title>
+  <meta name="author" content="Choe, Cheng-Dae">
+
+  
+  <meta name="description" content="문제의 시작: iPhone Google Calendar Outlook iPhone에 캘린터더를 보면 구글 캘린더와 연동이 된다. 여기서부터 출발이다. 그래 이거 좋은데! 그럼 회사에서 사용하는 Outlook과도 연동은 어떻게 할까? 하고 찾아봤다. 당연히 구글에서 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://whitekid.github.io/archives/442">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Your wish is my command" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Your wish is my command</a></h1>
+  
+    <h2>It&#8217;s a long journey</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="whitekid.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">CalDav가지고 몇일 놀아봤다.</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-09-17T00:00:00+09:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>17</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h2>문제의 시작: iPhone <-> Google Calendar <-> Outlook</h2>
+
+<p>iPhone에 캘린터더를 보면 구글 캘린더와 연동이 된다. 여기서부터 출발이다. 그래 이거 좋은데! 그럼 회사에서 사용하는 Outlook과도 연동은 어떻게 할까? 하고 찾아봤다. 당연히 구글에서 <a href="http://www.google.com/support/calendar/bin/answer.py?hl=en&amp;answer=98563">Outlook과 연동하는 소프트웨어를 제공</a>한다. 자 이렇게해서 iPhone <-> Google Calendar <-> Outlook과의 calendar의 연동이 가능해졌다.</p>
+
+<h3>Tasks는?</h3>
+
+<p>Google tasks도 연동이 되면 좋겠지만, 안된다. 돈주면 된다고 한다.</p>
+
+<h2>회사에서 사용할 수 있을까?</h2>
+
+<p>이거 괜찮습니다. 여기저기 캘린더가 연동되어서 일정관리가 되고, 서로 연동이 되니 정말 괜찮군요. 그럼 회사내에서 사용할 수 있을까요? 물론 Exchange 서버를 사용한다면 문제가 안되겠지요!! 하지만 Exchange를 사용하지 않고있기 때문에 문제가 생깁니다. 그럼 어떻게 할 것인가..</p>
+
+<h3>CalDav</h3>
+
+<p>여기 저기 찾다보니, 캘린더에대한 인터넷 표준이 있네요. 역시 사람은 공부해야합니다.</p>
+
+<p>CalDav 서버를 설치하고 Outlook으로 지원하면 되겠다고 생각했습니다. 오픈소스 CalDav서버인 <a href="http://davical.org/">davical</a>을 검토해보니, Apache + PostgreSQL의 조합이네요. 아주 좋습니다. 설치는 아주 간단하고 쉽게 되었고, 이제 Outlook의 차례..</p>
+
+<p>근데 안됩니다. ㅡㅜ 좀더 알아보니 Outlook은 CalDav를 지원하지 않을 거라고합니다. 그런데 Exchange는 CalDav를 지원한다고 합니다. 생각해보면 MS로서는 일리있는 선택이지요. Outlook이 Exchange와 연동되어서 사용되어야지 다른 CalDav를 지원하는 서버와 연동이 된다면 Exchange 서버를 죽이는 결과가 나올 수 있으니깐요. 그래서 Outlook는 CalDav를 지원하지 않습니다. 이러니 테스트조차 할 수 없고, 그래서 다른 것을 알아보니</p>
+
+<p>Thunderbird에 캘린더 부가기능인 <a href="http://www.mozilla.org/projects/calendar/lightning/">Lightning</a>은 CalDav를 지원합니다. 굿,~ 설치해 테스트하니 정말로 잘됩니다. 실시간으로 전송하니, 약간의 딜레이도 있고 몇가지 버그는 보이지만 잘 됩니다. 그렇다고 Outlook를 모두 Thunderbird로 바꿀 수 없고ㅡㅜ;,</p>
+
+<h3>Outlook CalDav 지원 Plugin: iCal4GL</h3>
+
+<p>그러다가 찾은 것이<a href="http://ical.gutentag.ch/"> iCal4GL</a>입니다. CalDav 뿐만 아니라 여러 공개 캘린더 프로토콜을 지원하는 캘린터 Sync 플러그인이죠. 설정이 조금 복잡하지만 테스트 하니 그럭저럭 됩니다. 단 가장 중요한 하나만 빼놓구요.</p>
+
+<p>바로 한글 지원이 안됩니다. 아마 유니코드 문제인가하고 인코딩 설정이 있어서 바꿔 줘 봤지만 역시나 안됩니다. 이거 참 &hellip;.</p>
+
+<h2>결론</h2>
+
+<ol>
+<li>개인적으로 사용하려면 Google calendar sync를 사용하면 된다.</li>
+<li>CalDav라는 캘린더 표준이 있고 davical이라는 오픈소스 서버도 있다. 아지민 Outlook은 지원하지 않고, 지원하지 않을 것이다.</li>
+<li>Outlook에서 캘린더 공유는 Exchange 밖에 없다. 아니면 Outlook Plugin을 만들어야 한다.</li>
+<li>그것도 아니라면 Google calendar를 사자, 그렇게 되면 이메일 및 기타 서비스도 같이 구글로 간다. ^^;</li>
+<li>Lignting도 좋은 선택이다. 단 사람들의 반발만 없으면&hellip;</li>
+</ol>
+
+
+<h2>Lightning의 버그</h2>
+
+<p>여러 캘린터를 사용할 경우 Check 박스를 클릭하다보면 캘린터 일정이 안보입니다. ㅡㅜ;</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">whitekid</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2010-09-17T00:00:00+09:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>17</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://whitekid.github.io/archives/442" data-via="" data-counturl="http://whitekid.github.io/archives/442" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/archives/434" title="Previous Post: sysutils/screen 기본 사용법">&laquo; sysutils/screen 기본 사용법</a>
+      
+      
+        <a class="basic-alignment right" href="/archives/448" title="Next Post: PostgreSQL 9.0">PostgreSQL 9.0 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/keystone-bootstrap/">Keystone Bootstrap</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/neutron-default-security-group/">Neutron Default Security Group</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1550">클라우드 네트워킹과 SDN 그리고 OpenStack</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Choe, Cheng-Dae -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

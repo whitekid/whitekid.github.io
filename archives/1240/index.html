@@ -1,0 +1,249 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>리눅스 배포판 및 버전 확인하기: Lsb_release - Your wish is my command</title>
+  <meta name="author" content="Choe, Cheng-Dae">
+
+  
+  <meta name="description" content="스크립트 작업할 때 리눅스 배포판을 확인해서 그에 따라서 작업할 경우가 있습니다. CentOS에는 어쩌구.. Ubuntu에서는 어쩌고&hellip; 배포판을 확인할 수 있는 명령은 lsb_release인데 man page에 따르면 아래와 같습니다. FSG &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://whitekid.github.io/archives/1240">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Your wish is my command" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Your wish is my command</a></h1>
+  
+    <h2>It&#8217;s a long journey</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="whitekid.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">리눅스 배포판 및 버전 확인하기: Lsb_release</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2013-04-18T00:00:00+09:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>18</span><span class='date-suffix'>th</span>, <span class='date-year'>2013</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>스크립트 작업할 때 리눅스 배포판을 확인해서 그에 따라서 작업할 경우가 있습니다. CentOS에는 어쩌구.. Ubuntu에서는 어쩌고&hellip;</p>
+
+<p>배포판을 확인할 수 있는 명령은 lsb_release인데 man page에 따르면 아래와 같습니다.</p>
+
+<blockquote><p>FSG lsb_release v2.0 prints certain LSB (Linux Standard Base) and Distribution information.</p></blockquote>
+
+<p>여기서 주요하게 필요한 것이 -id(CentOS or Ubuntu), -release(5.8, 12.04)이 두가지 인데, CentOS와 Ubuntu에 약간 차이가 있습니다.</p>
+
+<p>CentOS 5.8에서는</p>
+
+<pre><code>$ lsb_release -i -r -s
+CentOS 5.8
+</code></pre>
+
+<p>Ubuntu 12.04에서는</p>
+
+<pre><code>$ lsb_release -i -r -s
+Ubuntu
+12.04
+</code></pre>
+
+<p>이를 스크립트에서 활용할 수 있게 tr 명령과 섞으면 아래와 같이 됩니다.</p>
+
+<pre><code>$ /usr/bin/lsb_release -i -r -s | tr "\\n" " " | sed "s/ *\$//g "
+Ubuntu 12.04
+</code></pre>
+
+<p>이제 이를 이용해서 OS에 따른 대응 코드를 만들면..</p>
+
+<pre><code>#!/bin/bash
+function get_dist(){
+  /usr/bin/lsb_release -i -r -s | tr "\\n" " " | sed "s/ *\$//g "
+}
+
+case $(get_dist()) in
+  CentOS*)
+    SERVICE=/sbin/service
+    SERVICE_NAME=network
+    ;;
+  Ubuntu*)
+    SERVICE=/user/sbin/service
+    SERVICE_NAME=networking
+    ;;
+  *)
+    fatal "Not supported platform"
+esac
+
+$SERVICE $SERVICE_NAME restart
+</code></pre>
+
+<p>끄읏~</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">whitekid</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2013-04-18T00:00:00+09:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>18</span><span class='date-suffix'>th</span>, <span class='date-year'>2013</span></span> <span class='time'>12:00 am</span></time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://whitekid.github.io/archives/1240" data-via="" data-counturl="http://whitekid.github.io/archives/1240" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/archives/1236" title="Previous Post: 나의 메일 박스 레이아웃">&laquo; 나의 메일 박스 레이아웃</a>
+      
+      
+        <a class="basic-alignment right" href="/archives/1243" title="Next Post: chef: role에서 environment에 따라서 run_list 다르게 지정하기">chef: role에서 environment에 따라서 run_list 다르게 지정하기 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/keystone-bootstrap/">Keystone Bootstrap</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/neutron-default-security-group/">Neutron Default Security Group</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1550">클라우드 네트워킹과 SDN 그리고 OpenStack</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Choe, Cheng-Dae -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,274 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>LibvirtHybridOVSBridgeDriver -> LibvirtGenericVIFDriver - Your wish is my command</title>
+  <meta name="author" content="Choe, Cheng-Dae">
+
+  
+  <meta name="description" content="OpenStack IceHouse Release에서는 LibvirtHybridOVSBridgeDriver가 deprecated되고 LibvirtGenericVIFDriver가 사용됩니다. 그래서 LibvirtGenericVIFDriver 설정하고 인스턴스를 생성하면 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://whitekid.github.io/archives/1494">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Your wish is my command" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Your wish is my command</a></h1>
+  
+    <h2>It&#8217;s a long journey</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="whitekid.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">LibvirtHybridOVSBridgeDriver -> LibvirtGenericVIFDriver</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-04-25T00:00:00+09:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>25</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>OpenStack IceHouse Release에서는 LibvirtHybridOVSBridgeDriver가 deprecated되고 LibvirtGenericVIFDriver가 사용됩니다. 그래서 LibvirtGenericVIFDriver 설정하고 인스턴스를 생성하면 havana이전에 LibvirtHybridOVSBridgeDriver에서 생성한 openvswitch - linux bridge를 사용하여 포트를 구성하죠..</p>
+
+<p>그런데 havana에서 부터 있던 인스턴스는 이렇게 생성되지 않고, LibvirtOpenVswitchDriver로 생성한 것 처럼 ovs - kvm으로 직접 연결됩니다. 이렇게 되니 아래의 문제가 생기게 되죠..</p>
+
+<ul>
+<li>당연히 security group이 작동하지 않음</li>
+<li>havana에서 upgrade한 인스턴스가 stop / resume / restart 등을 한 이후에는 네트워크가 되지 않음..</li>
+</ul>
+
+
+<p>이게 뭘까 좀 추적해 봤습니다.</p>
+
+<p>LibvirtGenericVIFDriver에서는 vif.is_hybrid_plug_enabled()에서 해당 포트가 hybrid인지 아닌지 판단하고 있습니다. 즉 여기까지 보면 이전에는 driver에 따라서 vif 구성이 결정되었지만, 이제는 vif port의 설정에 따라서 구성이 되는 것으로 보입니다.</p>
+
+<p>그러면 이 설정은 어디 있을까.. 추적해보면</p>
+
+<p>nova.network.mode.VIF 에서 아래처럼 하고 있습니다.</p>
+
+<pre><code>def is_hybrid_plug_enabled(self):
+    return self['details'].get(VIF_DETAIL_OVS_HYBRID_PLUG, False)
+</code></pre>
+
+<p>vif의 detail이라는 property로 들어 있는 것이죠.. 그럼 이거는 어디 있을까.. 찾아보면..</p>
+
+<pre><code>mysql&gt; select * from ml2_port_bindings where port_id = 'e14dbfd5-670e-405f-aaec-3796d1df1c34' \G
+*************************** 1. row ***************************
+    port_id: e14dbfd5-670e-405f-aaec-3796d1df1c34
+       host: compute000
+   vif_type: ovs
+     driver: openvswitch
+    segment: d3685732-365f-4a5b-baed-8adb7b2decf3
+  vnic_type: normal
+vif_details: {"port_filter": true, "ovs_hybrid_plug": true}
+    profile:
+1 row in set (0.00 sec)
+</code></pre>
+
+<p>이렇게 DB의 설정값으로 고히 모셔져 있군요.. 이 값은</p>
+
+<pre><code> class OpenvswitchMechanismDriver(mech_agent.SimpleAgentMechanismDriverBase):
+   def __init__(self):
+     super(OpenvswitchMechanismDriver, self).__init__(
+       constants.AGENT_TYPE_OVS,
+       portbindings.VIF_TYPE_OVS,
+       {portbindings.CAP_PORT_FILTER: True,
+        portbindings.OVS_HYBRID_PLUG: True})
+</code></pre>
+
+<p>이렇게 기본값이 True로 설정되어 DB에 들어가고 있습니다. 하지만 아래를 보면 port에 따라서 vif_details가 들어가있지 않는 포트가 있고</p>
+
+<pre><code>mysql&gt; select port_id, vif_details from ml2_port_bindings;
++--------------------------------------+------------------------------------------------+
+| port_id                              | vif_details                                    |
++--------------------------------------+------------------------------------------------+
+| 0cc863d2-adf4-49b7-9c28-1d0cf0ffd7d4 |                                                |
+| 2f2782dd-cb6b-4a37-a384-8c4883e7243d |                                                |
+| 30cb2d41-62df-44db-9faf-d6638438e71c |                                                |
+| 901b564b-5250-4215-bcad-2630b7701a85 |                                                |
+| c157a2bb-0a42-4e2a-8354-ec0560d9e28b |                                                |
+| c5ab2b09-b8cb-4381-83d4-a14a7207fdeb | {"port_filter": true, "ovs_hybrid_plug": true} |
+| c8e328fd-0279-46ff-ba45-177b95b97103 |                                                |
+| e14dbfd5-670e-405f-aaec-3796d1df1c34 | {"port_filter": true, "ovs_hybrid_plug": true} |
++--------------------------------------+------------------------------------------------+
+</code></pre>
+
+<p>이 포트는 기존 havana에서 생성된 인스턴스에 연결된 포트죠..</p>
+
+<p>자 그럼 이 값을 똑같이 바꾸면 어떻게 될까요..</p>
+
+<pre><code>mysql&gt; update ml2_port_bindings
+        set vif_details = '{"port_filter": true, "ovs_hybrid_plug": true}';
+</code></pre>
+
+<p>녜.. 예상하는데로.. vif가 hybrid 형태로 잘 연결됩니다. ^^;</p>
+
+<p>이전에는 nova reboot -hard &lt;uuid> 하면 인스턴스의 네트워크가 안되던 것이.. 이제는 잘 됩니다. ^^;</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">whitekid</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2014-04-25T00:00:00+09:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>25</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>12:00 am</span></time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://whitekid.github.io/archives/1494" data-via="" data-counturl="http://whitekid.github.io/archives/1494" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/archives/1489" title="Previous Post: -Wunused-command-line-argument-hard-error-in-future 오류">&laquo; -Wunused-command-line-argument-hard-error-in-future 오류</a>
+      
+      
+        <a class="basic-alignment right" href="/archives/1501" title="Next Post: nova stop의 위험성...">nova stop의 위험성&#8230; &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/keystone-bootstrap/">Keystone Bootstrap</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/neutron-default-security-group/">Neutron Default Security Group</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1550">클라우드 네트워킹과 SDN 그리고 OpenStack</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Choe, Cheng-Dae -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

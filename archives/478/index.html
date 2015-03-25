@@ -1,0 +1,232 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Ss5: Socks Proxy Server for FreeBSD - Your wish is my command</title>
+  <meta name="author" content="Choe, Cheng-Dae">
+
+  
+  <meta name="description" content="많은 회사생활하는 분들도 그렇지만 여기 내가 일하고 있는 곳에 막혀있는 사이트가 많고 막혀있는 포트도 많다. 그래서 웹을 위해서는 이 서버에다 squid를 설치해서 우회해서 사용하고 있다. 그런데 말이다 인터넷이라는 것이 항상 웹으로만 되는건 아니라서.. 다른 포트가 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://whitekid.github.io/archives/478">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Your wish is my command" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Your wish is my command</a></h1>
+  
+    <h2>It&#8217;s a long journey</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="whitekid.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Ss5: Socks Proxy Server for FreeBSD</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-10-14T00:00:00+09:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>많은 회사생활하는 분들도 그렇지만 여기 내가 일하고 있는 곳에 막혀있는 사이트가 많고 막혀있는 포트도 많다. 그래서 웹을 위해서는 이 서버에다 squid를 설치해서 우회해서 사용하고 있다.</p>
+
+<p>그런데 말이다 인터넷이라는 것이 항상 웹으로만 되는건 아니라서.. 다른 포트가 필요할 경우가 있지요. 그래서 찾아보다가 socks proxy server를 설치해보기로 했다. <a href="http://www.hm2k.com/posts/freebsd-socks-proxy-for-mirc">여기의 글</a>을 보고 그중에서 ss5가 가장 낳은것 같아서(아니면 좋은것 소개해 주세요.) 그것으로 해봤다.</p>
+
+<h2>설치</h2>
+
+<pre><code>$ portmaster net/ss5
+$ /usr/local/etc/rc.d/ss5 start
+</code></pre>
+
+<p>이렇게 해주면 단순히 설치가 끝나고 사용이 가능한다.</p>
+
+<p>물론 /etc/rc.conf에 ss5_enable=&ldquo;YES&rdquo; 를 추가하시구요.</p>
+
+<h2>우선 모두 다 열어</h2>
+
+<p>/usr/local/etc/ss5.conf에 다 열려면 아래 두 줄 확인할 것..</p>
+
+<pre><code>auth 0.0.0.0/0 - -
+permit 0 0.0.0/0 - 0.0.0.0/0 - - - - -
+</code></pre>
+
+<h2>기본 포트가 막혔군</h2>
+
+<p>socks 서버는 1080 포트를 사용한다. 근데 해보니.. 허걱 연결이 안되는군요. 포트를 바꿔야지요. 설정파일에는 그런게 없고 실행할때 파라미터로 주어집니다.</p>
+
+<pre><code>/etc/rc.d에 ss5_flags="-b 0.0.0.0:&lt;port&gt;"
+</code></pre>
+
+<p>라고 적어주면 됩니다.</p>
+
+<p>ㅋㅋ 이제 막인것도 다 뚫어! 단&hellip; application에서 proxy를 지원한다면 말입니다..</p>
+
+<p><img src="/images/ie-socks-proxy-settings.png"></p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">whitekid</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2010-10-14T00:00:00+09:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://whitekid.github.io/archives/478" data-via="" data-counturl="http://whitekid.github.io/archives/478" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/archives/475" title="Previous Post: 아이폰 앱에서 작성해보기">&laquo; 아이폰 앱에서 작성해보기</a>
+      
+      
+        <a class="basic-alignment right" href="/archives/504" title="Next Post: 이 블로그가 위치한 서버 사진">이 블로그가 위치한 서버 사진 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/keystone-bootstrap/">Keystone Bootstrap</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/neutron-default-security-group/">Neutron Default Security Group</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1550">클라우드 네트워킹과 SDN 그리고 OpenStack</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Choe, Cheng-Dae -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

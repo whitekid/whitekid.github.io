@@ -1,0 +1,258 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Ec2 Instance Start/ Stop Scripts - Your wish is my command</title>
+  <meta name="author" content="Choe, Cheng-Dae">
+
+  
+  <meta name="description" content="클라우드 관련 일을 하니 역시나 사실상 표준인 ec2를 분석할 일이 생겼고, 인스턴스를 만들고 하는 일이 생겼습니다. 콘솔에서 작업하는 것이 너무 귀찮아서 간단하게 모든 region의 instance에 대해서 start/ stop/ status를 보는 스크립트를 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://whitekid.github.io/archives/1185">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Your wish is my command" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Your wish is my command</a></h1>
+  
+    <h2>It&#8217;s a long journey</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="whitekid.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Ec2 Instance Start/ Stop Scripts</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-12-13T00:00:00+09:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>13</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>클라우드 관련 일을 하니 역시나 사실상 표준인 ec2를 분석할 일이 생겼고, 인스턴스를 만들고 하는 일이 생겼습니다. 콘솔에서 작업하는 것이 너무 귀찮아서 간단하게 모든 region의 instance에 대해서 start/ stop/ status를 보는 스크립트를 만들어봤네요.</p>
+
+<p>물론 이런 일을 해주는 뭔가가 있겠지만, 아주 간단한 일이라 찾는것도 귀찮아서&hellip;</p>
+
+<pre><code>#!/bin/bash
+export EC2_PRIVATE_KEY=&lt;YOUR EC2 PRIVATE KEY FILE HERE&gt;
+export EC2_CERT=&lt;YOUR EC2 CERT FILE HERE&gt;
+
+this=$0
+cmd="$1"
+shift
+
+function check_expire(){
+    f=$1
+    EXPIRETIME=$2
+
+    [ ! -f $f ] &amp;&amp; return
+
+    NOW=`date +%s` # get current time
+    FCTIME=`stat -c %Y ${f}` # get file last modification time
+    let "AGE=$NOW-$FCTIME"
+    if [[ $AGE -gt $EXPIRETIME ]] ; then
+        rm -f $f # this file age is more than the EXPIRETIME above, we can delete it
+    fi
+}
+
+case "$cmd" in
+stop)
+    $this | while read region instance etc; do
+    ec2-stop-instances -region $region $instance
+    done
+    ;;
+
+start)
+    $this | while read region instance etc; do
+    ec2-start-instances -region $region $instance
+    done
+    ;;
+
+regions)
+    let expire_time=60*60*24*7 # expire in a week
+    region_cache='/var/tmp/ec2-region-cache'
+    check_expire $region_cache $expire_time
+
+    if [ ! -f $region_cache ]; then
+        ec2-describe-regions | awk '{print $2}' &gt; $region_cache
+    fi
+
+    cat $region_cache
+    ;;
+
+    *)
+        for region in `$this regions`; do
+        ec2-describe-instances -region=$region | grep INSTANCE | awk "{print \"$region \" \$2 \" \" \$4 \" \" \$6}"
+        done
+    ;;
+esac
+</code></pre>
+
+<p>흠.. ec2 api .. 엄청 느리군요.. ㅡㅡ</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">whitekid</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2012-12-13T00:00:00+09:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>13</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://whitekid.github.io/archives/1185" data-via="" data-counturl="http://whitekid.github.io/archives/1185" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/archives/1173" title="Previous Post: 가상머신 만드는 시간, 15분">&laquo; 가상머신 만드는 시간, 15분</a>
+      
+      
+        <a class="basic-alignment right" href="/archives/1189" title="Next Post: github에 계정이 여러개 있을 때.. push">github에 계정이 여러개 있을 때.. push &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/keystone-bootstrap/">Keystone Bootstrap</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/neutron-default-security-group/">Neutron Default Security Group</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1550">클라우드 네트워킹과 SDN 그리고 OpenStack</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Choe, Cheng-Dae -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

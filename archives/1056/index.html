@@ -1,0 +1,239 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>VMWare에서 Hostonly Vmnet간의 Routing - Your wish is my command</title>
+  <meta name="author" content="Choe, Cheng-Dae">
+
+  
+  <meta name="description" content="VMWare를 사용하면서 뭔가 복잡한 네트워크 모델을 사용하려면 hostonly vmnet을 여러개 사용하게 됩니다. VMWare를 OpenStack 테스트 용으로 사용하고 있는 저는 현재 테스트 환경에서 hostonly vmnet을 4개 사용하고 있으며 실제 환경을 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://whitekid.github.io/archives/1056">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Your wish is my command" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Your wish is my command</a></h1>
+  
+    <h2>It&#8217;s a long journey</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="whitekid.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">VMWare에서 Hostonly Vmnet간의 Routing</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-10-29T00:00:00+09:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>29</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>VMWare를 사용하면서 뭔가 복잡한 네트워크 모델을 사용하려면 hostonly vmnet을 여러개 사용하게 됩니다. VMWare를 OpenStack 테스트 용으로 사용하고 있는 저는 현재 테스트 환경에서 hostonly vmnet을 4개 사용하고 있으며 실제 환경을 그대로 묘사하기 위해서 조만간 6~7개로 늘려서 테스트할 예정입니다.</p>
+
+<p>그런데 처음에 잘 모르고 지나갔다가 낭패를 본게 hostonly로 네트웍을 구성하면 host-pc에서 vmnet간에 routing을 지원하지 않습니다. 정리하면 아래와 같습니다.</p>
+
+<ul>
+<li>host-pc <-> vmnet: OK</li>
+<li>vmnet <-> Internet: N/A</li>
+<li>vnmet <->  vmnet : N/A</li>
+</ul>
+
+
+<p>당연히 되는지 알았는데, <a href="/archives/1010">vmnet간에 NATing이 되고 있었던 것</a>과 이로 인한 <a href="/archives/997">routering filter의 간섭</a>이었죠. 이 상황을 알아채려면 상대방의 ip까지 확인 해야하는데, 그럴 일이 거의 없다가 문제가 발생해 추척하다 발견한 것이죠.. ㅎㅎ</p>
+
+<p>어쨌든 vmnet간에 routing하는 방법은 <a href="http://www.vmware.com/support/ws5/doc/ws_net_advanced_2hostonly_routing.html">VMWare 사이트에 잘 설명</a>이 되어있습니다. 근데 여기서 방법 중에 host-pc에서 routing을 잡는 방법은 ubuntu에서 테스트하니 안됩니다. 그래서 routing을 담당하는 VM을 만들어 합니다.</p>
+
+<p>간단히 정리하면</p>
+
+<ol>
+<li>hostonly network을 가지는 2개의 vm(10.20.1.10, 10.20.2.10)을 만든다. ==> 이하 internal vm</li>
+<li>두 hostonly network을 가지는 router vm을 만든다. ==> 이하 router vm
+eth0: NAT network for external internet access
+eth1: 10.20.1.2
+eth2: 10.20.2.2</li>
+<li>여기서 .2를 가지는 것은 .1은 host-pc에 연결하고 host-pc에서 management용으로 사용할 것이므로 .2를 사용한다.</li>
+<li>router vm에서 routing이 되도록 설정한다. 간단히
+$ systctl net.ipv4.ip_foward=1</li>
+<li>router vm에 internal vm이 외부 인터넷 접근을 위해 NATing을 설정한다. 외부 인터넷 접근 필요 하다면&hellip;
+$ iptables -t nat -A POSTROUTING -j MASQUERADE -o eth0</li>
+<li>internal vm의 default gateway를 .2번으로 설정한다.</li>
+<li>internal vm에서 tracepath <ip>를 통해서 각각의 vm을 router vm을 통해서 접근하는지 확인한다.</li>
+<li>internal vm에서 tracepath google.com으로 외부 인터넷 연결 확인</li>
+<li>끝..</li>
+</ol>
+
+
+<p>참고..</p>
+
+<ul>
+<li>iptables rule 저장은 <a href="http://wiki.woosum.net/iptables#A.2BrjDQwA-">여기</a>를 참고</li>
+</ul>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">whitekid</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2012-10-29T00:00:00+09:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>29</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://whitekid.github.io/archives/1056" data-via="" data-counturl="http://whitekid.github.io/archives/1056" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/archives/1040" title="Previous Post: twisted를 이용한 심플한 dns proxy: dnspost">&laquo; twisted를 이용한 심플한 dns proxy: dnspost</a>
+      
+      
+        <a class="basic-alignment right" href="/archives/1065" title="Next Post: chef data_bag/ cookbook upload script">chef data_bag/ cookbook upload script &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/keystone-bootstrap/">Keystone Bootstrap</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/neutron-default-security-group/">Neutron Default Security Group</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1550">클라우드 네트워킹과 SDN 그리고 OpenStack</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Choe, Cheng-Dae -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

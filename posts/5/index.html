@@ -1,0 +1,1140 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Your wish is my command</title>
+  <meta name="author" content="Choe, Cheng-Dae">
+
+  
+  <meta name="description" content="이 전 포스트에서 GlusterFS를 instance storage backend로 사용했었습니다. Ceph는 GlusterFS에 비해서 콤포넌트도 많고, 설치 과정도  복잡해서 &ldquo;보여서&rdquo; 우선 GlusterFS로 했었지요. 이번에는 Ceph로 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://whitekid.github.io/posts/5/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Your wish is my command" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Your wish is my command</a></h1>
+  
+    <h2>It&#8217;s a long journey</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="whitekid.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1304">Ceph as OpenStack Instance Storage Backend</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2013-06-10T00:00:00+09:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>10</span><span class='date-suffix'>th</span>, <span class='date-year'>2013</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>이 전 포스트에서 <a href="/archives/1292">GlusterFS를 instance storage backend로 사용</a>했었습니다. Ceph는 GlusterFS에 비해서 콤포넌트도 많고, 설치 과정도  복잡해서 &ldquo;보여서&rdquo; 우선 GlusterFS로 했었지요. 이번에는 Ceph로 live migration을 할 수 있게 instance storage backend로 설정해 봤습니다.</p>
+
+<p>GlusterFS와 다르게 Ceph는 swift, {nova,cinder}-volume과 통합도 준비되어 있지만, 현재 목적에 맞지 않기에 여기서는 다루지 않습니다.</p>
+
+<h2>Overview</h2>
+
+<p>설치 전에 우선 Ceph의 구성을 알아보면, mon, mds, osd 세가지 프로세스로 구성되어 있으며, 각각의 기능은 대략 아래와 같습니다.</p>
+
+<ul>
+<li>mon: cluster의 상태등의 데이터를 관리</li>
+<li>mds: CephFS에 제공하는 메타정보 데이터 관리</li>
+<li>osd: 데이터 저장, replication, recovery 등을 제공하고, mon 프로세스에 모니터링 정보를 제공</li>
+</ul>
+
+
+<p>Ceph를 instance storage backend로 사용하기 위해서는 glusterfs와 마찬가지로 /var/lib/nova/instance 디렉토리를 cephfs로 마운트하여 사용합니다. qemu에서 librbd를 이용하여 직접 Ceph를 접근할 것으로 예상했지만 {nova,cinder}-volume은 문서상에 librbd를 이용하도록 나와있는 반면에, instance storage의 경우는 별도의 안내가 없습니다(제가 못찾은건지 모르겠지만&hellip;.).</p>
+
+<p>또한 ceph cluster를 별도로 구성하는 것을 권장하지만, 실험 환경이기 때문에 compute 노드에 osd를 glance 노드에 mon, msd를 구성하기로 합니다.</p>
+
+<p>참고로 권장하는 최소 구성은 아래와 같습니다.</p>
+
+<ul>
+<li>(mon + mds) x 3</li>
+<li>osd x 3</li>
+</ul>
+
+
+<p>권장은 저렇고, 제 테스트 환경에서는 충분한 노드가 없기 때문에 glusterfs 경우처럼 compute node에 osd를 glance 노드에 mon + mds, 그리고  control 노드에 ceph-deploy를 준비합니다.</p>
+
+<h2>설치 준비</h2>
+
+<p>Ceph의 설치는 <a href="https://github.com/ceph/ceph-deploy">ceph-deploy</a>를 이용합니다. 이전 버전에서는 mkcephfs 등의 툴을 이용했었지만, 이제는 ceph-deploy를 이용해서 셋업합니다. ceph-deploy는 ssh로 설치하려는 노드에 접속하여 sudo를 통해 패키지 설치, 설정 등을 자동으로 진행합니다. chef, puppet, juju등 자동화 툴로 설치할 필요가 없다고 설명하고 있습니다.</p>
+
+<p>ceph-deploy를 실행할 노드를 ceph admin 노드라고하고, 여기에서는 아래 준비가 필요합니다.</p>
+
+<ul>
+<li>ceph 계정 만들기</li>
+<li>ceph 계정의 private / public key 만들기</li>
+<li>ceph 패키지 설치</li>
+</ul>
+
+
+<p>ceph가 설치될 mon, mds, osd 가 실행될 노드에는 아래의 준비가 필요합니다.</p>
+
+<ul>
+<li>ceph 계정 만들기</li>
+<li>ceph 계정의 sudo 허용</li>
+<li>admin 노드에서 생성된 public key로 접속 허용</li>
+<li>ceph 패키지 설치: ceph-deploy가 패키지 설치를 하지만, 미러를 사용한다면 직접 설치를..</li>
+</ul>
+
+
+<h2>ceph 패키지 설치: 모든 노드</h2>
+
+<pre><code>$ wget -q -O- 'https://ceph.com/git/?p=ceph.git;a=blob_plain;f=keys/release.asc' | sudo apt-key add - 
+$ echo deb http://ceph.com/debian-cuttlefish/ $(lsb_release -sc) main | sudo tee /etc/apt/sources.list.d/ceph.list
+$ apt-get install ceph
+</code></pre>
+
+<h2>ceph 유저 생성: 모든 노드</h2>
+
+<pre><code>$ useradd -m ceph
+</code></pre>
+
+<h2>sudoer에 등록: 모든 노드</h2>
+
+<p>ceph-deploy는 ssh로 ceph@node로 들어가서 sudo를 이용하여 설정을 하기 때문에 sudoer에 등록한다.</p>
+
+<pre><code>$echo "ceph ALL = (root) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/ceph
+</code></pre>
+
+<h2>ceph keypair 생성: admin 노드</h2>
+
+<pre><code>$ su - ceph
+$ ssh-keygen -t rsa -q -f /home/ceph/.ssh/id_rsa -P ""
+</code></pre>
+
+<h2>ceph-deploy가 실행할 환경 설정</h2>
+
+<p>여기서 생성된 /home/ceph/.ssh/id_rsa.pub 파일을 모든 노드에 /home/ceph/.ssh/authorized_keys로 복사한다. 그리고 admin 노드의 ssh 설정을 아래처럼 하여 ssh hostname으로 ceph 유저로 로그인할 수 있도록 한다. 몰론 ceph-deploy가 접속한 모든 노드 (mon, mds, osd)를 모두 등록한다.</p>
+
+<pre><code>$ more ~/.ssh/config
+Host compute01
+Hostname compute01.stack
+User ceph
+</code></pre>
+
+<p>그리고 처음으로 ssh로 연결하면 ssh key 확인 메시지가 뜨는데, 이를 없애기 위해서 미리 아래처럼 ssh server public key를 등록한다.</p>
+
+<pre><code>$ ssh-keyscan compute01.stack &gt;&gt; .ssh/known_hosts
+</code></pre>
+
+<p>모든게 정상적으로 설정 되었다면 아래 명령을 내렸을 때 아무런 입력 없이 바로 실행이 되어야 한다.</p>
+
+<pre><code>$ ssh compute01 sudo ls /
+</code></pre>
+
+<h2>cluster 생성</h2>
+
+<p>클러스터 생성은 monitor 노드의 호스트를 지정하여 시작합니다. 여기서는 glance 노드를 monitor, mds로 사용하기로 했으므로 아래처럼 합니다.</p>
+
+<pre><code>$ ceph-deploy -v new glance
+$ ls
+ceph.conf ceph.log ceph.mon.keyring
+</code></pre>
+
+<p>실행하면 지정한 모니터로 ceph.conf 파일과 ceph.mon.keyring 파일을 생성합니다. 아직까지는 설정 파일만 만든 상태입니다.</p>
+
+<p>만든 설정 파일을 monitor 호스트로 복사하고, 서비스를 시작하는 명령은 아래와 같습니다.</p>
+
+<pre><code>$ ceph-deploy -v mon create glance
+Deploying mon, cluster ceph hosts glance
+Deploying mon to glance
+Distro Ubuntu codename precise, will use upstart
+</code></pre>
+
+<p>monitor 호스트인 glance에서 프로세스를 보면 ceph-mon 프로세스가 돌아가는 것을 확인할 수 있다. 그리고 glance 호스트에 보면 설정파일이 /etc/ceph/ceph.conf로 복사된 것을 확인할 수 있으며 /etc/ceph/ceph.client.admin.keyring 으로 어드민 키링이 생성된 것을 확인할 수 있다.</p>
+
+<p>gatherkey 명령으로 monitor에 생성된 키를 가져온다.</p>
+
+<pre><code>$ ceph-deploy -v gatherkeys glance
+Checking glance for /etc/ceph/ceph.client.admin.keyring
+Got ceph.client.admin.keyring key from glance.
+Have ceph.mon.keyring
+Checking glance for /var/lib/ceph/bootstrap-osd/ceph.keyring
+Got ceph.bootstrap-osd.keyring key from glance.
+Checking glance for /var/lib/ceph/bootstrap-mds/ceph.keyring
+Got ceph.bootstrap-mds.keyring key from glance.
+</code></pre>
+
+<p>ceph.client.admin.keyring, ceph.bootstrap-osd.keyring, ceph.bootstrap-mds.kerying 파일을 가져왔다. 이 키들은 osd, mds에서 사용된다. 여기서 가저온 ceph.client.admin.keyring은 아래처럼 사용할 수 있다.</p>
+
+<pre><code>$ ceph -c ceph.conf -k ceph.client.admin.keyring mon stat
+e1: 1 mons at {glance=10.100.0.8:6789/0}, election epoch 2, quorum 0 glance
+</code></pre>
+
+<h2>mds 설치: admin 노드</h2>
+
+<p>mds는 cephfs를 사용(cephfs로 마운트)한다면 필요한 것으로, rbd를 사용한다면 설치할 필요는 없다. 우리는 /var/lib/nova/instance를 cephfs로 마운트해서 사용할 것이므로 mds를 설치한다.</p>
+
+<p>마찬가지로 glance host에 설치한다.</p>
+
+<pre><code>$ ceph-deploy -v mds create glance
+Deploying mds, cluster ceph hosts glance:glance
+Distro Ubuntu codename precise, will use upstart
+Deploying mds bootstrap to glance
+Host glance is now ready for MDS use.
+Deploying mds.glance to glance
+</code></pre>
+
+<p>역시 glance 호스트에 보면 ceph-mds 프로세스가 떠있는 것을 확인할 수 있다.</p>
+
+<h2>osd 설치</h2>
+
+<p>osd는 ceph에 저장되는 데이터가 실제로 저장되는 곳입니다. disk와 journal로 구성이 됩니다.</p>
+
+<p>Disk는 block device 또는 directory이고, 별도의 디스크를 권장하지만, 여기서는 /ceph/disk 디렉토리를 사용하겠습니다. 그리고 디렉토리를 사용할 경우 btrfs 또는 xfs를 권장하고 있지만, 여기서는 그냥 기존 파일 시스템에 쓰겠습니다.</p>
+
+<p>Journal은 SSD를 권장하지만, 그냥 파일로 /ceph/journal 을 사용하겠습니다.</p>
+
+<p>따라서 osd 노드에서는 아래처럼 미리 디렉토리를 생성합니다.</p>
+
+<pre><code>$ mkdir -p /ceph/disk
+</code></pre>
+
+<p>이제 osd를 설치합니다.</p>
+
+<pre><code>$ ceph-deploy -v osd create compute01:/ceph/disk:/ceph/journal
+Preparing cluster ceph disks compute01:/ceph/disk:/ceph/journal
+Deploying osd to compute01
+Host compute01 is now ready for osd use.
+Preparing host compute01 disk /ceph/disk journal /ceph/journal activate True
+</code></pre>
+
+<p>패키지가 설정되고, /etc/ceph/ceph.conf 파일이 복사됩니다. 하지만 아직은 osd가 활성화되지는 않았고, 아래처럼 활성화합니다.</p>
+
+<pre><code>$ ceph-deploy -v osd activate compute01:/ceph/disk:/ceph/journal
+Activating cluster ceph disks compute01:/ceph/disk:/ceph/journal
+Activating host compute01 disk /ceph/disk
+Distro Ubuntu codename precise, will use upstart
+</code></pre>
+
+<p>이제 ceph-osd 프로세스가 시작되었으며, 아래처럼 osd가 하나 등록된 것을 확인할 수 있습니다.</p>
+
+<pre><code>$ ceph -c ceph.conf -k ceph.client.admin.keyring osd stat
+e5: 1 osds: 1 up, 1 in
+</code></pre>
+
+<p>그리고 osd 노드에서도 ceph 관련 명령을 수행할 수 있게 admin 키를 보냅니다.</p>
+
+<pre><code>$ ceph-deploy -v admin compute01
+Pushing admin keys and conf to compute01
+</code></pre>
+
+<p>이 키가 있어야 아래처럼 osd 노드에서도 ceph 명령을 수행할 수 있습니다.</p>
+
+<p>ceph@compute01:~$ ceph osd stat
+e5: 1 osds: 1 up, 1 in</p>
+
+<p>마찬가지로 compute02, compute03도 설치합니다.</p>
+
+<h2>instance 디렉토리 마운트</h2>
+
+<p>아래처럼 인스턴스 디렉토리를 마운트 합니다.</p>
+
+<pre><code>$ mount -t ceph 10.100.0.8:6789:/ /var/lib/nova/instances -o name=admin,secretkey=AQA+QrVRYNAnFhAAcN68f1a7xFqBzsSEqXQHmg==
+</code></pre>
+
+<p>10.100.0.8은 monitor 노드이고 secretkey는 /etc/ceph/ceph.admin.client.keyring에 있는 키를 사용합니다.</p>
+
+<h2>live migration</h2>
+
+<p>live migration 설정 및 방법은 glusterfs의 경우와 같습니다. 단 glustefs의 경우에는 VIR_MIGRATE_UNSAFE 옵션이 있어야 했지만, ceph의 경우는 해당 옵션이 없이 기본 값으로도 live migration이 됩니다.</p>
+
+<pre><code>$ nova show cirros1
++-------------------------------------+------------------------------------------------------------+
+| Property                            | Value                                                      |
++-------------------------------------+------------------------------------------------------------+
+| status                              | ACTIVE                                                     |
+| updated                             | 2013-06-10T03:59:04Z                                       |
+| OS-EXT-STS:task_state               | None                                                       |
+| OS-EXT-SRV-ATTR:host                | compute02                                                  |
+| key_name                            | admin                                                      |
+| image                               | cirros-0.3.1-x86_64 (4f494d0b-ebdc-4ebd-8afc-8df804eaaf4e) |
+| hostId                              | 4cf03b72c10726d78424eb6b1a62ddc4762cbbd1b148b8d684020c5b   |
+| OS-EXT-STS:vm_state                 | active                                                     |
+| OS-EXT-SRV-ATTR:instance_name       | instance-00000003                                          |
+| OS-EXT-SRV-ATTR:hypervisor_hostname | compute01.stack                                            |
+| flavor                              | m1.tiny (1)                                                |
+| id                                  | a01a3bd7-6e49-485a-afc3-88c5b7c401d5                       |
+| security_groups                     | [{u'name': u'default'}]                                    |
+| user_id                             | 5700bfc6b03b476f97021e5eede7989e                           |
+| name                                | cirros1                                                    |
+| created                             | 2013-06-10T03:57:17Z                                       |
+| tenant_id                           | 6f524cc90eb54f4b99ac70f3a3c070a7                           |
+| OS-DCF:diskConfig                   | MANUAL                                                     |
+| metadata                            | {}                                                         |
+| admin network                       | 10.250.0.4                                                 |
+| accessIPv4                          |                                                            |
+| accessIPv6                          |                                                            |
+| progress                            | 0                                                          |
+| OS-EXT-STS:power_state              | 1                                                          |
+| OS-EXT-AZ:availability_zone         | nova                                                       |
+| config_drive                        |                                                            |
++-------------------------------------+------------------------------------------------------------+
+
+$ nova live-migration cirros1 compute01
+
+$ nova show cirros1
++-------------------------------------+------------------------------------------------------------+
+| Property                            | Value                                                      |
++-------------------------------------+------------------------------------------------------------+
+| status                              | ACTIVE                                                     |
+| updated                             | 2013-06-10T04:03:03Z                                       |
+| OS-EXT-STS:task_state               | None                                                       |
+| OS-EXT-SRV-ATTR:host                | compute01                                                  |
+| key_name                            | admin                                                      |
+| image                               | cirros-0.3.1-x86_64 (4f494d0b-ebdc-4ebd-8afc-8df804eaaf4e) |
+| hostId                              | beeddd176ef0ed6fdd0c7a04b376ee05dcda276e0596760ea021d649   |
+| OS-EXT-STS:vm_state                 | active                                                     |
+| OS-EXT-SRV-ATTR:instance_name       | instance-00000003                                          |
+| OS-EXT-SRV-ATTR:hypervisor_hostname | compute01.stack                                            |
+| flavor                              | m1.tiny (1)                                                |
+| id                                  | a01a3bd7-6e49-485a-afc3-88c5b7c401d5                       |
+| security_groups                     | [{u'name': u'default'}]                                    |
+| user_id                             | 5700bfc6b03b476f97021e5eede7989e                           |
+| name                                | cirros1                                                    |
+| created                             | 2013-06-10T03:57:17Z                                       |
+| tenant_id                           | 6f524cc90eb54f4b99ac70f3a3c070a7                           |
+| OS-DCF:diskConfig                   | MANUAL                                                     |
+| metadata                            | {}                                                         |
+| admin network                       | 10.250.0.4                                                 |
+| accessIPv4                          |                                                            |
+| accessIPv6                          |                                                            |
+| progress                            | 0                                                          |
+| OS-EXT-STS:power_state              | 1                                                          |
+| OS-EXT-AZ:availability_zone         | nova                                                       |
+| config_drive                        |                                                            |
++-------------------------------------+------------------------------------------------------------+
+</code></pre>
+
+<p>아마도 이 영향인 것인지 live migration이 glusterfs에 비해서 약간 느리다는 인상을 받았습니다.</p>
+
+<p>update) OpenStack 관련 문서에는 없지만, <a href="http://ceph.com/docs/master/rbd/libvirt/">libvirtd 항목</a>에 보면 rbd를 사용할 수 있습니다. 이건 나중에&hellip; ^^;</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1292">Glusterfs as OpenStack Instance Storage Backend</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2013-06-03T00:00:00+09:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>3</span><span class='date-suffix'>rd</span>, <span class='date-year'>2013</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>OpenStack에서 Live migration을 지원하려면 기본적으로 shared storage가 있어야 한다. 지금 요구사항 중의 하나가 장애에 대비한 live migration이라 shared storage를 설정해야했다.</p>
+
+<p>요즘 대세는 Ceph이라고, 저번 오픈스택 모임에서 그랬는데, 잠깐 Ceph를 시도해본 결과, 설치과정이 그리 맘에 들지 않습니다. 그래요 완전히 개인적인 생각입니다.</p>
+
+<p>그래서 상대적으로 쉬운 GlusterFS를 먼저 해보고려 합니다.</p>
+
+<p>GlusterFS를 한다면 <a href="http://www.gluster.org/2013/05/glusterfs-is-ready-for-openstack/">GlusterFS is Ready for OpenStack</a>이라고 발표를 했는데, 문제는 아직 Beta 단계인 3.4 이야기이고, 자신들의 OpenStack Distribution인 <a href="http://openstack.redhat.com">RDO</a>에 테스트 해 봤다는 이야기입니다.</p>
+
+<p>내용을 보면 Instance Storage도 libgfapi를 이용해서 glusterfs에 직접 IO를 통해서 합니다. 그래서 중간의 파일 시스템에서 생기는 성능/ 캐쉬 등등의 문제를  없앴죠. Ceph도 그렇구요. 이거 제대로 된다면 바로 적용해 보려고 했지만&hellip; Ubuntu Package가 아직 없어요.. 그래서 정식 버전이 나오기 전에는 3.2에서 테스트 하기로 했습니다. 아고 서론이 길었어요.</p>
+
+<h3>Overview</h3>
+
+<p>테스트 환경에서는 별도의 glusterfs cluster를 구성하지 않고 glusterfs server는 compute node에 설치하기로 했습니다(아마도 별 문제 없으면 실제로도 그렇게 갈 생각이구요). 그리고 각 compute node는 /var/lib/nova/instance를 glusterfs localhost로 마운트 합니다.</p>
+
+<h3>Gluster FS 설치</h3>
+
+<p>간단히 각 compute node에서 설치합니다.</p>
+
+<pre><code>$ apt-get install glusterfs-server
+</code></pre>
+
+<h3>Peer probe</h3>
+
+<pre><code>$ gluster peer probe compute02.stack
+$ gluster peer probe compute03.stack
+</code></pre>
+
+<h3>Volume create</h3>
+
+<pre><code>$ gluster volume create vm-instances replica 3 \
+    compute01.stack:/gluster/instances \
+    compute02.stack:/gluster/instances \
+    compute03.stack:/gluster/instances
+</code></pre>
+
+<p>물론 각 compute node에는 만드려는 brick의 디렉토리인 /gluster/instance를 미리 만들어야합니다.</p>
+
+<h3>Volume start</h3>
+
+<pre><code>$ gluster volume start vm-instances
+</code></pre>
+
+<h3>마운트</h3>
+
+<p>마운트 하기 전에 아무런 인스턴스들이 생성되지 않은 상태로 합니다.</p>
+
+<pre><code>$ mount -t glusterfs localhost:vm-instances /var/lib/nova/instances
+</code></pre>
+
+<p>마운트하면 인스턴스 디렉토리의 소유권이 root.root가 되는데, nova.nova로 수정합니다. 신기하게도 이거 바꾸면 다른 노드도 같이 수정이 되는군요.</p>
+
+<pre><code>$ chown nova.nova /var/lib/nova/instances
+</code></pre>
+
+<p>한쪽 compute 노드에서 파일을 생성하면, 다른 컴퓨터 노드에도 같이 보이는 것을 확인할 수 있습니다.</p>
+
+<h3>nova.conf 설정</h3>
+
+<p>live migration을 하지 않는다면, 별도로 수정할 내용은 없습니다. 파일 권한이 제대로 되어있다면 바로 인스턴스를 생성 가능하고, 생셩된 인스턴스 파일은 다른 컴퓨트 노드에서 잘 보입니다.</p>
+
+<h3>live migration</h3>
+
+<p>Live Migration을 하려면 우선 <a href="http://docs.openstack.org/trunk/openstack-compute/admin/content/configuring-migrations.html">OpenStack에 있는데로 설정</a>합니다. 그런데 이 상태로 live migration을 하면 바로 아래처럼 오류가 발생합니다.</p>
+
+<pre><code>2013-06-03 11:52:20.743 11492 ERROR nova.virt.libvirt.driver \[-\] \[instance: 4717b4d4-61a7-4f4d-b5fc-5ff526822e89\] Live Migration failure: Unsafe migration: Migration may lead to data corruption if disks use cache != none
+</code></pre>
+
+<p>이것은 libvirt가 live migration을 할 때 안정성을 이유로 디스크 캐쉬가 된 상태에서는 live migration을 수행하지 않습니다. nova.conf에서 disk_modes=file=none,block=none 형태로 캐쉬를 안해주면 되겠지만, 이렇게 하고 하면 인스턴스를 생성할 때 부터 문제가 생깁니다. ㅎㅎ</p>
+
+<p>그래서 불안정하게라도 live migration 하겠다고 하면 디스크가 캐쉬가 된 상태도 라이브 마이그레이션을 지원합니다. 이를 설정하면 nova.conf에 아래처럼 설정합니다.</p>
+
+<pre><code>live_migration_flag=VIR_MIGRATE_UNDEFINE_SOURCE, \
+                    VIR_MIGRATE_PEER2PEER, \
+                    VIR_MIGRATE_LIVE, \
+                    VIR_MIGRATE_UNSAFE
+</code></pre>
+
+<p>마지막의 VIR_MIGRATE_UNSAFE가 그것이죠.</p>
+
+<p>어렇게 하고 live migration을 하면 잘 되는 것이죠.</p>
+
+<pre><code>root@control:~# nova show cirros1
++-------------------------------------+------------------------------------------------------------+
+| Property                            | Value                                                      |
++-------------------------------------+------------------------------------------------------------+
+| status                              | ACTIVE                                                     |
+| updated                             | 2013-06-03T07:17:53Z                                       |
+| OS-EXT-STS:task_state               | None                                                       |
+| OS-EXT-SRV-ATTR:host                | compute01                                                  |
+| key_name                            | admin_key                                                  |
+| image                               | cirros-0.3.1-x86_64 (f81518a9-9dc2-4a2a-aeaf-331cc074d063) |
+| hostId                              | a2b92d1a2237ab4772f395b2fde3e462bfad9420e0ffc33ad3d1a19d   |
+| OS-EXT-STS:vm_state                 | active                                                     |
+| OS-EXT-SRV-ATTR:instance_name       | instance-00000011                                          |
+| OS-EXT-SRV-ATTR:hypervisor_hostname | compute01.stack                                            |
+| flavor                              | m1.tiny (1)                                                |
+| id                                  | 2991ad7d-b33e-4d3c-828b-da07338119f1                       |
+| security_groups                     | [{u'name': u'default'}]                                    |
+| user_id                             | 8f5b56a6a51c45338b0c1ba7cd7d9ebb                           |
+| name                                | cirros1                                                    |
+| created                             | 2013-06-03T06:21:27Z                                       |
+| tenant_id                           | b5db61c3fa3845848b0f15c010dd500c                           |
+| OS-DCF:diskConfig                   | MANUAL                                                     |
+| metadata                            | {}                                                         |
+| admin network                       | 10.250.0.2                                                 |
+| accessIPv4                          |                                                            |
+| accessIPv6                          |                                                            |
+| progress                            | 0                                                          |
+| OS-EXT-STS:power_state              | 1                                                          |
+| OS-EXT-AZ:availability_zone         | nova                                                       |
+| config_drive                        |                                                            |
++-------------------------------------+------------------------------------------------------------+
+</code></pre>
+
+<p>cirros1은 compute01에 있습니다. 이를 compute02로 옮긴다면..</p>
+
+<pre><code>root@control:~# nova live-migration cirros1 compute02
+</code></pre>
+
+<p>이제 compute02로 이사갔어요&hellip;</p>
+
+<pre><code>root@control:~# nova show cirros1
++-------------------------------------+------------------------------------------------------------+
+| Property                            | Value                                                      |
++-------------------------------------+------------------------------------------------------------+
+| status                              | MIGRATING                                                  |
+| updated                             | 2013-06-03T07:18:59Z                                       |
+| OS-EXT-STS:task_state               | migrating                                                  |
+| OS-EXT-SRV-ATTR:host                | compute01                                                  |
+| key_name                            | admin_key                                                  |
+| image                               | cirros-0.3.1-x86_64 (f81518a9-9dc2-4a2a-aeaf-331cc074d063) |
+| hostId                              | a2b92d1a2237ab4772f395b2fde3e462bfad9420e0ffc33ad3d1a19d   |
+| OS-EXT-STS:vm_state                 | active                                                     |
+| OS-EXT-SRV-ATTR:instance_name       | instance-00000011                                          |
+| OS-EXT-SRV-ATTR:hypervisor_hostname | compute01.stack                                            |
+| flavor                              | m1.tiny (1)                                                |
+| id                                  | 2991ad7d-b33e-4d3c-828b-da07338119f1                       |
+| security_groups                     | [{u'name': u'default'}]                                    |
+| user_id                             | 8f5b56a6a51c45338b0c1ba7cd7d9ebb                           |
+| name                                | cirros1                                                    |
+| created                             | 2013-06-03T06:21:27Z                                       |
+| tenant_id                           | b5db61c3fa3845848b0f15c010dd500c                           |
+| OS-DCF:diskConfig                   | MANUAL                                                     |
+| metadata                            | {}                                                         |
+| accessIPv4                          |                                                            |
+| accessIPv6                          |                                                            |
+| admin network                       | 10.250.0.2                                                 |
+| OS-EXT-STS:power_state              | 1                                                          |
+| OS-EXT-AZ:availability_zone         | nova                                                       |
+| config_drive                        |                                                            |
++-------------------------------------+------------------------------------------------------------+
+</code></pre>
+
+<p>Update: Andrew님의 제보에 의하면 3.2 버전에서는 파일 싱크할 때 파일이 read only로 걸려서 instance도 read lock이 걸리는 현상이 있다는군요. 3.3 부터는 OK</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1284">OpenStack Havana에 기대하는 몇가지&#8230;</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2013-05-30T00:00:00+09:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>30</span><span class='date-suffix'>th</span>, <span class='date-year'>2013</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>요즘 grizzly 버전가지고 열심히 놀구 있습니다. 써보니깐.. private cloud까지는 훌륭히 만들 수 있을 것 같아요..</p>
+
+<p>그러다 <a href="http://status.openstack.org/release/">havana 릴리스에 어떤 blue print가 있는가</a> 대충 훑어봤는데, 그중에 몇 개 이야기 해봅니다.</p>
+
+<p><a href="https://blueprints.launchpad.net/devstack/+spec/quantum-l3-plugin-support"><strong>Support for Quantum L3 plugin in Devstack</strong></a></p>
+
+<p>l3 agent는 linux box에서 돌아가도록 되어있습니다. plugin 형태로 구축하면 hardware 장비를 조절하여 l3의 기능을 처리할 수 있겠죠. 이렇게 하면 l3 agent host에 부하가 줄어들어 보다 안정적인 서비스를 할 수 있습니다.</p>
+
+<p>게다가 인프라 쪽은 s/w 보다는 h/w를 믿는 경향(?)이 있어서, 이게 더 심리적인 안정감을 줄 것 같습니다.</p>
+
+<p><a href="https://blueprints.launchpad.net/quantum/+spec/multi-vendor-support-for-lbaas-step0"><strong>Enable loadbalancing vendors to implement their drivers - step0</strong></a></p>
+
+<p>이것도 위와 마찬가지로, haproxy로 되어있는 구성을 l4 장비를 이용해서 처리하는 기능이죠.</p>
+
+<p><a href="https://blueprints.launchpad.net/nova/+spec/dynamic-dns"><strong>Dynamic DNS support for instances</strong></a></p>
+
+<p>aws ec2처럼 dns로 연결하고 싶습니다.</p>
+
+<p><a href="https://blueprints.launchpad.net/quantum/+spec/vpnaas-python-apis"><strong>IPSec VPNaaS Python APIs / CRUD Operations</strong></a></p>
+
+<p>VPN은 public cloud를 한다면 필요한 기능입니다. havana까지는 api가 정리가 될 것 같고, 다음 릴리스에서는 뭔가 사용할 만한 결과물이 나오겠지요. OpenVPN을 이용한 client vpn, site-to-site vpn이면 훌륭합니다.</p>
+
+<p>nova-network에서는 <a href="http://docs.openstack.org/trunk/openstack-compute/admin/content/cloudpipe-per-project-vpns.html">CloudPipe</a>에서 지원했었지만, 아직 Quantum에는 없네요.</p>
+
+<p><a href="https://blueprints.launchpad.net/quantum/+spec/qos-ovs-qos"><strong>QoS API implementation: OpenVSwitch w/ DSCP</strong></a></p>
+
+<p>네트워크 서비스에 QoS는 기본이겠죠? 옆에 누군가가 엄청나게 네트워크를 써 버린다면.. ㅎㅎ</p>
+
+<p><a href="https://wiki.openstack.org/wiki/Ceilometer"><strong>Ceilometer</strong></a></p>
+
+<p>metering입니다. 즉 어느 사용자가 얼마나 사용했는지를 나타냅니다. 효율을 측정하기 위해서는 반드시 필요하겠죠?</p>
+
+<p>grizzly에 들어가긴 했지만, havana에 제대로 들어갈 예정입니다.</p>
+
+<p><a href="https://wiki.openstack.org/wiki/Heat"><strong>Heat</strong></a></p>
+
+<p>Heat는 CloudFormation 처럼 web site stack을 정의하고, 그에 따라서 API를 이용하여 OpenStack을 설정하는 콤포넌트 입니다. 이 기능보다 제가 주목하고 있는 것은 여기에 AutoScaling 기능이 들어간다는 점이죠.</p>
+
+<p>역시 주 관심사가 Quantum이라 네트워크가 대부분이군요. ^^</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1273">Quantum: Multiple L3-agent</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2013-05-24T00:00:00+09:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>24</span><span class='date-suffix'>th</span>, <span class='date-year'>2013</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>grizzly에는 multiple quantum agent가 된다는 정보가 있습니다.</p>
+
+<p>l3-agent가 돌아가는 곳은 모든 네트워크 트래픽이 통과하기에 SPoF의 문제를 해결해야하는데, multiple quantum agent가 된다면 하나의 agent가 문제가 생겼을 경우 다른 agent로 traffic을 전달하여 failover를 수행할 수 있기에 테스트 해 봤습니다.</p>
+
+<p>단순하게 기존의 network 노드와 똑같이 하나 더 network 노드를 추가한 후에 상황은 다음과 같습니다.</p>
+
+<pre><code>root@control:~# quantum agent-list
++--------------------------------------+--------------------+-----------------+-------+----------------+
+| id                                   | agent_type         | host            | alive | admin_state_up |
++--------------------------------------+--------------------+-----------------+-------+----------------+
+| 0665ee95-55b4-4f7a-a647-e1cf75c019b3 | Open vSwitch agent | network02.stack | :-)   | True           |
+| 3d324ac7-a900-4ee9-b97a-df43a30a14e2 | Open vSwitch agent | network.stack   | :-)   | True           |
+| 405275c2-48e2-43e4-9853-ce314976dc61 | DHCP agent         | network02.stack | :-)   | True           |
+| 6d47b5ce-9d07-4fdb-ad2d-239123ad4087 | L3 agent           | network02.stack | :-)   | True           |
+| 91b431b0-ece9-4fbb-a0b9-757c22034ffc | Open vSwitch agent | compute01.stack | :-)   | True           |
+| a4887a55-6baf-43ad-a0fa-fd67a07181f2 | DHCP agent         | network.stack   | :-)   | True           |
+| da17342b-d2cb-494a-9cf9-5a264b814dde | L3 agent           | network.stack   | :-)   | True           |
+| f6d3146a-7a9e-4483-8cbd-c76ef1c76081 | Open vSwitch agent | compute02.stack | :-)   | True           |
++--------------------------------------+--------------------+-----------------+-------+----------------+
+</code></pre>
+
+<p>여기서 보면 network.stack과 network02.stack에 같은 쌍의 quantum agent가 동작하고 있습니다.</p>
+
+<pre><code>root@control:~# quantum l3-agent-list-hosting-router router_admin_ext
++--------------------------------------+---------------+----------------+-------+
+| id                                   | host          | admin_state_up | alive |
++--------------------------------------+---------------+----------------+-------+
+| da17342b-d2cb-494a-9cf9-5a264b814dde | network.stack | True           | :-)   |
++--------------------------------------+---------------+----------------+-------+
+</code></pre>
+
+<p>다시 확인하면 admin tenant의 router인 router_admin_ext 라우터는 network.stack에서 동작하는 것을 확인할 수 있습니다. 물론 network.stack 노드에서도 아래처럼 l3 agent가 정상적으로 설정되어 있는 것을 확인할 수 있습니다.</p>
+
+<pre><code>root@network:~# ip netns
+qrouter-f3fe0c48-3248-4b2d-9f5b-c4a9c5fc01ed
+qdhcp-85e58593-f869-4233-9e5f-26e7b63df016
+root@network:~# ip netns exec qrouter-f3fe0c48-3248-4b2d-9f5b-c4a9c5fc01ed ip addr
+15: qr-8acb1ecd-d0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue state UNKNOWN
+    link/ether fa:16:3e:74:31:5d brd ff:ff:ff:ff:ff:ff
+    inet 10.250.0.1/24 brd 10.250.0.255 scope global qr-8acb1ecd-d0
+    inet6 fe80::f816:3eff:fe74:315d/64 scope link
+       valid_lft forever preferred_lft forever
+16: qg-a364f00b-f1: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue state UNKNOWN
+    link/ether fa:16:3e:5e:80:f9 brd ff:ff:ff:ff:ff:ff
+    inet 10.200.0.2/16 brd 10.200.255.255 scope global qg-a364f00b-f1
+    inet6 fe80::f816:3eff:fe5e:80f9/64 scope link
+       valid_lft forever preferred_lft forever
+17: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 16436 qdisc noqueue state UNKNOWN
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+</code></pre>
+
+<p>이제 이 router를 network02.stack으로 옮겨보죠. 옮기는 것도 자동으로 되면 좋겠는데, 아직 그러한 기능은 없는 것으로 보이며 l3-agent-router-remove, l3-agent-router-add 명령을 이용해서 옮기면 됩니다.</p>
+
+<pre><code>root@control:~# quantum l3-agent-router-remove da17342b-d2cb-494a-9cf9-5a264b814dde router_admin_ext
+Removed Router router_admin_ext to L3 agent
+</code></pre>
+
+<p>이렇게 하면 network.stack에서 동작하는 l3-agent에서 router_admin_ext를 제외합니다. 이 명령을 내린 후에 network.stack 노드에서 해당 namespace를 확인하면 ip address 설정들이 모두 삭제되어 있습니다.</p>
+
+<p>이제 network02.stack l3-agent에 router_admin_ext를 할당하면 됩니다.</p>
+
+<pre><code>root@control:~# quantum l3-agent-router-add 6d47b5ce-9d07-4fdb-ad2d-239123ad4087 router_admin_ext
+Added router router_admin_ext to L3 agent
+root@control:~# quantum l3-agent-list-hosting-router router_admin_ext
++--------------------------------------+-----------------+----------------+-------+
+| id                                   | host            | admin_state_up | alive |
++--------------------------------------+-----------------+----------------+-------+
+| 6d47b5ce-9d07-4fdb-ad2d-239123ad4087 | network02.stack | True           | :-)   |
++--------------------------------------+-----------------+----------------+-------+
+</code></pre>
+
+<p>이렇게 하면 옮겨지는 네트워크 노드인 network02.stack에 router에 해당하는 network namespace가 생기고, 그리고 여기에 l3-agent가 동작할 수 있는 설정이 생깁니다.</p>
+
+<pre><code>root@network02:~# ip netns
+qrouter-f3fe0c48-3248-4b2d-9f5b-c4a9c5fc01ed
+root@network02:~# ip netns exec qrouter-f3fe0c48-3248-4b2d-9f5b-c4a9c5fc01ed ip addr
+12: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 16436 qdisc noqueue state UNKNOWN
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+13: qr-8acb1ecd-d0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue state UNKNOWN
+    link/ether fa:16:3e:74:31:5d brd ff:ff:ff:ff:ff:ff
+    inet 10.250.0.1/24 brd 10.250.0.255 scope global qr-8acb1ecd-d0
+    inet6 fe80::f816:3eff:fe74:315d/64 scope link
+       valid_lft forever preferred_lft forever
+14: qg-a364f00b-f1: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue state UNKNOWN
+    link/ether fa:16:3e:5e:80:f9 brd ff:ff:ff:ff:ff:ff
+    inet 10.200.0.2/16 brd 10.200.255.255 scope global qg-a364f00b-f1
+    inet6 fe80::f816:3eff:fe5e:80f9/64 scope link
+       valid_lft forever preferred_lft forever
+</code></pre>
+
+<p>이상으로 multiple quantum agent의 간단한 기능을 확인해 봤습니다. 이 기능을 보면서 자동 failover/ load balancing 등의 기능이 있으면 좋겠구나 했지만 그런 기능은 아쉽지만 없네요. 하지만 간단한 작업으로 손쉽게 추가할 수 있을 것으로 보입니다.</p>
+
+<p>update) 이를 자동화한 스크립트</p>
+
+<div><script src='https://gist.github.com/5642608.js'></script>
+<noscript><pre><code>#!/bin/bash
+# os-router-move.sh &lt;router-name&gt; &lt;host-name&gt;
+set -e
+
+target_router=$1
+target_node=$2
+
+function usage(){
+    echo &quot;Usage: `basename $0` ROUTER-NAME TARGET-NETWORK-NODE&quot;
+}
+
+if [ -z &quot;$target_router&quot; -o -z  &quot;$target_node&quot; ]; then
+    usage
+    exit 1
+fi
+
+target_agent_id=`quantum agent-list | grep &quot;$target_node&quot; | awk &#39;/L3 agent/{print $2}&#39;`
+if [ -z &quot;$target_agent_id&quot; ]; then
+    echo &quot;node $target_node running l3 agent not found&quot;
+    exit
+fi
+
+current_agent_id=`quantum l3-agent-list-hosting-router $target_router | head -n -1 | tail -n +4 | awk &#39;{print $2}&#39;`
+
+test &quot;$current_agent_id&quot; &amp;&amp; quantum l3-agent-router-remove $current_agent_id $target_router
+quantum l3-agent-router-add $target_agent_id $target_router
+
+# vim: nu aw ai
+</code></pre></noscript></div>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1266">Moinmoin에 지속적으로 계정 생성을 시도하는 Ip 차단: 가난한 자의 Ddos 방어..</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2013-05-16T00:00:00+09:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>16</span><span class='date-suffix'>th</span>, <span class='date-year'>2013</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>본 서버에 같이 돌아가는 서비스 중에 하나가 moinmoin 입니다. 그냥 혼자 이것저것 정리한 내용들을 두서없이 적는데&hellip;</p>
+
+<p>어떤 녀석들이 여기에다가 지속적으로 새로운 계정 생성을 시도하면서 스팸 짓을 합니다. 녜.. 여기 서버는 가상서버에다가 메모리도 1기가로 아주 작아서 이런 요청이 계속 들어오면 apache 프로세스그 많아서서 서버가 엄청 느려집니다.</p>
+
+<p>그래서 해당 ip를 그냥 .htaccess에서 접근차단 하기로 했습니다. 아주 간단하게.~~</p>
+
+<div><script src='https://gist.github.com/5589530.js'></script>
+<noscript><pre><code>#!/usr/local/bin/bash
+patterns+=&#39;?action=newaccount &#39;
+
+access_file=&#39;/usr/local/www/wiki/.htaccess&#39;
+
+ips_tmp=`mktemp`
+trap &#39;on_exit; exit&#39; SIGINT SIGQUIT EXIT
+
+function on_exit(){
+    rm -f $ips_tmp
+}
+
+for pattern in $patterns; do
+    grep &quot;$pattern&quot; /var/log/httpd-access.log | awk &#39;{print $1}&#39; | awk &#39;{print $1&quot;.&quot;$2&quot;.&quot;$4}&#39; FS=. &gt;&gt; $ips_tmp
+done
+
+ips=`sort $ips_tmp | uniq | tr &#39;\n&#39; &#39; &#39;`
+
+if [ -w $access_file ]; then
+    cat &gt; $access_file &lt;&lt;EOF
+    Order deny,allow
+    Deny from $ips
+EOF
+fi
+</code></pre></noscript></div>
+
+
+<p>이 스크립트를 그냥 crontab에서 돌려 놓으세요~</p>
+
+<p>물론 다른 나이스한 방법이 있겠지만.. 우선 귀찮아서&hellip; ^^;</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1271">Kvm 인스턴스 생성 스크립트</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2013-05-16T00:00:00+09:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>16</span><span class='date-suffix'>th</span>, <span class='date-year'>2013</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><ul>
+<li>kvm, virsh로 인스턴스 생성</li>
+<li>메모리, 디스크 크기, 연결 bridge 설정 가능</li>
+<li>qcow2 이미지 포멧</li>
+</ul>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1262">Quantum: Ping은 되는데 인터넷이 안된다.</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2013-05-14T00:00:00+09:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2013</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>OpenStack 네트워크를 OpenVSwitch, GRE tunneling으로 구성하였을 경우에, 인스턴스에서 외부로 ping은 나가나 인터넷이 원할하지 않는 현상을 보일 때가 있습니다. 아주 일반적이지 않는 경우죠.</p>
+
+<p>ping이 아주 잘 되고, dns lookup까지 아주 잘되면 일반적으로 인터넷이 잘된다고 할 수 있으나,</p>
+
+<pre><code>$ curl google.com # ---- [1]
+$ curl www.google.com # ---- [2]
+</code></pre>
+
+<p>[1] 번의 경우에는 잘 되고, [2]번은 안되는 경우가 발생합니다.</p>
+
+<p>이 것은 gre tunneling의 특성때문에 발생하는 것으로 CISCO의  <a href="http://www.cisco.com/en/US/tech/tk827/tk369/technologies_tech_note09186a0080093f1f.shtml" title="Why Can't I Browse the Internet when Using a GRE Tunnel?">Why Can&rsquo;t I Browse the Internet when Using a GRE Tunnel?</a>에 아주 자세히 설명이 나와있습니다.</p>
+
+<p>간단히 요약하면 gre tunneling을 하려면 packet을 gre header를 포함하여 encapsuling하게 되는데, 이 때문에 tcp/ip 패킷에 한번에 담을 수 있는 사이즈는 1500(기본 MTU) - 24(GRE Header) = 1476이 됩니다. 그런데 gre tunneling 외부(L3 agent)에서 부터는 mtu가 1500이므로 상대방 웹 서버에서는 mtu인 1500으로 보내주는데, gre tunneling 안에서는 이를 분리하여 보낼 수 없으므로 최대 패킷 크기 mtu(SMSS)를 조정하는 ICMP를 호출합니다. 여기서 ICMP로 mtu 조절하는 명령이 막히면 서로 mtu 조절에 실패하여 통신이 막히는 것으로 보이는 것이죠..</p>
+
+<p>위의 경우를 보면 [1]은 전송되는 데이터가 작아서 packet 한번에 전송됩니다. 그래서 SMSS를 조절할 필요가  없는데, <a href="http://www.cisco.com/en/US/tech/tk827/tk369/technologies_tech_note09186a0080093f1f.shtml" title="Why Can't I Browse the Internet when Using a GRE Tunnel?">2</a>의 경우는 패킷이 커서 SMSS를 조절할 필요가 있는데, 여기서 막히는 것입니다.</p>
+
+<p>이를 해결하는 간단한 방법은 인스턴스 인터페이스의 mtu를 적당히 조절하면 됩니다. 저의 경우는 1454로 조절하면 되더군요. 그리고 이를 모든 인스턴스에 적용하게 하려면 quantum-dhcp-agent의 옵션으로 두면 되겠습니다.</p>
+
+<p>그리고 production에 간다면, 당연히 인스턴스의 mtu를 조절하는 방법은 이상하고, gre tunneling이 사용하는 switch, interface의 mtu를 1524 이상으로 조절하는 것이 좋겠습니다.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1253">Setup NAT on Mac OS X</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2013-05-02T00:00:00+09:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>2</span><span class='date-suffix'>nd</span>, <span class='date-year'>2013</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><pre><code>$ sudo sysctl -w net.inet.ip.forwarding=1
+$ sudo natd -interface en0
+$ sudo ipfw add divert natd ip from any to any via en0
+</code></pre>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1248">Git Submodule Commit</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2013-04-30T00:00:00+09:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>30</span><span class='date-suffix'>th</span>, <span class='date-year'>2013</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>git으로 작업하면서 야심차게 submodule을 도입해봤습니다. 그런데 서브모듈에서 커밋하는 순간부터 막히기 시작하네요.</p>
+
+<p>원칙으로 한다면 submodule을 커밋 &amp; push하고 parent도 commit &amp; push 해 줘야하겠지요. 근데 submodule을 커밋하려면 해당 모듈이 있는 디렉토리로 이동해서 해야합니다.</p>
+
+<pre><code>$ cd submodule &amp;&amp; git commit -m 'this is submodule commit message' -a
+</code></pre>
+
+<p>하나라면 그런데로 할만한데.. 이게 2개 이상이면 좀 짜증이 나기 시작합니다. 그래서 간단하게 쉘 스크립트를 만들어 해봤지요.</p>
+
+<p>녭.. 이런거 해주는 비슷한 것이 있습니다. git foreach 명령이죠.</p>
+
+<pre><code>$ git submodule foreach git commit -m 'this is submodule commit message' -a
+</code></pre>
+
+<p>그런데 커밋하면 바로 에러가 납니다. 이유는 서브 모듈 중에서 변경되지 않은, 커밋될 필요가 없는 것은 위의 git commit 명령이 오류를 내면서 정지하기 때문이죠. 그래서 모두 커밋하려면 위에서 처럼 분기가 필요한데.. 이를 foreach와 묶는 것을 한 줄로 처리하기 힘들죠..</p>
+
+<p>그리고 된다고 하더리도 아마도 -m 메시지의 공백때문에 제대로 처리가 되지 않을 겁니다.</p>
+
+<p>Update: <a href="https://gist.github.com">gist</a>가 좋아보여서 거기다 스크립트 넣어봤습니다. 괜찮네요.</p>
+
+<p>Update: push하는 것도 적용해봤습니다.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1243">Chef: Role에서 Environment에 따라서 Run_list 다르게 지정하기</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2013-04-18T00:00:00+09:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>18</span><span class='date-suffix'>th</span>, <span class='date-year'>2013</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>chef를 사용하다보면 environment에 따라서 다른 run_list가 필요한 경우가 있습니다.  이를테면 개발 환경의 서버는 개발자를 위한 편의 기능들을 미리 집어넣는 경우지요. 아마도 개발머신에서는 개발자의 public_key를 모두 등록해서 개발 머신에는 각자의 키로 접속할 수 있고, production에서는 그 기능을 빼는 경우죠.</p>
+
+<p>role에서는 이런 경우를 위해서 env_run_lists를 이용하여 기능을 재공하고 있습니다.</p>
+
+<p>roles/base.rb</p>
+
+<pre><code>name "base"
+description "base role for all node"
+
+default_roles = [
+  "recipe[chef-client::service]", "recipe[chef-client::config]", "recipe[ntp]",
+]
+
+run_list default_roles
+env_run_lists "_default" =&gt; default_roles,
+              "devel" =&gt; default_roles + ["recipe[my_cookbook::developers_public_keys]"]
+</code></pre>
+
+<p>굳이 설명 안해도 코드만 보고 다 알겠죠? ㅎㅎ</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+      <a class="prev" href="/posts/6">&larr; Older</a>
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/posts/4">Newer &rarr;</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/keystone-bootstrap/">Keystone Bootstrap</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/neutron-default-security-group/">Neutron Default Security Group</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1550">클라우드 네트워킹과 SDN 그리고 OpenStack</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Choe, Cheng-Dae -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

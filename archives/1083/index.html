@@ -1,0 +1,245 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>OpenStack: Allow_overlapping_ip의 해결 아이디어 간단 구현 - Your wish is my command</title>
+  <meta name="author" content="Choe, Cheng-Dae">
+
+  
+  <meta name="description" content="quantum 제한사항에서 allow_overlapping_ip 기능이 안된다고 이전에 포스트 했었고, 이에 대해서 잠깐 생각을 하다가 아이디어가 떠올라서 몇 가지 작업했더니 대충은 동작합니다. 안되는 근본 원인은 instance의 ip를 가지고 어떤 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://whitekid.github.io/archives/1083">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Your wish is my command" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Your wish is my command</a></h1>
+  
+    <h2>It&#8217;s a long journey</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="whitekid.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">OpenStack: Allow_overlapping_ip의 해결 아이디어 간단 구현</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-11-07T00:00:00+09:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>7</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>quantum 제한사항에서 <a href="http://blog.woosum.net/archives/1047">allow_overlapping_ip 기능이 안된다</a>고 이전에 포스트 했었고, 이에 대해서 잠깐 생각을 하다가 아이디어가 떠올라서 몇 가지 작업했더니 대충은 동작합니다.</p>
+
+<p>안되는 근본 원인은 instance의 ip를 가지고 어떤 instance인지 특정할 수 없다는 것이었는데, 여기다 tenant-id를 같이 조합하면 된다는 것이죠. 문제는 어떻게 tenant-id를 넘기느냐 였는데, http를 사용하니 header에 집어넣고, 이 header를 집어 넣는 역할을 하는 proxy를 l3 router namespace에서 동작하면 되는 것입니다.</p>
+
+<p>이제 아래처럼 metadata 요청 흐름이 바뀌는 것이죠.</p>
+
+<ul>
+<li>instance -> DNAT -> metadata server</li>
+<li>instance -> proxy in router namespace -> metadata server</li>
+</ul>
+
+
+<p>prox 서버는 간단히 twisted를 이용해서 만들었습니다.</p>
+
+<p>적용 순서는&hellip;</p>
+
+<ol>
+<li>metadata patch 적용: <a href="https://github.com/whitekid/nova/commit/de9b371a4667dd66f510093a1e207bc7f9e02c6d">https://github.com/whitekid/nova/commit/de9b371a4667dd66f510093a1e207bc7f9e02c6d</a></li>
+<li>metadata api restart</li>
+</ol>
+
+
+<p>router name space에서</p>
+
+<ol>
+<li>lo device에 metadata ip 추가
+<code>
+$ ip netns exec qrouter-XXXX ip addr add 169.254.169.254/32 device lo
+</code></li>
+<li><p>DNAT하는 iptables rule 삭제
+<code>
+$ ip netns exec qrouter-XXXX
+$ iptables -t nat -L quantum-l3-agent-PREROUTING | grep 169.254.169.254 &gt; /dev/null &amp;&amp; iptables -t nat -D quantum-l3-agent-PREROUTING 1
+$ exit
+</code></p></li>
+<li><p>metadata proxy 실행
+  <code>
+  $ ip netns exec qrouter-XXX python metadata-proxy [real-metadata-api-server-ip] [tenant-id]
+ </code></p></li>
+</ol>
+
+
+<p>그냥 단순히 아이디어 검증 차원이라, 실제로 쓰고자 한다면 많은 추가 작업이 필요할 것 같습니다.</p>
+
+<p><a href="https://github.com/whitekid/metadata_proxy">https://github.com/whitekid/metadata_proxy</a></p>
+
+<p>ps. 아.. 영어 어렵다.. ㅡㅡ</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">whitekid</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2012-11-07T00:00:00+09:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>7</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://whitekid.github.io/archives/1083" data-via="" data-counturl="http://whitekid.github.io/archives/1083" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/archives/1077" title="Previous Post: OpenStack: Quantum과 사용할 때 metadata request back routing 문제">&laquo; OpenStack: Quantum과 사용할 때 metadata request back routing 문제</a>
+      
+      
+        <a class="basic-alignment right" href="/archives/1086" title="Next Post: twisted powered http proxy server">twisted powered http proxy server &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/keystone-bootstrap/">Keystone Bootstrap</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/neutron-default-security-group/">Neutron Default Security Group</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1550">클라우드 네트워킹과 SDN 그리고 OpenStack</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Choe, Cheng-Dae -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

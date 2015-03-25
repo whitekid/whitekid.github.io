@@ -1,0 +1,664 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Your wish is my command</title>
+  <meta name="author" content="Choe, Cheng-Dae">
+
+  
+  <meta name="description" content="갑자기 컴퓨터가 느려져서 이상하다고 보고있는데 gnome-settings-daemon이 CPU르 엄청 먹는거다.. 게다가 자세히보니 키보드 Numlock 키가 켜졌다가 꺼졌다가&hellip; https://bugs.launchpad.net/ubuntu/+source/ &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://whitekid.github.io/posts/11/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Your wish is my command" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Your wish is my command</a></h1>
+  
+    <h2>It&#8217;s a long journey</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="whitekid.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/897">Gnome-settings-daemon이 CPU 잡아먹는 증상</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-06-20T00:00:00+09:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>20</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>갑자기 컴퓨터가 느려져서 이상하다고 보고있는데 gnome-settings-daemon이 CPU르 엄청 먹는거다.. 게다가 자세히보니 키보드 Numlock 키가 켜졌다가 꺼졌다가&hellip;</p>
+
+<p><a href="https://bugs.launchpad.net/ubuntu/+source/gnome-settings-daemon/+bug/969359%EC%97%90">https://bugs.launchpad.net/ubuntu/+source/gnome-settings-daemon/+bug/969359%EC%97%90</a> 있는데로</p>
+
+<pre><code>sudo mv /usr/lib/gnome-settings-daemon-3.0/keyboard.gnome-settings-plugin ~/
+</code></pre>
+
+<p>하고 재부팅하니 조용하다&hellip;</p>
+
+<p>Ubuntu 너 이럴래? 아니 Gnome인가?</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/903">간단하게 그려본 OpenStack VM Network Traffic Flow</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-06-20T00:00:00+09:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>20</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>아주 아주 간단하게 그려본 OpenStack Guest VM Network Flow</p>
+
+<p><img src="https://docs.google.com/drawings/pub?id=1KQnKfDgdUuO8V7GqvqWRgApenHIOlq8HIN3I3b_DeVc&w=960&h=720"></p>
+
+<ul>
+<li>FloatDHCP 모드임</li>
+<li>fixed_range로 지정된 VM에만 해당</li>
+<li>Guest traffic은 nova-network에서 NAT을 통해서 나가도록 되어있음</li>
+</ul>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/895">Discuss Plugin 추가</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-06-05T00:00:00+09:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>5</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>블로그 질 하는데 굳이 계정 만들고 뭐시기 하는 게 영 거시기 해서&hellip; social login, disqus 추가했습니다.</p>
+
+<p>아주 간단하군요.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/891">Ubuntu Desktop에서 VirtualBox를 이용하여 CloudStack 테스트 환경 구축하기</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-05-26T00:00:00+09:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>26</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><a href="http://wiki.woosum.net/CloudStackSandbox">http://wiki.woosum.net/CloudStackSandbox</a></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/884">Varnishd를 지우다&#8230;</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-04-25T00:00:00+09:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>25</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>varnishd를 사용하고 있었습니다. 그렇죠. 캐쉬 해주니깐 뭔가 더 빠를 것 같다.</p>
+
+<p>근데 본 서비스가 돌아가는 환경은 가상머신 입니다. varnishd에 메모리를 할당해 주는 것이 사치라는 생각이 들어서 지워버렸습니다.</p>
+
+<p>결과는요? 왠지 더 쾌적하게 돌아갑니다. 그냥 기분 탓이겠죠?</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/882">Mac에서 한글 자간이 이상하다면&#8230;</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-04-25T00:00:00+09:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>25</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>아주 어이없게도 docx로 저장하면 잘 된다. ㅡㅡ</p>
+
+<p><a href="http://b.mytears.org/2010/11/2311">http://b.mytears.org/2010/11/2311</a> 참고</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/859">NIST의 클라우드 컴퓨팅에 대한 정의(the NIST Definition of Cloud Computing)</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-04-14T00:00:00+09:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><a href="http://csrc.nist.gov/publications/nistpubs/800-145/SP800-145.pdf">클라우드 컴퓨팅에 대한 NIST의 정의</a>를 번역해 보았습니다. 역시 번역하고 보니 구글 번역이나 그게 그거인듯&hellip;. 어색하시면 원문 보세요~</p>
+
+<hr />
+
+<p>클라우드 컴퓨팅은 언제 어디서든(ubiquitous), 간편하게, 요청에 의해서 최소한의 관리 노력과 최소한의 서비스 제공자와의 상호 작용에 의해 빨리 준비되고 배포되는 설정 가능한 공유 컴튜팅 자원(네트워크, 서버, 스토리지, 어플리케이션, 서비스) 풀에 네트워크 접근을 가능하게 하는 모델이다. 클라우드 모델은 다섯 가지의 핵심 특성과 세 가지의 서비스 모델 그리고 네 가지의 배포 모델로 구성된다.</p>
+
+<h2>핵심 특성(Essential Characteristics)</h2>
+
+<h3>요청에 의한 스스로 서비스(On-demand self-service)</h3>
+
+<p>소비자는 필요에 의해서 각각의 서비스 제공자의 사람과 상호작용 없이 자동으로 서버 시간과 네트웍 스토리지 같은 컴퓨팅 능력을 독자적으로 준비할 수 있다.</p>
+
+<h3>광대역 네트워크 접근(Broad network access)</h3>
+
+<p>능력은 네트웍을 통해서 사용가능하고 기본 메커니즘으로 접근된다. 이러한 접근은 다양한 thin 또는  thick 클라이언트 플렛폼(모바일, 타블렛, 노트북, 워크스테이션)에서의 사용을 활성화 시킨다.</p>
+
+<h3>리소스 풀링(Resource pooling)</h3>
+
+<p>다수의 소비자에게 서비스되기 위해 풀링 되는 제공자의 컴퓨팅 리소스는 multi-tenant 모델을 사용한다. 다른 물리적 그리고 가상 리소스는 소비자의 요구에 의해 동적으로 할당(assign)되고 해지(reassign)된다. 여기에는 위치 독립적인 생각이 있어서, 고객은 일반적으로 서비스되는 리소스의 정확한 지역에 대한 조절이나 정보가 없다. 하지만 상위 레벨의 추상화(국가, 주, 데이터센터)에 의해서 지역을 지정할 수 있다. 리소스의 예는 스로리지, 프로세싱, 메모리, 네트워크 대역폭을 포함한다.</p>
+
+<h3>재빠른 민첩성(Rapid elasticity)</h3>
+
+<p>능력들은 민첩하게 제공되고 해지될 수 있다. 어떤 경우에는 자동으로 요청에 의해서 재빠르게 적합한  규모를 늘리고 줄일 수 있다. 소비자에게 이런 능력은 보통 제한이 없이 보이고, 언제든지 어떠한 양이라도 적절하게 제공되는 것으로 보인다.</p>
+
+<h3>측정되는 서비스(Measured service)</h3>
+
+<p>클라우드 시스템은 서비스(스토리지, 프로세싱, 대역폭, 활성 유저 계정) 타입에 따른 적당한 추상화 레벨에 대해서 계량 능력(metering capability)[ref]일반적을 사용에 따른 지불(pay-per-use)과 사용에 따른 요금(charge-per-use)으로 이루어진다.[/ref]에 사용되는 리소스의 사용을 자동으로 조절하고 최적화 한다. 리소스 사용은 모니터링, 조절, 보고되고 제공자와 사용자에게 서비스의 사용량이 투명하게 제공된다.</p>
+
+<h2>서비스 모델(Service Models):</h2>
+
+<h3>서비스로의 소프트웨어(Software as a Service (SaaS)).</h3>
+
+<p>소비자에게 제공되는 능력은 클라우드 인프라[ref]클라우드 인프라는 클라우드 컴퓨팅의 다섯가지 핵심 특성을 가능케 하는 하드웨어와 소프트웨어의 집합이다. 클라우드 인프라는 물리 계층과 추상 계층을 동시에 포함하는 것으로 볼 수 있다. 물리계층은 클라우드 서비스를 제공하게 지원하는데 필요한, 일반적으로 서버, 스토리지 그리고 네트워크 콤포넌트를 포함하는 하드웨어 리소스로 구성된다. 추상계층은 물리 서버에 걸쳐서 설치되는 소프트웨어로 클라우드의 핵심 특성을 나타낸다. 개념적으로 추상계층은 물리계층 위에 위치한다.[/ref]에서 동작되는 제공자의 어플리케이션을 사용하는 것이다. 어플리케이션은 웹 브라우저와 같은 thin client(예, 웹 기반 이메일) 뿐만 아니라 프로그램 인터페이스 등 다양한 클라이언트를 통하여 접근할 수 있다. 소비자는 클라우드 인프라 아래에 존재하는 네트워크, 서버, 운영체제, 스토리지, 심지어 각각의 각각의 어플리케이션의 능력들을 관리하거나 컨트럴 하지 않는다. 제한된 사용자 지정 어플리케이션 설정 변경은 가능하다.</p>
+
+<h3>서비스로서의 플렛폼(Platform as a Service (PaaS)).</h3>
+
+<p>소비자에게 제동되는 기능은 제공자에 의해서 지원되는 프래그래밍 언어, 라이브러리, 서비스 그리고 도구를 이용하여 사용자가 만들거나 이미 만들어진 어플리케이션을 확보하여 클라우드 인프라 위에 배포하는 것이다.[ref]이 능력은 필연적으로 프로그래밍 언어, 라이브러리, 서비스, 툴의 다른 출처에서의 호환성있는 사용을 불가능하게 한다.[/ref] 소비자는 네크워크, 서버, 운영체제, 스토리지 같은 클라우드 인프라 아래에 있는 것을 관리하지 않는다. 그러나 배포된 어플리케이션을 어플리케이션이 호스팅되는 환경 설정에 대한 변경을 통하여 제어한다.</p>
+
+<h3>서비스로서의 인프라(Infrastructure as a Service (IaaS)).</h3>
+
+<p>소비자에게 제공되는 능력은 프로세싱, 스토리지, 네트워크 그리고 다른 기초적인 컴퓨팅 리소스의 공급이다. 소비자는 배포하고 운영체제와 애플리케이션을 포함한 임의적인 소프트웨어를 실행할 수 있다. 소비자는 클라우드 인프라 아래를 관리하거나 제어하지 않지만 운영체제 위의 스토리지와 배포된 어플리케이션은 컨트럴한다. 선택된 네트워킹 요소들에 대한 일부 제한한 컨트럴(예, 호스트 방화벽)이 가능하다.</p>
+
+<h2>배포 모델(Deployment Models):</h2>
+
+<h3>프라이빗 클라우드(Private cloud)</h3>
+
+<p>클라우드 인프라는 여러 소비자로 구성된 하나의 기관(예, 하나의 부서)에 독점적인 사용을 위해서 제공된다. 그 기관 또는 제 3자 또는 그 조합(combination)에 의해서 소유, 관리, 운영되며, 해당 기관의 영업장 안에 위치할 수 있지만 아닐 수 있다.</p>
+
+<h3>커뮤니티 클라우드(Community cloud)</h3>
+
+<p>클라우드 인프라는 공동의 관심사(임무, 보안 요구 사항, 정책과 여려 준수 고려 사항)를 공유하는 특정 소비자 공동체의 독점적인 사용을 위해 제공된다. 공동체의 하나 또는 그 이상의  기관, 제 3자, 그 조합(combination)에 의해서 소유, 관리, 운영되며 해당 기관의 영업장 안에 위치할 수 있지만 아닐 수 있다.</p>
+
+<h3>퍼블릭 클라우드(Public cloud)</h3>
+
+<p>클라우드 인프라는 일반 대중을 대상으로 한 공개된 사용을 위해 제공된다. 비지니스, 아카데미 또는 정부기관 또는 그 조합에 의해서 소유, 관리, 운영되며 클라우드 제공자의 영업장에 위치한다.</p>
+
+<h3>하이브리드 클라우드(Hybrid cloud)</h3>
+
+<p>클라우드 인프라는 2개 또는 그 이상의 구별되는 클라우드 인프라(프라이빗, 커뮤니티, 퍼플릭)로 구성된다. 각각은 독립적인 개체로 유지되지만 데이터와 어플리케이션의 이동성(portability)(클라우드간의 로드발런싱으로 클라우드간의 경계를 넘어감)를 가능하게 하는 표준 또는 독점 기술(proprietary technology)로 같이 묶인다.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/854">클라우드&#8230; 들어가기 전에&#8230;</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-04-11T00:00:00+09:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>요즘엔 클라우드 관련 일을 하느라 정신이 없습니다. 정리도 하는 겸 몇자 적어보렵니다.</p>
+
+<p>클라우드라고 하면 요즘은 일종의 패션인 것 같다. 그리고 이 단어 자체가 의미하는 것으 뭐랄까 여러 가지가 있어서 가끔 이야기하다가 헷갈린다. DropBox, Evernote, Daum 클라우드 등.. 이런 서비스형 클라우드가 있는가 하면 Amazon Web Service, RackSpace, uCloud Server등 컴퓨팅 클라우드 최근에는 빅데이터 관련에도 클라우드라는 말을 사용한다.</p>
+
+<p>저는 이중에 컴퓨팅 클라우드와 관련된 일을 하고 있습니다. aws와 같은 public computing cloud service를 어떻게 하면 잘 그리고 효율적으로 만들 수 있을까를 고민하고 있습니다. 그리고 당연히 private computing cloud service도 고민하고 있죠.</p>
+
+<p>따라서 이제부터 말하는 클라우드는 컴퓨팅 클라우드가 되겠습니다.</p>
+
+<p>그럼 클라우드는 왜 필요한가 하면, 대표적인 서비스인 aws의 예를 들면 아마존은 원래 전자상거래 사이트입니다. 그래서 트래픽이 특히 몰리는 추수감서절 같은 때를 대비하여 컴퓨팅 자원을 많이 확보해 놓습니다. 당연히 대목을 잡아야지요. 대목에는 미리 준비한 자원을 이용해서 장사를 잘 했습니다.</p>
+
+<p>그런데 대목이 끝나고 보니까 많이 준비해놓은 컴퓨팅 자원이 놀기 시작합니다. 실상 컴퓨터(대부분의 서버도)를 모니터링 해보면 컴퓨팅 자원을 완전히 다 쓰고 있지 않고 놀고 있는 자원이 많다는 것을 알 수 있습니다. 이게 아마존 사장의 눈에 뜨인 겁니다. 노는 자원을 어떻게 할용해 볼까 고민고민하다가 눈에 띄인게 가상화 기술이고, 이를 이용해서 노는 컴퓨팅 자원을 일반인에게 팔아보자, 서비스해 보자라는 것에서 시작한 것이죠.</p>
+
+<p>즉, 컴퓨팅 자원을 효율적으로 사용하여, 불필요하게 낭비되는 비용을 줄이자가 컴퓨텅 클라우드의 시작이고, 지금도 가장 중요한 컴퓨팅 클라우드의 핵심입니다. 이런 관점에서 아래의 개념들이 나오는 것이지요.</p>
+
+<ul>
+<li>컴퓨팅 자원을 빌려쓰자: IP address, cpu, memory, disk, network&hellip;.</li>
+<li>쓰는 만끔 지불한다: 시간 요금제</li>
+<li>사용이 끝나면 반납하자: 자원의 유연한 할당, elastic computing</li>
+<li>급하게 필요할 때는 빨리 빌리자: fast provisioning</li>
+</ul>
+
+
+<p>여기서 가상화 기술이 아주 중요하게 나옵니다. 가상화 기술은 클라우드와 상관없이 60년대 부터 발전한 기술입니다. 하지만 위의 모든 것들을 아주 쉽게 가능하게 해주는 기술이 가상화죠. 컴퓨팅 자원들을 가상화 하지 않는다면 위의 것을 하기 위해서 사람이 엄청 열심히 일해야겠죠? 실제로 클라우드 초기에 호스팅 업체들의 주장중 하나가 &ldquo;우리도 요청하면 하루 안에 사용 가능한 컴퓨팅 리소스를 제공한다. 그래서 우리도 클라우드다&#8221;라고 했었지요. 하지만 이를 이루기 위해서는 수만은 엔지니어가 고생하는 모습을 쉽게 상상할 수 있습니다.</p>
+
+<p>따라서 아래의 개념이 따라옵니다.</p>
+
+<ul>
+<li>모든 것은 자동화된 시스템이 제공한다.</li>
+</ul>
+
+
+<p>즉 클라우드에서는 사람이 하는 일이 없습니다. 물리적인 셋업과 기본적인 가상화 솔루션이 올라간 이후에는 사용자가 자원을 요청하면 모든 것이 솔루션에 의해서 자동으로 처리됩니다. 안그러면 클라우드가 아니죠~</p>
+
+<p>가상화라면 생각되는게 물리 서버(서버라고 하면 물리 기계 뿐만 아니라 서비스와 혼동하여 물리 서버 또는 호스트란 용어를 사용합니다.) 하나에 여러 논리적인 호스트를 동시에 실행하는 것이니 당연히 생각하기에도 혼자 모든 호스트의 자원을 사용할 때 보다 성능이 당연히 떨어집니다. 게임 좋아하시는 분들은 에뮬레이터 상상하시면 되겠네요. 그래서 가상화된 서버(Virtual Machine, VM, 물리 서버에서 호스팅되는 호스트) 일반적으로 성능이 좋지 않습니다. 또한 물리 서버의 제약하에서 움직이기 때문에 무한정 CPU, 메모리를 늘려 성능을 올릴 수 없습니다. 그래서 클라우드는 scale-out을 지향합니다.</p>
+
+<ul>
+<li>작은 것들이 모여서 큰 일을 합니다: scale-out</li>
+</ul>
+
+
+<p>구글이나 패이스북, 멀리 갈 것 없이 네이버, 다음처럼 대규모의 서비스를 하기 위해서 한대가 모든 것을 처리하지 않고 여러 서버들이 서로 힘을 합쳐서 처리하는 방식이죠. 십시일반으로 작은 VM들이 모여서 큰 규모의 처리를 합니다.</p>
+
+<p>근데 또 생각해보면 작은 것들을 많이 모아서 하자니.. 미리 그 것들은 준비해 놓아야하고, 결국 요청이 없을 때는 이 가상머신이 또 노는 현상이 발생합니다. 이것은 클라우드의 효율적인 자원 활용에 맞지 않지요.</p>
+
+<p>그래서 나오는 이야기들이 autoscaling입니다.</p>
+
+<ul>
+<li>자원이 더 필요 할 때만 scale-out 하자: autoscaling</li>
+<li>로드 밸런싱 좀 잘 해줘~: Elastic LB</li>
+<li>언제 자원이 더 필요 할 지는 모니터링이 필요하다: Amazon CloudWatch</li>
+</ul>
+
+
+<p>여기까지 클라우드에서 설정을 해 놓으면 사용자 트래픽이 없을때는 최소한의 VM만 유지하다가, 트래픽이 늘어나면 자동으로 VM을 늘려가면서 트래픽을 처리하는 것이죠. 이 모든 것이 관리자의 판단이 없이 미리 설정된 값에 따라서 자동으로 진행됩니다.</p>
+
+<p>이런 관점에서 보면 전통적인 시스템 관리자 입장에서는 뭔가 이전과는 다른 현상들이 일어납니다. 관리하는 VM이 점점 많아지고, 게다가 이 VM이 모두 동작상태가 아닌 대기 상태일 수 있습니다. 이러다 보니 서버들 간에 패키지나 설정들의 통일성이 없어질 가능성이 높아집니다. 관리자 입장에서는 여간 곤혹스럽지 않을 수 없습니다.</p>
+
+<p>그래서 나온 것이 서버의 형상관리가 필요한 것이죠.</p>
+
+<ul>
+<li>서버들의 상태를 자동으로 동일하게 맞추자: chef, puppet</li>
+</ul>
+
+
+<p>이러다 보니 서버 관리의 대부분을 자동화하는 툴이 하게 됩니다. 게다가 chef, puppet들은 개발자들이 사용하던 프로그래밍 방식을 사용하여 작업하게 됩니다. 기존 서버 관리자 입장에서는 전혀 하지 않던 개발을 운영을 위해 하게 됩니다.</p>
+
+<ul>
+<li>DevOps: 개발과 운영은 같은거다. 운영도 개발의 일부다. 운영자도 개발해!</li>
+<li>NoOps: 운영. 이제 필요없다.</li>
+</ul>
+
+
+<p>실제로 클라우드를 관심있게 본 시스템 운영자들은 클라우드를 밥줄을 뺏어가는 녀석으로 인식하여 적대적으로 대하는 분도 봤고, 반대로 적극적으로 클라우드 업계로 뛰어든 분도 있습니다. ^^</p>
+
+<p>또 다른 운영자 입장에서의 변화는, 이전까지는 물리 서버의 IP address는 그 물리 서버에 고정된 것으로 생각하고 작업을 해왔습니다. 그런데 클라우드 자체가 리소스를 빌려 쓰는 개념이다보니, VM에 할당된 public / private  ip address는 고정이 아니고 vm을 재시작, 정지, 이동(migration)하는 경우 변경될 수 있습니다.</p>
+
+<p>클라우드에서 이에 대한 해법을 제시한 것이 다음과 같습니다.</p>
+
+<ul>
+<li>VM에 고정된 public ip를 달란 말이다: ElasticIP</li>
+</ul>
+
+
+<p>IP는 고정해서 뭔가 기본적인 요구는 해결되는 것 같은데, 호스팅 서비스처럼 나만의 서브넷을 구성하고 싶은 경우 등 전통적인 호스팅을 사용했을 때 사용했던 방법들을 사용하고 싶은 사람들이 있습니다. 클라우드는 클라우드 답게라지만, 클라우드가 해법을 제공하지 못하는 것도 많으니깐요.</p>
+
+<ul>
+<li>다 좋은데, 내 맘대로 하고 싶단 말이다. : Virtual Private Cloud</li>
+</ul>
+
+
+<p>쓰다보니 어째 아마존의 서비스를 나열 한 것 같습니다. 맞습니다. 아마존이 가장 먼저 대중화 했고, 현재 가장 잘 나가고 있는 컴퓨팅 클라우드고 사실상의 표준이니까요. 저희도 열심히 고민고민 하면서 아마존 보다 더 좋은 구조를 내려고 했지만, 항상 결론은 아마존이 다 그렇게 한 이유가 있었고, 결국은 아마존 방식이 가장 효율적인 경우가 많았습니다. 현재는 아마존이 최강니깐요.</p>
+
+<p>그리고 마지막으로 컴퓨팅 쪽은 가상화가 기술이 이제 성숙기에 접어든 상황이라 판단이 되는데, 아직 시작도 하지 못한 부분은 있습니다. 바로 라우터, 스위치로 대표되는 네트웍이죠</p>
+
+<ul>
+<li>서버만 가상화냐? 네트웍도 가상화하자! : Network Virtualization</li>
+</ul>
+
+
+<p>현재 SDN(Software-defined network)라는 커다란 흐름 밑에 OpenVSwitch로 소프트웨어 적으로 컨트럴 가능한 스위치를 구성하고, OpenFlow를 이용하여 네트웍 자원은 중앙 집중 관리가 가능하게 하는 방향인 것 같습니다. OpenVSwitch는 리눅스 커널 3.3에 들어가 있고, XenServer 6.x에도 지원이 들어간다고 합니다. 아직은 성숙화 되지 않았지만, 아마 올해 말에는 본격적으로 네트웍 가상화가 화두가 될 것으로 생각하고 저희도 이 쪽에 연구를 계속할 겁니다.</p>
+
+<p>원래는 글을 풀어가면서 Xen, XenServer, CloudStack, OpenStack, OpenVSwitch, OpenFlow 등으로 이어가려고 했는데, 엉뚱하게 클라우드에 대한 기본적인 설명과 용어만 나열하다 끝나네요.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/840">Ubuntu 11.10에 Ganglia가 설치 실패한다.</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-01-30T00:00:00+09:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>30</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>munin 대신 ganglia를 검토해보려고 ganglia를 설치하려는데 아래 메시지를 내뿜으며 설치가 제대로 안된다.</p>
+
+<pre><code>Adding group: ganglia.
+Adding system user: ganglia.
+useradd: group ganglia exists - if you want to add this user to that group, use -g.
+dpkg: error processing gmetad (--configure):
+ subprocess installed post-installation script returned error exit status 9
+Processing triggers for libc-bin ...
+ldconfig deferred processing now taking place
+Errors were encountered while processing:
+ gmetad
+E: Sub-process /usr/bin/dpkg returned an error code (1)`
+</code></pre>
+
+<p><a href="https://bugs.launchpad.net/ubuntu/+source/ganglia/+bug/854866/comments/20">https://bugs.launchpad.net/ubuntu/+source/ganglia/+bug/854866/comments/20</a> 에 있는데로 하고 다시 설치하면 된다.</p>
+
+<pre><code>sudo useradd ganglia -g ganglia
+</code></pre>
+
+<p>음.. 우분투 실망일세~~</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/835">CentOS Bootstraping in Ubuntu</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-01-20T00:00:00+09:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>20</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><pre><code>$ apt-get install yum rpm python-m2crypto
+$ mkdir -p /tmp/centos/var/lib/rpm
+$ rpm -root /tmp/centos -initdb
+</code></pre>
+
+<p>$HOME/.rpmdb 가 만들어지는데 그거는 마지막 삭제한다.</p>
+
+<p>rpmfind.net에서 원하는 버전의 rpm 찾아서 다운로드</p>
+
+<pre><code>$ wget ftp://195.220.108.108/linux/centos/5.7/os/x86_64/CentOS/centos-release-5-7.el5.centos.x86_64.rpm
+$ rpm -ivh -force-debian -nodeps -root /tmp/centos centos-release-5-7.el5.centos.x86_64.rpm
+$ ln -s /tmp/centos/etc/pki /etc/pki
+$ yum -installroot /tmp/centos install yum
+$ mount -t proc foo /tmp/centos/proc
+$ mount -t sysfs foo /tmp/centos/sys
+
+$ chroot /tmp/centos /bin/bash -login
+$ rm -rf /home/choe/.rpmdb # 위에서 initdb한것 지우기
+$ rpm -initdb
+$ echo nameserver 168.126.63.1 &gt; /etc/resolv.conf
+$ yum install yum
+$ yum install vim-minimal less
+</code></pre>
+
+<p>참고: <a href="http://www.lucas-nussbaum.net/blog/?p=385">http://www.lucas-nussbaum.net/blog/?p=385</a></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+      <a class="prev" href="/posts/12">&larr; Older</a>
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/posts/10">Newer &rarr;</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/keystone-bootstrap/">Keystone Bootstrap</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/neutron-default-security-group/">Neutron Default Security Group</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1550">클라우드 네트워킹과 SDN 그리고 OpenStack</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Choe, Cheng-Dae -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,256 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Veth가 어떤 디바이스에 연결되어있는지 찾아보기.. - Your wish is my command</title>
+  <meta name="author" content="Choe, Cheng-Dae">
+
+  
+  <meta name="description" content="Quantum으로 네트워크를 구성하다보면(또는 XLC&hellip;) veth를 통해서 다른 network namespace에 interface가 peer로 역이는 것을 볼 수 있습니다. Network Namespace는 Introducing Linux Network &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://whitekid.github.io/archives/1427">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Your wish is my command" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Your wish is my command</a></h1>
+  
+    <h2>It&#8217;s a long journey</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="whitekid.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Veth가 어떤 디바이스에 연결되어있는지 찾아보기..</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2013-12-03T00:00:00+09:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>3</span><span class='date-suffix'>rd</span>, <span class='date-year'>2013</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Quantum으로 네트워크를 구성하다보면(또는 XLC&hellip;) veth를 통해서 다른 network namespace에 interface가 peer로 역이는 것을 볼 수 있습니다.</p>
+
+<blockquote><p>Network Namespace는 <a href="http://blog.scottlowe.org/2013/09/04/introducing-linux-network-namespaces/">Introducing Linux Network Namespaces</a> 글을 참조하시면 좋습니다. 간단히 말에서 device, routing, iptables, socket 등을 포함하여 linux network stack이 완전히 격리되는 시스템입니다. namespace를 만들어 network stack을 격리시키면 외부랑 완전히 차단이 되기 때문에 root namespace의 interface와 veth로 pair를 맺어 이 interface로 통신합니다.</p>
+
+<p>veth는 참고할 만한 문서를 딱히 못찾았는데요.. interface link의 클론이라고 생각하시면 됩니다. 한쪽에 들어간 패킷은 다른 한쪽으로 흐릅니다. 그리고 당연히 각각이 interface이기 때문에 mac, ipaddress가 다를 수 있습니다. 어떻게보면 bridge와도 비슷합니다.</p></blockquote>
+
+<p>근데 문제는 veth로 만드는 것은 쉽게 알 수 있는데, 해당 인터페이스가 어떤 인터페이스랑 peer인지 알아내는 방법이 쉽지 않습니다. iproute로는 말이지요.</p>
+
+<p>아래는 quantum으로 구성한 dhcp namespace의 interface 입니다.</p>
+
+<pre><code># ip netns exec qdhcp-fabc7ead-6132-4920-af57-2ad5e199e1c1 ip a
+59: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 16436 qdisc noqueue state UNKNOWN
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+68: ns-39d60faa-aa: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc pfifo_fast state UP qlen 1000
+    link/ether fa:16:3e:98:e6:f3 brd ff:ff:ff:ff:ff:ff
+    inet 10.10.100.2/24 brd 10.10.100.255 scope global ns-39d60faa-aa
+    inet 169.254.169.254/16 brd 169.254.255.255 scope global ns-39d60faa-aa
+    inet6 fe80::f816:3eff:fe98:e6f3/64 scope link
+       valid_lft forever preferred_lft forever
+# ip netns exec qdhcp-fabc7ead-6132-4920-af57-2ad5e199e1c1 route -n
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+0.0.0.0         10.10.100.1     0.0.0.0         UG    0      0        0 ns-39d60faa-aa
+10.10.100.0     0.0.0.0         255.255.255.0   U     0      0        0 ns-39d60faa-aa
+169.254.0.0     0.0.0.0         255.255.0.0     U     0      0        0 ns-39d60faa-aa
+</code></pre>
+
+<p>여기서 routing table을 보면 ns-39d60faa-aa 인터페이스를 통해서 외부로 나가는 것으로 보이는데, namespace 이므로 외부와 직접 연결할 수 없습니다. 당연히 ns-39d60faa-aa는 root namespace의 interface와 veth peer를 이루고 있으며, peer interface를 통해서 외부와 통신합니다.(그 peer는 bridge를 통해서 eth#으로 나가겠지요..)</p>
+
+<p>그럼 여기서 본론인 어떤 interface와 peer를 이루고 있는지 알아보려고 열심히 ifconfig 또는 ip link 명령을 뒤져봐야 안나됩니다. mac도 다르고, peer 정보도 안나오고&hellip;</p>
+
+<p>찾는 방법은 조금 복잡하기도 한데&hellip; ethtool을 통해서 찾을 수 있습니다.</p>
+
+<pre><code># ip netns exec qdhcp-fabc7ead-6132-4920-af57-2ad5e199e1c1 \
+  ethtool -S ns-39d60faa-aa
+NIC statistics:
+     peer_ifindex: 69
+</code></pre>
+
+<p>결과에서 예상하다시피 interface index가 69번인 interface와 peer를 이루고 있습니다. 그럼 아래처럼 찾을 수 있겠습니다.</p>
+
+<pre><code># ip link ls | grep ^69
+69: tap39d60faa-aa: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc pfifo_fast state UP qlen 1000
+# ip link show tap39d60faa-aa
+69: tap39d60faa-aa: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc pfifo_fast state UP qlen 1000
+    link/ether 62:41:1f:e2:b2:9d brd ff:ff:ff:ff:ff:ff
+# ethtool -S tap39d60faa-aa
+NIC statistics:
+</code></pre>
+
+<p>마찬가지로 tap39d60faa-aa interface는 namespace에 있는 68번 interface와 veth peer로 연결되어 있습니다.</p>
+
+<p>지금은 필요없을 지 몰라도 OpenStack 하다보면 언젠가는 마주칠지 모르는 녀석이니 참고하세용..</p>
+
+<p>ps. iproute 사용법은 너무 불친절합니다.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">whitekid</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2013-12-03T00:00:00+09:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>3</span><span class='date-suffix'>rd</span>, <span class='date-year'>2013</span></span> <span class='time'>12:00 am</span></time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://whitekid.github.io/archives/1427" data-via="" data-counturl="http://whitekid.github.io/archives/1427" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/archives/1423" title="Previous Post: fixed ip에서 vip 찾아내기...">&laquo; fixed ip에서 vip 찾아내기&#8230;</a>
+      
+      
+        <a class="basic-alignment right" href="/archives/1432" title="Next Post: haproxy: https redirect, ip block 등등..">haproxy: https redirect, ip block 등등.. &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/keystone-bootstrap/">Keystone Bootstrap</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/neutron-default-security-group/">Neutron Default Security Group</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1550">클라우드 네트워킹과 SDN 그리고 OpenStack</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Choe, Cheng-Dae -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

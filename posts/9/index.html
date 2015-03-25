@@ -1,0 +1,739 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Your wish is my command</title>
+  <meta name="author" content="Choe, Cheng-Dae">
+
+  
+  <meta name="description" content="쉘 스크립트를 보면 시작부분에 아래와 같은 문장이 있는 것을 자주 확인할 수 있다. set -e 그냥 무심결에 넘겨왔었는데, 오늘 찾아봤다. http://julipedia.meroh.net/2010/01/set-e-and-set-x.html 내용은 간단하다. set &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://whitekid.github.io/posts/9/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Your wish is my command" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Your wish is my command</a></h1>
+  
+    <h2>It&#8217;s a long journey</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="whitekid.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1032">Shell Script: &#8220;Set -e&#8221;가 뭐하는 것일까?</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-10-26T00:00:00+09:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>26</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>쉘 스크립트를 보면 시작부분에 아래와 같은 문장이 있는 것을 자주 확인할 수 있다.</p>
+
+<pre><code>set -e
+</code></pre>
+
+<p>그냥 무심결에 넘겨왔었는데, 오늘 찾아봤다. <a href="http://julipedia.meroh.net/2010/01/set-e-and-set-x.html">http://julipedia.meroh.net/2010/01/set-e-and-set-x.html</a></p>
+
+<p>내용은 간단하다. set -e로 설정되어 있으면 쉘 스크립트가 실행될 때 모든 라인의 실행 결과를 검사해서 실패할 경우는 바로 스크립트 실행을 종료한다.</p>
+
+<p>예를들어 아래의 스크립트를 보면</p>
+
+<pre><code>#!/bin/sh
+set -e
+echo 'hello'
+false # 여기서 스크립트 실행이 끝남..
+echo 'world'
+</code></pre>
+
+<p>그냥 hello만 출력하고 실행을 끝낸다.</p>
+
+<p>그리고 set -x는 trace로 shell이 실행하는 모든 명령을 화면에 출력한다. 디버그용으로 좋겠다.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1047">Quantum의 Limitation&#8230;</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-10-26T00:00:00+09:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>26</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>-fomsom 버전의 quantum에는 몇 가지 제한 사항이 있습니다. 그중에 몇가지 중요하다고 생각 되는 내용만 추려봅니다.</p>
+
+<h3>overlapping ip문제</h3>
+
+<p>quantum에 들어가면서 새로 생긴 기능입니다. 이 기능이 뭐냐.. 간략하게 CloudStack에서 router vm을 사용하면서 그들만의 private network을 가집니다. 결국은 다른 사용자와 나는 같은 subnet을 가지는 것입니다.</p>
+
+<p>KT uCloud biz에서 가상머신을 만들면 가상 머신은 사설 아이피를 가지게 되고 외부에는 NATing을 통해서 대표 아이피를 가지게 됩니다. quantum을 사용하면 이러한 가상 네트웍을 구성할 수 있는 것이죠.</p>
+
+<p>그런데, 이것을 구현하면서 약간은 문제가 생겼습니다.</p>
+
+<p>nova의 기존 네트워킹 모델은 가상 머신의 ip address가 unique하다는 가정 하에서 만들어 졌습니다. 그런데 이제 그런 가정 자체가 망가졌네요. ㅎㅎ 그래서 overlapping ip 기능을 사용하면 다음의 기능을 사용할 수 없습니다.</p>
+
+<ul>
+<li>nova security group</li>
+<li>metadata service</li>
+</ul>
+
+
+<p><strong>security group</strong>: security group은 computing node에서 iptable로 동작합니다. 그런데 여기서 ip로 ip table을 걸어놓으면? 그렇습니다. 다른 tenant가 같은 ip를 가질 수 있으므로 다른 사용자에게 영향을 미처 버립니다.</p>
+
+<p><strong>metadata service</strong>: metadata는 가상 머신 템플릿에 미리 설치된 cloud-init 패키지를 통해서 ec2 api spec을 사용하고 있습니다. ec2.. 네트워킹 모델은 모든 가상 머신의 ip가 unique합니다. 그래서 cloud-init에서 http로 보낼때 특별한 정보를 보내지 않고, 받는 측에서 request_ip 또는 X-Forward-For http header를 통하여 어떤 가상머신에서 요청이 왔는지 확인하고 응답을 합니다. 느낌이 오죠? IP는 알아냈지만 그게 어떤 tenant의 가상 머신인지 알 수 없습니다. 그리고 설사 안다고 하여도 다시 그 가상 머신으로 response를 보낼 routing 경로를 결정할 수 없습니다.</p>
+
+<h4>해결 방법에 대한 고민?</h4>
+
+<p><strong>security group</strong>: 해결할 수 있는 방법은 quantum-network이 사용하고 있는 namespace 기능을 compute 노드까지 사용하고, 그 namespace에 security group에 해당하는 iptables rule을 적용하면 됩니다. quantum-plugin-ovs-agent가 해야겠습니다.</p>
+
+<p><strong>metadata service</strong>: 이건 해결 방법이 조금 복잡할 것 같습니다. tenant의 network 밖으로 metadata request packet이 NATing할때 DNAT으로 처리합니다. destination만 metadata_ip로 변경하는 것이죠. 여기서부터 문제인데 DNAT으로 밖으로 보내지 않고 router namespace 안에서 metadata proxy를 거치고 proxy는 request_ip + tenant_id를 조합하여 metadata api server로 날립니다. 그리고 metadat server는 지금처럼 request ip를 기준으로 하지말고 새로 받은 request_ip + tenant_id로 해서 다시 받아서 던지면 되겠습니다.</p>
+
+<h3>multi-host 기능 없음</h3>
+
+<p>quantum을 쓴다면 제 생각엔 굳이 필요 없을 기능입니다. 근데 혹시나 network host에 부하가 걱정이 되신다면 <a href="http://docs.openstack.org/trunk/openstack-network/admin/content/ha_pacemaker.html">Quantum HA</a>를 한 번 봐보세요. 아직은 저도 보지 못해서 뭐라하지는 못하지만, 문서상에는 Active-Active HA도 된다고 합니다.</p>
+
+<h3>linux namespace 기능이 필요함</h3>
+
+<p>quantum-l3-agent, quantum-dhcp-agent가 tenant 간의 네트웍 영역을 분리하기 때문에 필요합니다. 안쓰고 사용할 수 있지만, 그럴 이유가&hellip;</p>
+
+<p>Ubuntu는 지원을 하지만, CentOS는 지원하지 않습니다. CentOS도 커널은 지원(커널 2.6.4 부터 들어감)하지만, 이 기능을 사용하는 iproute 패키지가 해당 기능을 지원하지 않는 플래그를 사용하고 빌드되었습니다. 그래서 사용할 수 없죠. epel repository로 사용해보려 시도했지만 다른 패키지랑 의존성이 너무 많이 걸려서 포기했습니다.</p>
+
+<p>현재로써는 Ubuntu가 OpenStack의 유일한 답입니다.</p>
+
+<h3>Horizon에 통합되지 않음</h3>
+
+<p>quantum이 적용되었다고, 설치 후에 horizon을 보고 뭔가 하려고 하지만, 안될겁니다. <a href="/archives/990">이전 포스트</a>에도 보이지만 quantum으로 만드는 과정도 복잡할 뿐더러 <a href="http://docs.openstack.org/trunk/openstack-network/admin/content/use_cases.html">만들 수 있는 네트워크 모델도 다양</a>합니다.</p>
+
+<p>보시면 가장 간단한 amazon 모델부터 아주 목잡한 overlapping_ip를 사용한 모델까지&hellip; 이를 horizon에서 지원하려면.. 한참 걸릴거라 생각합니다.</p>
+
+<h3>기타</h3>
+
+<ul>
+<li>IPv6 지원하지 않음</li>
+<li>L3 Agent의 scale limit</li>
+<li>ZeroMQ is experimental</li>
+<li>MetaPlugin is experimental</li>
+</ul>
+
+
+<p>참고: <a href="http://docs.openstack.org/trunk/openstack-network/admin/content/ch_limitations.html">http://docs.openstack.org/trunk/openstack-network/admin/content/ch_limitations.html</a></p>
+
+<p>ps. folsom에 야심차게 quantum이 나왔지만, 지금까지 쭈욱 둘러본 결과론 아직 quantum은 beta 상태인 것 같습니다. 그리고 openvswitch을 사용해 quantum network의 기능을 모두 볼 수는 있겠지만, 이걸 사용 수준으로 사용할 수 없을 것 같고, Nicira NVP, MidoNet 같은 OVS 기반의 SDN 플렛폼을 사용하거나, Cisco NVGRE를 사용해야할 듯 합니다. 물론 내부 개발 인프라 정도로는 큰 무리 없을 것으로 생각합니다.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1024">Socks5 Proxy With Ssh</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-10-25T00:00:00+09:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>25</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>오늘 ssh가 sock5 proxy로도 사용될 수 있다는 사실을 알았다. 예전엔 <a href="http://ss5.sourceforge.net/">ss5</a>를 쓴 기억이 있어서 우분투에도 찾아봤는데, 이거 왠걸 여기는 패키지가 없다. 그래서 ubuntu에도 사용할 괜찮을 sock5 프록시 서버가 뭐가 있을가 하고 찾아봤는데 떡하니 ssh를 사용하는 방법이.. 게다가 당연히 별도의 설정도 거의 필요 없었다.</p>
+
+<p>프록시 서버는 sshd만 돌고 있으면 된다. 내 데스크탑이 ubuntu이니 당연히 사용중이니 설정 건드릴 것 없고, 사용하려는 컴퓨터에서 프록시 서버로 사용할 컴퓨터로 ssh 접속을 아래와 같이 한다.</p>
+
+<pre><code>$ ssh -D 9999 &lt;user@192.168.xxx.xxx&gt;
+</code></pre>
+
+<p>이제 프록시 연결은 끝났다. 프록시를 사용할 컴퓨터에서 아래처럼 설정하고 사용하면 된다.</p>
+
+<ul>
+<li>프록시 타입: SOCKS v5</li>
+<li>호스트: 127.0.0.1</li>
+<li>포트: 9999</li>
+</ul>
+
+
+<p>아주 간단~</p>
+
+<p>참 혹시나 sshd 설정에서 AllowTcpForwarding true로 설정이 되어있는지 확인하시기 바랍니다. 기본값은 true이지만 배포판에 따라서 설정이 되어있을 수 있어요.</p>
+
+<p>ps. 왜 이게 필요하냐고? 회사에서는 데스크탑 용 IP와 노트북용 IP를 별도의 영역으로 구분해 할당해 줬습니다. 노트북용 아이피는 또한 외부 방문자도 사용하는 것을 염두해두고 있어서 내부 개발 서버에 접근하는 것을 막아놨죠.</p>
+
+<p>녜.. 데스크탑은 개발 서버에 접속이 되지만, 노트북은 안됩니다. 그래서 데스크탑을 프록시 서버로 사용해 접속하는 꽁수를&hellip; ㅎㅎ</p>
+
+<p>참고</p>
+
+<ul>
+<li><a href="http://embraceubuntu.com/2006/12/08/ssh-tunnel-socks-proxy-forwarding-secure-browsing/">http://embraceubuntu.com/2006/12/08/ssh-tunnel-socks-proxy-forwarding-secure-browsing/</a></li>
+</ul>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1010">Iptables로 NAT을 구성하다 낭패를&#8230;</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-10-24T00:00:00+09:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>24</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>내 PC안에서 VMWare로 가상 환경을 구축하여 테스트하고 있기 때문에 가상머신이 인터넷을 접속하기 위해서 아래처럼 NAT을 구성했다.</p>
+
+<pre><code>$ iptables -A POSTROUTING -t nat -j MASQUERADE
+</code></pre>
+
+<p>아주 무리없이 잘 돌아가는 것 처럼 보였다.</p>
+
+<p>가낭 VMWare에서 내부적으로 구성하는 vmnet# 간에 네트웍을 하는 것도 잘 되고 있었다. 그런데 뭔가 좀 설명할 수 없는 이상한 현상이 계속 발생 했다.</p>
+
+<p>vmnet 간에 traffic이 soruce ip가 해당 네트웍의 gateway로 잡혀서 들어오는 것이다. 이것 때문에 다른 네트워간의 연결이 잘 안되는 것이었다. 한동안 문제를 찾아 해매다가 결국 찾은 것은 위에서 NAT하는 것이 문제가 있다는 것이다.</p>
+
+<p>위에서 NATing을 설정할 때 input/ ouput interface를 지정하지 않았기 때문에 이녀석은 모든 interface간에 통신을 모두다 NATing 해버리는 것이다&hellip; 결국 source ip가 gateway ip(즉 호스트에 있는 해당 네트워크의 ip)로 말이지&hellip;</p>
+
+<pre><code>$ iptables -A POSTROUTING -t nat -j MASQUERADE -o eth0
+</code></pre>
+
+<p>그래서 다시 eth0로 나가는 놈만 하는 것으로 했다. 그랬더니 이제 이해할 수 있는 오류들이 나오기 시작한다.. ㅎㅎ</p>
+
+<p>그래 대충한 것은 나중에 이해할 수 없는 현상을 유발한다니깐..</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1013">Dhclient가 Ip 받아올 때 까지 기다리기&#8230;</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-10-24T00:00:00+09:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>24</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>dhcp로 아이피 받아올 때 까지 기다려서 ip 리턴하는 스크립트&hellip;</p>
+
+<pre><code>#!/bin/bash
+function get_dhcp_ip() {
+  IFACE=${1:-eth1}
+
+  until ifconfig ${IFACE} | grep 'inet addr' &gt; /dev/null; do
+      dhclient ${IFACE} &gt; /dev/null;
+      sleep 1;
+  done;
+
+  ifconfig ${IFACE} | grep 'inet addr' | cut -d : -f 2 | awk '{print $1}'
+}
+
+echo $(get_dhcp_ip eth1)
+</code></pre>
+
+<p>왜 이런 삽질이 필요한지.. ㅡㅡ;</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1016">주어진 명령이 성공할 때까지 계속 시도하기&#8230;</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-10-24T00:00:00+09:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>24</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><pre><code>#!/bin/bash
+function wait_for() {
+    until $1; do
+        echo $2
+        sleep $3
+    done
+}
+</code></pre>
+
+<p>어디에 필요하냐구요?</p>
+
+<pre><code>$ wait_for "ssh $ip echo" "waiting $ip to boot up..." 3
+</code></pre>
+
+<p>이렇게 하면 서버가 부팅하고 ssh로 명령을 내릴 수 있을 때까지 대기합니다.</p>
+
+<p>그렇죠 삽질이죠.. ㅎㅎ</p>
+
+<p>이러다 영원히 끝나지 않을 것이 두려우신 분은 timeout 명령을 같이 쓰세요&hellip;</p>
+
+<p>$ timeout 10 wait_for &ldquo;ssh $ip echo&rdquo; &ldquo;waiting $ip to boot up&hellip;&rdquo; 3</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/997">Vmware 사용중에 Vmnet 간에 Routing이 안되는 문제가 발생할 때&#8230;</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-10-23T00:00:00+09:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>23</span><span class='date-suffix'>rd</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>OpenStack folsom + Quantum 구성을 vmware을 이용하여 테스트 하고 있습니다.</p>
+
+<ul>
+<li>vmnet0: external network</li>
+<li>vmnet1: control node network</li>
+<li>vmnet2: compute node network</li>
+<li>vmnet3: internal data network</li>
+<li>vmnet4: network node network</li>
+<li>vmnet5: storage network(not done)</li>
+</ul>
+
+
+<p>이렇게 대략 6개 정도 사용하는데, 가상 머신이 만들어 내부 네트워킹을 시도하면 routing이 안되는 문제가 발생합니다. 물론 외부랑 정상적이고, 또한 host 컴퓨터에서도 해당 머신들에 정상적으로 ping 가는데도 말입니다..</p>
+
+<p>결국은 리눅스 네트워크 전문가를 대동하여 약1시간에 걸쳐서 확인한 결과 iptables 쪽에서 막은 건 아니고 vmnet간의 routing이 안된다는 결론을 얻었고, rp_filter 기능을  사용하지 않으면 되는군요.</p>
+
+<pre><code>$ sysctl -a | grep vmnet | grep \\.rp_filter | awk '{print $1}' | \
+sudo xargs -L1 -I% sysctl %=0
+</code></pre>
+
+<ul>
+<li>\ 두개입니다. 하나만 하면 arp_filter도 먹어버림&hellip;</li>
+</ul>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1002">OpenStack + Quantum Traffic Flow: From Kvm to Internet</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-10-23T00:00:00+09:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>23</span><span class='date-suffix'>rd</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><img src="https://docs.google.com/drawings/pub?id=1NVu1FHZ_eMeRdAB32ffsuNejN4RvuwWLXkwKbxtvGZU&w=960&h=720"></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/990">Openstack + Quantum: Creating Virtual Machine</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-10-23T00:00:00+09:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>23</span><span class='date-suffix'>rd</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>간단하게 작성해본 OpenStack with Quantum 환경에서 tenant-private network과 external network을 만들고 해당 네트워크 상에 가상머신을 생성하는 테스트 스크립트입니다.</p>
+
+<p>테스트용이므로 실전에서는 사용할 수 없을 정도이고, 그냥 참고만 하세요</p>
+
+<pre><code>#!/bin/bash
+IMAGE=${IMAGE:-cirros-0.3.0-x86_64}
+
+if [ -z "$OS_TENANT_NAME" ];
+  echo "openstack environ variables is not set"
+  echo "please run . ~/openrc tenant_name"
+  exit
+fi
+
+TENANT_ID=$(keystone tenant-list | grep " $OS_TENANT_NAME " | awk '{print $2}')
+PRINET="${OS_TENANT_NAME}"
+EXTNET="ext_net"
+
+VM=$1
+
+#
+# create external network - only by admin
+#
+if [ "$OS_USERNAME" = 'admin' ]; then
+  EXTNET_ID=$(quantum net-list -- --tenant_id=$TENANT_ID --router:external=True | awk "/ $EXTNET / { print \$2 }")
+  if [ -z "$EXTNET_ID" ]; then
+    EXTNET_ID=$(quantum net-create $EXTNET --tenant_id=$TENANT_ID --router:external=True | grep ' id ' | awk '{print $4}')
+  fi
+
+  # create external subnet
+  EXTSUBNET_ID=$(quantum net-show $EXTNET_ID | awk "/ subnets / { print \$4 }")
+  if [ $EXTSUBNET_ID = "|" ]; then
+    EXTSUBNET_ID=$(quantum subnet-create $EXTNET_ID "10.100.1.0/24" --tenant_id=$TENANT_ID --name=${EXTNET}_subnet --enable_dhcp=False | awk '/ id / {print $4}')
+  fi
+else
+  EXTNET_ID=$(quantum net-list -- --router:external=True | awk "/ $EXTNET / { print \$2 }")
+fi
+
+#
+# tenant internal network
+#
+
+# create private network
+NET_ID=$(quantum net-list -- --tenant_id=$TENANT_ID --name=$PRINET | awk "/ $PRINET / { print \$2 }")
+if [ -z "$NET_ID" ]; then
+  NET_ID=$(quantum net-create $PRINET --tenant_id=$TENANT_ID | grep ' id ' | awk '{print $4}')
+fi
+echo "NET=$NET_ID"
+
+# create private subnet
+SUBNET_ID=$(quantum net-show $NET_ID | awk "/ subnets / { print \$4 }")
+if [ $SUBNET_ID = "|" ]; then
+  SUBNET_ID=$(quantum subnet-create $NET_ID "172.16.1.0/24" \
+        --tenant_id=$TENANT_ID --name=${PRINET}_subnet \
+        --dns_nameservers list=true 168.126.63.1 8.8.8.8 | \
+        awk '/ id / {print $4}')
+fi
+echo "SUBNET=$SUBNET_ID"
+
+# now internal network is working
+# and connect to external network
+
+# create router for connect to external network
+ROUTER_NAME="router_${OS_USERNAME}_ext"
+ROUTER_ID=$(quantum router-list -- --tenant_id=$TENANT_ID --name=$ROUTER_NAME | head -n -1 | tail -n +4 | awk '{print $2}')
+if [ -z "$ROUTER_ID" ]; then
+  ROUTER_ID=$(quantum router-create --tenant_id=$TENANT_ID $ROUTER_NAME | awk '/ id /{print $4}')
+fi
+echo "ROUTER=$ROUTER_ID"
+
+quantum router-interface-add $ROUTER_ID $SUBNET_ID
+quantum router-gateway-set $ROUTER_ID $EXTNET_ID
+
+#
+# boot instance
+#
+if [ ! -z "$VM" ]; then
+  IMAGE_ID=$(nova image-list | grep " $IMAGE " | head -n 1 | awk '{print $2}')
+  echo "IMAGE=$IMAGE_ID"
+
+  VM_ID=$(nova boot --image=$IMAGE_ID --flavor=1 --nic net-id=$NET_ID $VM | awk '/ id /{print $4}')
+  echo "VM=$VM_ID"
+
+  nova show $VM_ID
+fi
+</code></pre>
+
+<p>이 스크립트는 <a href="https://github.com/whitekid/openstack-chef/">https://github.com/whitekid/openstack-chef/</a> 의 일부입니다.~~</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/982">Iso 파일 마운트: Losetup, Fuseiso</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-09-27T00:00:00+09:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>27</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>리눅스에서 iso 파일을 마운드하는 방법은 2가지 있습니다.</p>
+
+<p>첫번째는 loop device를 사용하는 방법으로</p>
+
+<pre><code>$ losetup /dev/loop0 /var/cache/ubuntu-12.04-amd64.iso
+$ mount /dev/loop0 /mnt
+bla bla ....
+$ umount /mnt
+$ losetup -d /dev/loop0
+</code></pre>
+
+<p>여기서 loop device는 중복이 되면 안되니 losetup -a로 비어있는 loop device를 확인 해야합니다.</p>
+
+<p>두번째는 fuseiso를 이용하는 방법입니다.</p>
+
+<pre><code>$ apt-get install fuseiso
+$ mount -t fuse.fuseiso -o allow_other /var/cache/ubuntu-12.04-amd64.iso /mnt
+or
+$ fuseiso /var/cache/ubuntu-12.04-amd64.iso /mnt -o allow_other
+
+bla bla ....
+$ umount /mnt
+or
+$ fusermount -u /mnt
+</code></pre>
+
+<ul>
+<li>allow_other 옵션이 없으면 다른 사용자는 접근할 수 없습니다.</li>
+<li>fuseiso 명령으로 마운트하면 fusemount -u로 해제해야합니다.</li>
+</ul>
+
+
+<p>fuseiso를 사용하는 것이 훨씬 간단해 보입니다.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+      <a class="prev" href="/posts/10">&larr; Older</a>
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/posts/8">Newer &rarr;</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/keystone-bootstrap/">Keystone Bootstrap</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/neutron-default-security-group/">Neutron Default Security Group</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1550">클라우드 네트워킹과 SDN 그리고 OpenStack</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Choe, Cheng-Dae -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

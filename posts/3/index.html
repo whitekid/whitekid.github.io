@@ -1,0 +1,848 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Your wish is my command</title>
+  <meta name="author" content="Choe, Cheng-Dae">
+
+  
+  <meta name="description" content="Host aggregation은 Availability zone 처럼 사용할 수 있습니다. 기본 설치 상태에서 보면 아래처럼 nova zone만 보입니다. # nova availability-zone-list &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://whitekid.github.io/posts/3/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Your wish is my command" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Your wish is my command</a></h1>
+  
+    <h2>It&#8217;s a long journey</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="whitekid.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1454">Host-aggregation을 Availability-zone으로 사용하기</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2013-12-11T00:00:00+09:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2013</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><a href="http://docs.openstack.org/grizzly/openstack-compute/admin/content/host-aggregates.html">Host aggregation</a>은 Availability zone 처럼 사용할 수 있습니다.</p>
+
+<p>기본 설치 상태에서 보면 아래처럼 nova zone만 보입니다.</p>
+
+<pre><code># nova availability-zone-list
++-----------------------+----------------------------------------+
+| Name                  | Status                                 |
++-----------------------+----------------------------------------+
+| internal              | available                              |
+| |- control0           |                                        |
+| | |- nova-conductor   | enabled :-) 2013-12-11T08:36:33.000000 |
+| | |- nova-consoleauth | enabled :-) 2013-12-11T08:36:36.000000 |
+| | |- nova-cert        | enabled :-) 2013-12-11T08:36:36.000000 |
+| | |- nova-scheduler   | enabled :-) 2013-12-11T08:36:31.000000 |
+| nova                  | available                              |
+| |- compute003         |                                        |
+| | |- nova-compute     | enabled :-) 2013-12-11T08:36:31.000000 |
+| |- compute002         |                                        |
+| | |- nova-compute     | enabled :-) 2013-12-11T08:36:31.000000 |
+| |- compute001         |                                        |
+| | |- nova-compute     | enabled :-) 2013-12-11T08:36:31.000000 |
+| |- compute000         |                                        |
+| | |- nova-compute     | enabled :-) 2013-12-11T08:36:31.000000 |
++-----------------------+----------------------------------------+
+</code></pre>
+
+<p>여기서 host-aggregate를 2개 만들고 각각에 2개씩 compute node를 넣어봅니다.</p>
+
+<pre><code># nova aggregate-create agg1
+# nova aggregate-create agg2
+# nova aggregate-list
++----+------+-------------------+
+| Id | Name | Availability Zone |
++----+------+-------------------+
+| 1  | agg1 | None              |
+| 2  | agg2 | None              |
++----+------+-------------------+
+# nova aggregate-add-host 1 compute000
+Aggregate 1 has been successfully updated.
++----+------+-------------------+-----------------+----------+
+| Id | Name | Availability Zone | Hosts           | Metadata |
++----+------+-------------------+-----------------+----------+
+| 1  | agg1 | None              | [u'compute000'] | {}       |
++----+------+-------------------+-----------------+----------+
+# nova aggregate-add-host 1 compute001
+Aggregate 1 has been successfully updated.
++----+------+-------------------+--------------------------------+----------+
+| Id | Name | Availability Zone | Hosts                          | Metadata |
++----+------+-------------------+--------------------------------+----------+
+| 1  | agg1 | None              | [u'compute000', u'compute001'] | {}       |
++----+------+-------------------+--------------------------------+----------+
+# nova aggregate-add-host 2 compute002
+Aggregate 2 has been successfully updated.
++----+------+-------------------+-----------------+----------+
+| Id | Name | Availability Zone | Hosts           | Metadata |
++----+------+-------------------+-----------------+----------+
+| 2  | agg2 | None              | [u'compute002'] | {}       |
++----+------+-------------------+-----------------+----------+
+# nova aggregate-add-host 2 compute003
+Aggregate 2 has been successfully updated.
++----+------+-------------------+--------------------------------+----------+
+| Id | Name | Availability Zone | Hosts                          | Metadata |
++----+------+-------------------+--------------------------------+----------+
+| 2  | agg2 | None              | [u'compute002', u'compute003'] | {}       |
++----+------+-------------------+--------------------------------+----------+
+</code></pre>
+
+<p>여기서 다시 nova availability-zone-list 하면 아무런 변화기 없습니다. nova aggregate-list 결과에 보면 &ldquo;Availability Zone&#8221;이라는 항목이 있습니다. 녜.. host aggregate에 zone 설정이 없어서 그런 것이죠..</p>
+
+<p>다시 host aggregate에 availability zone을 설정해보죠.</p>
+
+<pre><code># nova aggregate-update 1 agg1 zone1
+Aggregate 1 has been successfully updated.
++----+------+-------------------+--------------------------------+----------------------------------+
+| Id | Name | Availability Zone | Hosts                          | Metadata                         |
++----+------+-------------------+--------------------------------+----------------------------------+
+| 1  | agg1 | zone1             | [u'compute000', u'compute001'] | {u'availability_zone': u'zone1'} |
++----+------+-------------------+--------------------------------+----------------------------------+
+# nova aggregate-update 2 agg1 zone2
+Aggregate 2 has been successfully updated.
++----+------+-------------------+--------------------------------+----------------------------------+
+| Id | Name | Availability Zone | Hosts                          | Metadata                         |
++----+------+-------------------+--------------------------------+----------------------------------+
+| 2  | agg1 | zone2             | [u'compute002', u'compute003'] | {u'availability_zone': u'zone2'} |
++----+------+-------------------+--------------------------------+----------------------------------+
+</code></pre>
+
+<p>이제 다시 availability zone을 보면</p>
+
+<pre><code># nova availability-zone-list
++-----------------------+----------------------------------------+
+| Name                  | Status                                 |
++-----------------------+----------------------------------------+
+| internal              | available                              |
+| |- control0           |                                        |
+| | |- nova-conductor   | enabled :-) 2013-12-11T09:01:15.000000 |
+| | |- nova-consoleauth | enabled :-) 2013-12-11T09:01:09.000000 |
+| | |- nova-cert        | enabled :-) 2013-12-11T09:01:09.000000 |
+| | |- nova-scheduler   | enabled :-) 2013-12-11T09:01:14.000000 |
+| zone1                 | available                              |
+| |- compute001         |                                        |
+| | |- nova-compute     | enabled :-) 2013-12-11T09:01:15.000000 |
+| |- compute000         |                                        |
+| | |- nova-compute     | enabled :-) 2013-12-11T09:01:15.000000 |
+| zone2                 | available                              |
+| |- compute003         |                                        |
+| | |- nova-compute     | enabled :-) 2013-12-11T09:01:15.000000 |
+| |- compute002         |                                        |
+| | |- nova-compute     | enabled :-) 2013-12-11T09:01:15.000000 |
++-----------------------+----------------------------------------+
+</code></pre>
+
+<p>녜.. 그렇습니다. host aggregate를 availability zone으로 사용할 수 있습니다.</p>
+
+<p>그리고 이렇게 만들어진 존을 지정하여 인스턴스를 만드는 것은 아래처럼 할 수 있습니다.</p>
+
+<pre><code># nova boot --flavor=&lt;flavor&gt; --nic net-id=&lt;net-id&gt; \
+    --image=&lt;image-id&gt; --key_name=&lt;keyname&gt; \
+    --availability-zone zone1:compute000 &lt;instance-name&gt;
+</code></pre>
+
+<p>admin 권한으로는 compute node까지 지정이 가능하고, admin이 아닌 경우는 zone 까지만 지정 가능합니다.</p>
+
+<p>참고링크: <a href="http://russellbryantnet.wordpress.com/2013/05/21/availability-zones-and-host-aggregates-in-openstack-compute-nova/">http://russellbryantnet.wordpress.com/2013/05/21/availability-zones-and-host-aggregates-in-openstack-compute-nova/</a></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1444">Flavor에 따라서 생성되는 인스턴스가 생성되는 존 설정하기</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2013-12-11T00:00:00+09:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2013</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>가끔 이런 경우가 있습니다.</p>
+
+<blockquote><p>이 flavor로 만드는 인스턴스는 성능이 좋아야 합니다. 그러니 이 flavor로 만드는 인스턴스는 성능이 좋은 물리 호스트에 만들어 주세요.</p></blockquote>
+
+<p>SSD를 사용하는 호스트, RAM이 특별하게 많이 필요한 인스턴스, Disk I/O가 많이 필요한 인스턴스 등등 이런 요청은 다양합니다. 그런 경우는 이전에서 만든 <a href="http://blog.woosum.net/archives/1454" title="host-aggregation을 availability-zone으로 사용하기">host aggregate</a>와 flavor를 연결하여 특정 flavor는 특정 존에 생성되도록 강제 할 수 있습니다.</p>
+
+<p>인스턴스를 어떤 compute node에 위치시킬 것인가는 nova-scheduler에 의해서 결정되므로, nova-scheduler에서 flavor와 host aggregate를 동시에 고려하는 Filter가 있으면 되겠죠. 녜.. 당연히 있고, 그 것이 <a href="http://docs.openstack.org/grizzly/openstack-compute/admin/content/scheduler-filters.html#aggregateinstanceextraspecsfilter">AggregateInstanceExtraSpecsFilter</a> 입니다.</p>
+
+<p>당연히 이 필터를 nova scheduler 필터에 추가하고..</p>
+
+<p>/etc/nova.conf:</p>
+
+<pre><code>scheduler_default_filters=AggregateInstanceExtraSpecsFilter,AvailabilityZoneFilter,RamFilter,ComputeFilter
+</code></pre>
+
+<p>특정 zone에 인스턴스를 생성할 flavor에 아래처럼 flavor의 extra-specs에 넣습니다.</p>
+
+<pre><code># nova flavor-show 1
++----------------------------+----------------------------+
+| Property                   | Value                      |
++----------------------------+----------------------------+
+| name                       | m1.tiny                    |
+| ram                        | 512                        |
+| OS-FLV-DISABLED:disabled   | False                      |
+| vcpus                      | 1                          |
+| extra_specs                | {u'locate_zone1': u'true'} |
+| swap                       |                            |
+| os-flavor-access:is_public | True                       |
+| rxtx_factor                | 1.0                        |
+| OS-FLV-EXT-DATA:ephemeral  | 0                          |
+| disk                       | 0                          |
+| id                         | 1                          |
++----------------------------+----------------------------+
+</code></pre>
+
+<p>이제 host aggregate에서 해당 extra-specs에 locate_zone1=true가 설정된 인스턴스를 만들 수 있게 meta-data로 설정하면 됩니다.</p>
+
+<pre><code># nova aggregate-set-metadata 1 locate_zone1=true
+Aggregate 1 has been successfully updated.
++----+------+-------------------+----------------------------------+--------------------------------------------------------------+
+| Id | Name | Availability Zone | Hosts                            | Metadata                                                     |
++----+------+-------------------+----------------------------------+--------------------------------------------------------------+
+|  1 | agg1 | zone1             | [u'compute000&amp;', u'compute001&amp;'] | {u'locate_zone1&amp;': u'true', u'availability_zone': u'zone1&amp;'} |
++----+------+-------------------+-------------------------------+-----------------------------------------------------------------+
+</code></pre>
+
+<p>이제 flavor 1로 인스턴스를 만들면 zone1에 생성되는 것을 볼 수 있습니다.</p>
+
+<pre><code># nova list -all-tenants -fields flavor,host
++--------------------------------------+--------+------------+
+| ID                                   | Flavor | Host       |
++--------------------------------------+--------+------------+
+| 0a3e3ff7-fa2e-47c5-b820-25d3c6f005aa | 1      | compute001 |
+| 2211556d-abef-48d1-91fa-3fd2bc4286d5 | 1      | compute000 |
+| 70535b26-a284-4ad3-8f14-e09bde385b97 | 1      | compute000 |
+| ba8bf1ce-acd8-4b25-8a08-56ff71283c32 | 1      | compute001 |
++--------------------------------------+--------+------------+
+</code></pre>
+
+<p>참고 링크</p>
+
+<ul>
+<li><a href="http://russellbryantnet.wordpress.com/2013/05/21/availability-zones-and-host-aggregates-in-openstack-compute-nova/">http://russellbryantnet.wordpress.com/2013/05/21/availability-zones-and-host-aggregates-in-openstack-compute-nova/</a></li>
+<li><a href="http://docs.openstack.org/grizzly/openstack-compute/admin/content/host-aggregates.html">http://docs.openstack.org/grizzly/openstack-compute/admin/content/host-aggregates.html</a></li>
+</ul>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1436">Nova/keystone&#8230; Bash Completion</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2013-12-06T00:00:00+09:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>6</span><span class='date-suffix'>th</span>, <span class='date-year'>2013</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>nova</h2>
+
+<pre><code>$ wget -O /etc/bash_completion.d/nova https://raw.github.com/openstack/python-novaclient/master/tools/nova.bash_completion
+</code></pre>
+
+<h2>keystone</h2>
+
+<pre><code>$ wget -O /etc/bash_completion.d/keysotne https://raw.github.com/openstack/python-keystoneclient/master/tools/keystone.bash_completion
+</code></pre>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1432">Haproxy: Https Redirect, Ip Block 등등..</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2013-12-05T00:00:00+09:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>5</span><span class='date-suffix'>th</span>, <span class='date-year'>2013</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>haproxy는 loadbalancing 기능 이외에도 다양한 기능이 많습니다.</p>
+
+<p>/admin을 내부 아이피만 허용하는 경우는 아래처럼 할 수 있습니다.</p>
+
+<pre><code>acl is-internal-net src 172.16.0.0/12 192.168.0.0/16 10.0.0.0/8
+acl is-admin url_beg /admin
+block if !is-internal-net is-admin
+</code></pre>
+
+<p>http를 https로 redirect하는 것도 haproxy에서 사용할 수 있죠.</p>
+
+<pre><code>redirect scheme https if !{ ssl_fc }
+</code></pre>
+
+<p>haproxy가 ssl offload 기능을 제공하기에 backend에는 http만 사용합니다. 그리고 밑의 application에서 https에서 온 request라는 것을 확인하기 위해서 x-forwarded-protocol을 붙여줍니다.</p>
+
+<pre><code>bind 0.0.0.0:443 ssl crt &lt;your-certificate-file&gt;
+acl is-ssl dst_port 443
+reqadd x-forwarded-protocol:\ https if is-ssl
+</code></pre>
+
+<p>종합하면 아래처럼 되겠습니다.</p>
+
+<pre><code>listen webapp
+bind 0.0.0.0:443 ssl crt &lt;your-certificate-file&gt;
+server server1 10.10.10.10:80 check
+server server1 10.10.10.11:80 check
+acl is-internal-net src 172.16.0.0/12 192.168.0.0/16 10.0.0.0/8
+acl is-admin url_beg /admin
+acl is-ssl dst_port 443
+block if !is-internal-net is-admin
+redirect scheme https if !{ ssl_fc }
+reqadd x-forwarded-protocol:\ https if is-ssl
+</code></pre>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1427">Veth가 어떤 디바이스에 연결되어있는지 찾아보기..</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2013-12-03T00:00:00+09:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>3</span><span class='date-suffix'>rd</span>, <span class='date-year'>2013</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Quantum으로 네트워크를 구성하다보면(또는 XLC&hellip;) veth를 통해서 다른 network namespace에 interface가 peer로 역이는 것을 볼 수 있습니다.</p>
+
+<blockquote><p>Network Namespace는 <a href="http://blog.scottlowe.org/2013/09/04/introducing-linux-network-namespaces/">Introducing Linux Network Namespaces</a> 글을 참조하시면 좋습니다. 간단히 말에서 device, routing, iptables, socket 등을 포함하여 linux network stack이 완전히 격리되는 시스템입니다. namespace를 만들어 network stack을 격리시키면 외부랑 완전히 차단이 되기 때문에 root namespace의 interface와 veth로 pair를 맺어 이 interface로 통신합니다.</p>
+
+<p>veth는 참고할 만한 문서를 딱히 못찾았는데요.. interface link의 클론이라고 생각하시면 됩니다. 한쪽에 들어간 패킷은 다른 한쪽으로 흐릅니다. 그리고 당연히 각각이 interface이기 때문에 mac, ipaddress가 다를 수 있습니다. 어떻게보면 bridge와도 비슷합니다.</p></blockquote>
+
+<p>근데 문제는 veth로 만드는 것은 쉽게 알 수 있는데, 해당 인터페이스가 어떤 인터페이스랑 peer인지 알아내는 방법이 쉽지 않습니다. iproute로는 말이지요.</p>
+
+<p>아래는 quantum으로 구성한 dhcp namespace의 interface 입니다.</p>
+
+<pre><code># ip netns exec qdhcp-fabc7ead-6132-4920-af57-2ad5e199e1c1 ip a
+59: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 16436 qdisc noqueue state UNKNOWN
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+68: ns-39d60faa-aa: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc pfifo_fast state UP qlen 1000
+    link/ether fa:16:3e:98:e6:f3 brd ff:ff:ff:ff:ff:ff
+    inet 10.10.100.2/24 brd 10.10.100.255 scope global ns-39d60faa-aa
+    inet 169.254.169.254/16 brd 169.254.255.255 scope global ns-39d60faa-aa
+    inet6 fe80::f816:3eff:fe98:e6f3/64 scope link
+       valid_lft forever preferred_lft forever
+# ip netns exec qdhcp-fabc7ead-6132-4920-af57-2ad5e199e1c1 route -n
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+0.0.0.0         10.10.100.1     0.0.0.0         UG    0      0        0 ns-39d60faa-aa
+10.10.100.0     0.0.0.0         255.255.255.0   U     0      0        0 ns-39d60faa-aa
+169.254.0.0     0.0.0.0         255.255.0.0     U     0      0        0 ns-39d60faa-aa
+</code></pre>
+
+<p>여기서 routing table을 보면 ns-39d60faa-aa 인터페이스를 통해서 외부로 나가는 것으로 보이는데, namespace 이므로 외부와 직접 연결할 수 없습니다. 당연히 ns-39d60faa-aa는 root namespace의 interface와 veth peer를 이루고 있으며, peer interface를 통해서 외부와 통신합니다.(그 peer는 bridge를 통해서 eth#으로 나가겠지요..)</p>
+
+<p>그럼 여기서 본론인 어떤 interface와 peer를 이루고 있는지 알아보려고 열심히 ifconfig 또는 ip link 명령을 뒤져봐야 안나됩니다. mac도 다르고, peer 정보도 안나오고&hellip;</p>
+
+<p>찾는 방법은 조금 복잡하기도 한데&hellip; ethtool을 통해서 찾을 수 있습니다.</p>
+
+<pre><code># ip netns exec qdhcp-fabc7ead-6132-4920-af57-2ad5e199e1c1 \
+  ethtool -S ns-39d60faa-aa
+NIC statistics:
+     peer_ifindex: 69
+</code></pre>
+
+<p>결과에서 예상하다시피 interface index가 69번인 interface와 peer를 이루고 있습니다. 그럼 아래처럼 찾을 수 있겠습니다.</p>
+
+<pre><code># ip link ls | grep ^69
+69: tap39d60faa-aa: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc pfifo_fast state UP qlen 1000
+# ip link show tap39d60faa-aa
+69: tap39d60faa-aa: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc pfifo_fast state UP qlen 1000
+    link/ether 62:41:1f:e2:b2:9d brd ff:ff:ff:ff:ff:ff
+# ethtool -S tap39d60faa-aa
+NIC statistics:
+</code></pre>
+
+<p>마찬가지로 tap39d60faa-aa interface는 namespace에 있는 68번 interface와 veth peer로 연결되어 있습니다.</p>
+
+<p>지금은 필요없을 지 몰라도 OpenStack 하다보면 언젠가는 마주칠지 모르는 녀석이니 참고하세용..</p>
+
+<p>ps. iproute 사용법은 너무 불친절합니다.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1423">Fixed Ip에서 Vip 찾아내기&#8230;</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2013-11-21T00:00:00+09:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>21</span><span class='date-suffix'>st</span>, <span class='date-year'>2013</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Quantum으로 인스턴스의 fixed ip를 기준으로 해당 인스턴스의 load balancer에 연결된 vip 얻어오기</p>
+
+<div><script src='https://gist.github.com/7576376.js'></script>
+<noscript><pre><code>from quantumclient.v2_0.client import Client
+
+def get_vip_from_fixed_ip(fixed_ip):
+    client = Client(
+            username = app.config[&#39;USERNAME&#39;],
+            password = app.config[&#39;PASSWORD&#39;],
+            tenant_name = app.config[&#39;TENANT_NAME&#39;],
+            auth_url = app.config[&#39;AUTH_URL&#39;]
+    )
+    members = client.list_members(address = fixed_ip)[&#39;members&#39;]
+    if not members: return None
+
+    pool_id = members[0][&#39;pool_id&#39;]
+    pool = client.show_pool(pool_id)
+    vip_id = pool[&#39;pool&#39;][&#39;vip_id&#39;]
+
+    vip_ref = client.show_vip(vip_id)
+    vip = vip_ref[&#39;vip&#39;][&#39;address&#39;]
+    return vip
+</code></pre></noscript></div>
+
+
+<ul>
+<li>overlapping ip 환경에서는 안됨&hellip; network을 구분하지 못해서&hellip;</li>
+</ul>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1419">Python 한 줄로 웹서버 만들기..</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2013-10-30T00:00:00+09:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>30</span><span class='date-suffix'>th</span>, <span class='date-year'>2013</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><pre><code>$ python -m SimpleHTTPServer
+Serving HTTP on 0.0.0.0 port 8000 ...
+</code></pre>
+
+<p>딱.. 한줄이지만.. 정작 필요할 때는 기억이 안나서.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1413">Security Group: 인스턴스 그룹에 접근 허용하기</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2013-10-13T00:00:00+09:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>13</span><span class='date-suffix'>th</span>, <span class='date-year'>2013</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><a href="http://docs.openstack.org/network-admin/admin/content/securitygroups.html">SecurityGroup</a>은 인스턴스에 연결된 포트에 허용되는 트래픽을 제어하는 기능입니다.</p>
+
+<p>처음 오픈스택 인스턴스 프로젝트를 할당받고 가장 먼저 하는 것이 22번 포트에 대한 접근을 허용하는 것이니.. 대부분 잘 알고 있을 겁니다.</p>
+
+<p>그런데 기본으로 제공되는 default security group만 운영하다 보면(아마 대부분 그럴지도) 하나의 의문점이 생깁니다.</p>
+
+<p>아래처럼 인스턴스가 있다고 가정했을 때</p>
+
+<ul>
+<li>web</li>
+<li>mysql</li>
+</ul>
+
+
+<p>web 인스턴스는 80번 포트, mysql 포트는 3306 포트가 필요합니다. 그래서 별 생각없이 default security group에 80, 3306 포트를 열어줍니다. 하지만 여기서 생각해볼 것이..</p>
+
+<ul>
+<li>web에서는 3306 포트를 열 필요가 없습니다.</li>
+<li>mysql에서는 80번 포트를 열 필요가 없습니다. 그리고 db 접근은 web에서만 하니 web에서 접근하는 트래픽만 허용합니다.</li>
+</ul>
+
+
+<p>첫번째 경우는 큰 문제가 없습니다.  단순히 80번 포트만 여는 security group을 만들고 web 인스턴스에 적용하면 되니깐요.</p>
+
+<pre><code>$ nova secgroup-create web 'allow web access'
++--------------------------------------+------+------------------+
+| Id                                   | Name | Description      |
++--------------------------------------+------+------------------+
+| d60f5be1-8a60-4523-ba4e-3230edf5b444 | web  | allow web access |
++--------------------------------------+------+------------------+
+$ nova secgroup-add-rule web tcp 80 80 0.0.0/0
++-------------+-----------+---------+----------+--------------+
+| IP Protocol | From Port | To Port | IP Range | Source Group |
++-------------+-----------+---------+----------+--------------+
+| tcp         | 80        | 80      | 0.0.0/0  |              |
++-------------+-----------+---------+----------+--------------+
+$ nova add-secgroup web web
+$ nova show web
+$ nova show charlie-web | grep security
+| security_groups             | [{u'name': u'default'}, {u'name': u'web'}]                     |
+</code></pre>
+
+<p>자.. 이제 MySQL 인스턴스에 Security Group을 적용해야하는데&hellip; web에만 적용하면 되니깐.. security group을 만들려고 보는데..</p>
+
+<pre><code>$ nova secgroup-create mysql 'allow mysql access'
++--------------------------------------+-------+--------------------+
+| Id                                   | Name  | Description        |
++--------------------------------------+-------+--------------------+
+| 7d197716-501f-46fa-a6fb-bd4e0c9dd5bb | mysql | allow mysql access |
++--------------------------------------+-------+--------------------+
+</code></pre>
+
+<p>이제 rule을 추가하려는데.. web에서만 접근을 하용하는 것이니깐.. web 인스턴스 ip만 cidr로 허용합니다.</p>
+
+<pre><code>$ nova secgroup-add-rule mysql tcp 3306 3306 172.16.202.214/32
++-------------+-----------+---------+-------------------+--------------+
+| IP Protocol | From Port | To Port | IP Range          | Source Group |
++-------------+-----------+---------+-------------------+--------------+
+| tcp         | 3306      | 3306    | 172.16.202.214/32 |              |
++-------------+-----------+---------+-------------------+--------------+
+</code></pre>
+
+<p>문제없나요? 근데.. 뭔가 이상하지 않나요? 만일 web 인스턴스가 늘어난다면? 새로운 인스턴스에 대한 rule을 계속 추가해야될까요?.. 만일 그래야된다면&hellip; 이거 Security Group이 참 써 먹을 것이 못되는 것이 됩니다.</p>
+
+<p>역시나 예상하다시피 tenant 인스턴스 group에 대해서 traffic을 제어하는 기능이 있습니다. rule을 추가된 후에 나오는 source group이라는 것이 키워드입니다. nova에도 해당 명령이 있고.. 이에 대한 설명은 아래처럼 굉장히 불친절하게 되어있습니다.</p>
+
+<blockquote><p>secgroup-add-group-rule Add a source group rule to a security group.</p></blockquote>
+
+<p>설명을 봐도 무슨 말인지 쉽게 알 수 없습니다. 하지만 내용은 간단한 것으로 특정 cidr의 rule을 주는 것이 아니라 주어진 security group이 적용된 인스턴스에 대해서 secutiry group을 적용한다는 이이기 입니다.</p>
+
+<p>즉 mysql 접근을 web에서만 접근하려고 하고, web 인스턴스는 모두 web security group이 적용되어 있다고 한다면</p>
+
+<pre><code>$ nova secgroup-add-group-rule mysql web tcp 3306 3306
++-------------+-----------+---------+----------+--------------+
+| IP Protocol | From Port | To Port | IP Range | Source Group |
++-------------+-----------+---------+----------+--------------+
+| tcp         | 3306      | 3306    |          | web          |
++-------------+-----------+---------+----------+--------------+
+</code></pre>
+
+<p>source group을 web으로 지정하여 web 인스턴스에 대해서 mysql port에 대한 접근을 허용할 수 있습니다. 여기서 다른 인스턴스에 web security group을 적용하면 그 인스턴스도 바로 mysql에 접근이 가능합니다(물리 노드에서 보면 해당 인스턴스의 ip address가 iptables에 바로 추가됩니다). 물론 다른 녀석들은 mysql 포트에 접근이 제한되구요.</p>
+
+<p>그러므로 만일 source group을 default로 한다면 해당 tenant의 모든 인스턴스가 mysql에 접근할 수 있습니다</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1410">어떤 Vm을 누가 만들었는지 찾기 귀찮아서&#8230;</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2013-10-13T00:00:00+09:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>13</span><span class='date-suffix'>th</span>, <span class='date-year'>2013</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><pre><code>$ cat get_user_from_ip.sh
+#!/bin/bash
+ip=$1
+
+port_id=$(quantum port-list | grep $ip | awk '{print $2}')
+device_id=$(quantum port-show $port_id | awk '/device_id/{print $4}')
+user_id=$(nova show $device_id | awk '/user_id/{print $4}')
+keystone user-get $user_id
+
+$ ./get_user_from_ip.sh x.x.x.x
+</code></pre>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1400">Moin 스팸 메시지/ 스팸 유저 삭제</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2013-08-21T00:00:00+09:00'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>21</span><span class='date-suffix'>st</span>, <span class='date-year'>2013</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>moinmoin으로 위키를 유지하는데, 스팸이 너무 많이 들어온다.</p>
+
+<p>그렇다고 이를 다른 위키로 바꾸는 것도 귀찮고, 그냥 스팸으로 쌓인 패이지, 유저를 정기적으로 삭제하기로 했다. ㅠㅠ</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+      <a class="prev" href="/posts/4">&larr; Older</a>
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/posts/2">Newer &rarr;</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/keystone-bootstrap/">Keystone Bootstrap</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/neutron-default-security-group/">Neutron Default Security Group</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1550">클라우드 네트워킹과 SDN 그리고 OpenStack</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Choe, Cheng-Dae -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

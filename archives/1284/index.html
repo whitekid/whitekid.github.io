@@ -1,0 +1,237 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>OpenStack Havana에 기대하는 몇가지&#8230; - Your wish is my command</title>
+  <meta name="author" content="Choe, Cheng-Dae">
+
+  
+  <meta name="description" content="요즘 grizzly 버전가지고 열심히 놀구 있습니다. 써보니깐.. private cloud까지는 훌륭히 만들 수 있을 것 같아요.. 그러다 havana 릴리스에 어떤 blue print가 있는가 대충 훑어봤는데, 그중에 몇 개 이야기 해봅니다. Support for &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://whitekid.github.io/archives/1284">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Your wish is my command" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Your wish is my command</a></h1>
+  
+    <h2>It&#8217;s a long journey</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="whitekid.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">OpenStack Havana에 기대하는 몇가지&#8230;</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2013-05-30T00:00:00+09:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>30</span><span class='date-suffix'>th</span>, <span class='date-year'>2013</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>요즘 grizzly 버전가지고 열심히 놀구 있습니다. 써보니깐.. private cloud까지는 훌륭히 만들 수 있을 것 같아요..</p>
+
+<p>그러다 <a href="http://status.openstack.org/release/">havana 릴리스에 어떤 blue print가 있는가</a> 대충 훑어봤는데, 그중에 몇 개 이야기 해봅니다.</p>
+
+<p><a href="https://blueprints.launchpad.net/devstack/+spec/quantum-l3-plugin-support"><strong>Support for Quantum L3 plugin in Devstack</strong></a></p>
+
+<p>l3 agent는 linux box에서 돌아가도록 되어있습니다. plugin 형태로 구축하면 hardware 장비를 조절하여 l3의 기능을 처리할 수 있겠죠. 이렇게 하면 l3 agent host에 부하가 줄어들어 보다 안정적인 서비스를 할 수 있습니다.</p>
+
+<p>게다가 인프라 쪽은 s/w 보다는 h/w를 믿는 경향(?)이 있어서, 이게 더 심리적인 안정감을 줄 것 같습니다.</p>
+
+<p><a href="https://blueprints.launchpad.net/quantum/+spec/multi-vendor-support-for-lbaas-step0"><strong>Enable loadbalancing vendors to implement their drivers - step0</strong></a></p>
+
+<p>이것도 위와 마찬가지로, haproxy로 되어있는 구성을 l4 장비를 이용해서 처리하는 기능이죠.</p>
+
+<p><a href="https://blueprints.launchpad.net/nova/+spec/dynamic-dns"><strong>Dynamic DNS support for instances</strong></a></p>
+
+<p>aws ec2처럼 dns로 연결하고 싶습니다.</p>
+
+<p><a href="https://blueprints.launchpad.net/quantum/+spec/vpnaas-python-apis"><strong>IPSec VPNaaS Python APIs / CRUD Operations</strong></a></p>
+
+<p>VPN은 public cloud를 한다면 필요한 기능입니다. havana까지는 api가 정리가 될 것 같고, 다음 릴리스에서는 뭔가 사용할 만한 결과물이 나오겠지요. OpenVPN을 이용한 client vpn, site-to-site vpn이면 훌륭합니다.</p>
+
+<p>nova-network에서는 <a href="http://docs.openstack.org/trunk/openstack-compute/admin/content/cloudpipe-per-project-vpns.html">CloudPipe</a>에서 지원했었지만, 아직 Quantum에는 없네요.</p>
+
+<p><a href="https://blueprints.launchpad.net/quantum/+spec/qos-ovs-qos"><strong>QoS API implementation: OpenVSwitch w/ DSCP</strong></a></p>
+
+<p>네트워크 서비스에 QoS는 기본이겠죠? 옆에 누군가가 엄청나게 네트워크를 써 버린다면.. ㅎㅎ</p>
+
+<p><a href="https://wiki.openstack.org/wiki/Ceilometer"><strong>Ceilometer</strong></a></p>
+
+<p>metering입니다. 즉 어느 사용자가 얼마나 사용했는지를 나타냅니다. 효율을 측정하기 위해서는 반드시 필요하겠죠?</p>
+
+<p>grizzly에 들어가긴 했지만, havana에 제대로 들어갈 예정입니다.</p>
+
+<p><a href="https://wiki.openstack.org/wiki/Heat"><strong>Heat</strong></a></p>
+
+<p>Heat는 CloudFormation 처럼 web site stack을 정의하고, 그에 따라서 API를 이용하여 OpenStack을 설정하는 콤포넌트 입니다. 이 기능보다 제가 주목하고 있는 것은 여기에 AutoScaling 기능이 들어간다는 점이죠.</p>
+
+<p>역시 주 관심사가 Quantum이라 네트워크가 대부분이군요. ^^</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">whitekid</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2013-05-30T00:00:00+09:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>30</span><span class='date-suffix'>th</span>, <span class='date-year'>2013</span></span> <span class='time'>12:00 am</span></time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://whitekid.github.io/archives/1284" data-via="" data-counturl="http://whitekid.github.io/archives/1284" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/archives/1273" title="Previous Post: Quantum: multiple l3-agent">&laquo; Quantum: multiple l3-agent</a>
+      
+      
+        <a class="basic-alignment right" href="/archives/1292" title="Next Post: glusterfs as OpenStack instance storage backend">glusterfs as OpenStack instance storage backend &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/keystone-bootstrap/">Keystone Bootstrap</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/neutron-default-security-group/">Neutron Default Security Group</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1550">클라우드 네트워킹과 SDN 그리고 OpenStack</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Choe, Cheng-Dae -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

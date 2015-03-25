@@ -1,0 +1,273 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>TPopupMenu의 기본 메뉴 실행하기 - Your wish is my command</title>
+  <meta name="author" content="Choe, Cheng-Dae">
+
+  
+  <meta name="description" content="윈도우 탐색기의 팝업 메뉴를 보면 오른쪽 그림처럼 Open 메뉴 아이템은 굵은 폰트로 표시됩니다. 이건 해당 아이템을 더블클릭 또는 엔터키를 누르면 해당 메뉴를 실행하겠다는 Windows의 표현입니다. 당연히 TPopupMenu에서도 지원하지요. TMenuItem. &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://whitekid.github.io/archives/191">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Your wish is my command" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Your wish is my command</a></h1>
+  
+    <h2>It&#8217;s a long journey</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="whitekid.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">TPopupMenu의 기본 메뉴 실행하기</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-07-08T00:00:00+09:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><img class="right" src="/images/popup_default_item-177x300.png"></p>
+
+<p>윈도우 탐색기의 팝업 메뉴를 보면 오른쪽 그림처럼 Open 메뉴 아이템은 굵은 폰트로 표시됩니다. 이건 해당 아이템을 더블클릭 또는 엔터키를 누르면 해당 메뉴를 실행하겠다는 Windows의 표현입니다.</p>
+
+<p>당연히 TPopupMenu에서도 지원하지요. TMenuItem.Default 프러퍼티가 있으면 수행하면 됩니다.</p>
+
+<p>그런데 이 기능을 구현하려면 여간 귀찮치요.</p>
+
+<ol>
+<li>키보드 메시지 처리해서 VK_RETURN 메시지 처리하고</li>
+<li>더블클릭했을때도 체크하고</li>
+<li>또한 해당 컨트럴에 연결된 팝업 메뉴도 확인해서 기본 메뉴가 있는지 없는지 확인하고..</li>
+<li>있으면 이벤트 실행하고..</li>
+</ol>
+
+
+<p>컨트럴에 연결된 팝업 메뉴의 기본 액션을 수행하는 것만 보자면..</p>
+
+<pre><code>function TwsControlHelper.ExecuteDefaultPopupAction: Boolean;
+// 팝업 메뉴의 디폴트로 설정된 메뉴 아이템에 설정된 이벤트를 실행한다
+var
+  Item, DefaultItem: TMenuItem;
+begin
+  Result := False;
+  if not Assigned(PopupMenu) then Exit;
+
+  DefaultItem := nil;
+  for Item in PopupMenu.Items do
+    if Item.Default then
+    begin
+      DefaultItem := Item;
+      Break;
+    end;
+
+  if Assigned(DefaultItem) then
+  begin
+    if Assigned(DefaultItem.Action) then
+      Result := DefaultItem.Action.Execute
+    else if Assigned(DefaultItem.OnClick) then
+    begin
+      Result := True;
+      DefaultItem.OnClick(DefaultItem);
+    end;
+  end
+end;
+</code></pre>
+
+<p>TControl의 Helper로 작성했이니 어디서든 저렇게 쓰면 됩니다. 이것을 키보드나 마우스 이벤트 핸들러에 적용해보면..</p>
+
+<pre><code>procedure TwsListView.DblClick;
+begin
+  // 더블클릭에 아무런 이벤트도 연결되어 있지않으면 기본 팝업 액션을 수행
+  if not Assigned(OnDblClick) and Assigned(PopupMenu) then
+    ExecuteDefaultPopupAction else
+    inherited;
+end;
+
+procedure TwsListView.KeyUp(var Key: Word; Shift: TShiftState);
+begin
+  case Key of
+    VK_RETURN:
+      if not FCaptionEditing then
+      begin
+        if not ExecuteDefaultPopupAction then
+          inherited;
+      end else
+        inherited;
+    else inherited;
+  end;
+end;
+</code></pre>
+
+<p>이렇게 됩니다.</p>
+
+<p>TwsListView에 연결된 팝업메뉴에 기본 메뉴가 있으면, 이제 리스트 뷰에서 Enter를 누르거나 아이템을 더블클릭하면 해당 메뉴 이벤트가 자동으로 수행됩니다.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">whitekid</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2010-07-08T00:00:00+09:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://whitekid.github.io/archives/191" data-via="" data-counturl="http://whitekid.github.io/archives/191" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/archives/169" title="Previous Post: Why does the Delphi compiler create a file named 'c' during a build of a specific project? - Stack Overflow">&laquo; Why does the Delphi compiler create a file named &#8216;c&#8217; during a build of a specific project? - Stack Overflow</a>
+      
+      
+        <a class="basic-alignment right" href="/archives/215" title="Next Post: www/wordpress-themes ports">www/wordpress-themes ports &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/keystone-bootstrap/">Keystone Bootstrap</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/neutron-default-security-group/">Neutron Default Security Group</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1550">클라우드 네트워킹과 SDN 그리고 OpenStack</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Choe, Cheng-Dae -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

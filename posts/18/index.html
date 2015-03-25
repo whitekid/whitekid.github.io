@@ -1,0 +1,640 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Your wish is my command</title>
+  <meta name="author" content="Choe, Cheng-Dae">
+
+  
+  <meta name="description" content="그간 방치해뒀던 PostgreSQL용 dbExpress 드라이버를 오늘 좀 수정했습니다. Boolean 형태가 잘 안가져오던 문제
+BYTEA/TEXT 타입이 Next를 해도 다음 row를 가져오지 못하던 문제
+기타 기억안나는 자잘한 것&hellip; 자세한 내용은 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://whitekid.github.io/posts/18/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Your wish is my command" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Your wish is my command</a></h1>
+  
+    <h2>It&#8217;s a long journey</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="whitekid.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/545">Pgdbx4 0.4 Release: dbExpress Driver for PostgreSQL</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-11-01T00:00:00+09:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>1</span><span class='date-suffix'>st</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>그간 방치해뒀던 PostgreSQL용 dbExpress 드라이버를 오늘 좀 수정했습니다.</p>
+
+<ul>
+<li>Boolean 형태가 잘 안가져오던 문제</li>
+<li>BYTEA/TEXT 타입이 Next를 해도 다음 row를 가져오지 못하던 문제</li>
+<li>기타 기억안나는 자잘한 것&hellip;</li>
+</ul>
+
+
+<p>자세한 내용은 <a href="/pgdbx4">pgexp4 페이지</a>를 참고하세요.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/521">Flac 파일을 변환하기</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-10-28T00:00:00+09:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>28</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>음악 파일을 받았다. 그리고 iTunes에 넣으려는데, flac 파일은 iTunes에 안들어간다. 그래서 파일을 좀 봤더니 파일 하나에 30M다. 무손실 압축이라고 해서 엄청 파일이 큰가보다. 근데 음악에 전문가도 아닌 나에게 이런 무손실 압축이 필요없다. 게다가 iTunes에서 들어갈 수가 없잖아.</p>
+
+<p>그래서 찾아봤지.. flac 파일을 mp3파일로 변환해주는거&hellip; 많은 프로그램들이 있는데 유료가 많고 결국 선택한 것은 Swith Sound File Converter Plus .. 물론 무료이다.</p>
+
+<h2><a href="http://www.nch.com.au/switch/">Switch Souund File Converter Plus</a></h2>
+
+<p>아주 잘 된다. 설치할때 여러 광고 프로그램들만 설치하지 않고 사용하면 되겠다. 900개 flac 20G 변환하는데도 큰 무리가 없었다.</p>
+
+<p>아쉬운 점은 파일을 추가하고 변환을 하는데, 모두 변환이라는 명령이 없다. 모두 선택하고 변환을 거쳐야한다.</p>
+
+<p>자세한 내용은 <a href="http://theuranus.tistory.com/493">theuranus님의 글</a>을 참고바란다.</p>
+
+<h2><a href="http://www.koyotesoft.com/">Free Mp3 Wma Converter</a></h2>
+
+<p>괜찮고 잘 되는 것 같은데, 파일을 변환하면서 임시 디렉토리에 flac 파일을 wav 파일로 변환해서 임시로 저장하는데, 이것을 지우지 않는 문제가 있다. 결국 이렇게 해서 임시 디렉토리에 공간이 부족하면 에러를 내버린다. 많은 파일을 변경하는 경우는 이것에 주의해야한다.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/526">http://twitter.com/#!/search/twitter 에서 #!의 의미</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-10-28T00:00:00+09:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>28</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>대충 유추하고 있었지만 <a href="http://mkseo.pe.kr/blog/?p=2269">자세히 설명해 놓은 글</a>을 발견</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/500">FreeBSD Filesystem에도 Snapshot이 있었군.</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-10-28T00:00:00+09:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>28</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><a href="http://www.wave2.org/w2wiki/FreeBSDMySQLBackup">http://www.wave2.org/w2wiki/FreeBSDMySQLBackup</a> 보다가 새로 안 사실.. ^^;</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/518">Indy에 SSL 사용하기</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-10-25T00:00:00+09:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>25</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Indy 라이브러리는 자체적으로 SSL을 지원하지 않습니다. Third party로 SSL IO Handler를 지정해줘야하는데 OpenSSL을 이용하는 방법은 다음과 같습니다.</p>
+
+<ol>
+<li><a href="http://www.indyproject.org/Sockets/ssl.en.aspx" title="">Indy SSL</a>에서 미리 컴파일된 OpenSSL DLL을 다운로드 한다. 여기서는 <a href="http://indy.fulgan.com/SSL/">fulgan</a>의 DLL을 다운 받았다.</li>
+<li>파일중에서 필요한 2개의 파일(libeay32.dll, ssleay32.dll)을 실행파일이 위치할 곳에 푼다.</li>
+<li>TIdHttp로 이용하는 코드는 다음과 같다.</li>
+</ol>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>FHTTP := TIdHTTP.Create(nil);
+</span><span class='line'>FOpenSSLHandler := TIdSSLIOHandlerSocketOpenSSL.Create(FHTTP);
+</span><span class='line'>
+</span><span class='line'>FHTTP.IOHandler := FOpenSSLHandler;
+</span><span class='line'>FHTTP.Get('https://mail.google.com');</span></code></pre></td></tr></table></div></figure>
+
+
+<p><a href="http://www.woosum.net/wiki/Indy">http://www.woosum.net/wiki/Indy</a></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/512">Pylons가 문제인지 내가 문자인지..</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-10-21T00:00:00+09:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>21</span><span class='date-suffix'>st</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><a href="http://pylonshq.com/">Pylons</a>가 참 괜찮아 보입니다.</p>
+
+<p><a href="http://rubyonrails.org/">RubyOnRails</a>, <a href="http://www.djangoproject.com/">Django</a> 비슷한 건데요. 그냥 뭔가 잘 될것 같은 느낌이 들어서 Tutorial 따라서 해 봤는데.. 절망하게 만들네요. 무슨 에러가 계속..ㅡㅡ 이거참 Undefined symbol&hellip;.</p>
+
+<p>아놔.. 난 Tutorial 대로 그대로 했단말이다!!!</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/514">아이콘 검색 사이트&#8230;</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-10-21T00:00:00+09:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>21</span><span class='date-suffix'>st</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><ul>
+<li><a href="http://weloveicons.com/">http://weloveicons.com/</a></li>
+<li><a href="http://www.iconarchive.com/">http://www.iconarchive.com/</a></li>
+<li><a href="http://iconlet.com/">http://iconlet.com/</a></li>
+<li><a href="http://findicons.com/">http://findicons.com/</a></li>
+</ul>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/507">Shazam - 지금 들리는 음악이 궁금할 땐&#8230;</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-10-20T00:00:00+09:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>20</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><img class="left" src="http://a1.phobos.apple.com/us/r1000/026/Purple/90/8b/61/mzl.njenhstl.320x480-75.jpg">
+아주 낯익은 선율은 흐르는데&hellip; 그 노래의 제목이 기억이 안난다면? ㅋㅋ 미칩니다. 미쳐~</p>
+
+<p>그럴때 사용할 수 있는 iPhone용 앱이 있군요. <a href="http://itunes.apple.com/app/shazam/id284993459?mt=8">Shazam</a>!!!</p>
+
+<p>사용법은 그냥 간단히 실행하고 화면을 누르면 끝입니다. 알아서 마이크로 들리는 음악을 녹음하고 검색을 하는데 몇곡 해보니 잘 됩니다. 하지만 당연히 우리나라 음악은 하나도 못 찾습니다. ㅡㅡ;</p>
+
+<p>이제 무슨 음악이 궁금하다면 Shazam!!!</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/460">Apache on Jailed Environment</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-10-19T00:00:00+09:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>19</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>유지하고 있는 서비스가 있습니다. 근데 이놈이 문제가 생겼습니다. 포트의 특정한 버전을 요구합니다. 그러나 해당 그 포트는 계속 업그레이드 하고있지만, 그놈의 서비스는 업그레이드가 안되고 있습니다. 결국 현재 서비스되고 있는 현제 그상태로 계속 유지되어야 합니다.</p>
+
+<p>그런데 다른 서비스들은 그렇지 않습니다. 다른 서비스는 계속 업데이트 되고&hellip; 골치아픕니다.</p>
+
+<p>생각해보다가 그 문제가 되는 서비스를 jail 안으로 옮겨버리기로 했습니다. ^^; 녜!! 관리 안되는 놈 감옥에 가둘겁니다.</p>
+
+<h2>jail?</h2>
+
+<p>자세한 것은 <a href="http://www.freebsd.org/doc/handbook/jails.html">Handbook</a>을 참조하시기 바라며, 간단하게 chkroot의 향상된 버전이고 kernel 레벨에서 구현되는 process를 시스템과 완전히 분리하는 가상화 시스템 비슷한 것이다.</p>
+
+<p>또한 커널 레벨이기 때문에 베이스 시스템과 커널을 공유한다.</p>
+
+<h2>ezjail 설치</h2>
+
+<p>native로 제공된는 jail을 쓰려다가 sysutils/ezjail이 더욱더 좋겠습니다. 이것을 쓰기로 합니다.</p>
+
+<pre><code>$ portmaster sysutils/ezjail
+</code></pre>
+
+<p>ezjail은 basejail을 만들어야 합니다. 그래서 다음 명령으로 basejail을 만듭니다.</p>
+
+<pre><code>$ ezjail-admin update -b
+</code></pre>
+
+<ul>
+<li>-b: buildworld를 수행합니다. buildworld가 이미 되었다면 대신 -i 옵션을 줍니다.</li>
+<li>-p: 각각의 jail에 portstree를 제공합니다. 이것 또한 모든 jail에 공유합니다.</li>
+</ul>
+
+
+<p>-b 옵션을 주었다면 buildworld를 하기 때문에 꽤 걸립니다. ^^;</p>
+
+<h2>apache용 jail 만들기</h2>
+
+<p>jail 환경을 만드는 건 쉽습니다. 간단히 아래 명령으로</p>
+
+<pre><code>$ ezjail-admin create apache_service 192.168.0.10
+</code></pre>
+
+<ul>
+<li>apache_service: 호스트 이름</li>
+<li>192.168.0.10: 만들어질 호스트에 할당할 ip address</li>
+</ul>
+
+
+<p>대부분의 파일들을 basejail과 공유하기 때문에 금방 만들어 집니다. 아래 명령으로 해당 jail의 console로 들어가서 열심히  작업을 해봅니다.</p>
+
+<pre><code>$ ezjail-admin console apache_service
+</code></pre>
+
+<p>물론 많은 작업이 안될겁니다. 기본적으로 인터넷 연결이 안되어서 거의 아무것도 할 것이 없습니다. 음.. 아파치 컴파일 해야하는데 인터넷이 연결안되니 할게 없군요.</p>
+
+<h2>내부 인터페이스 설정</h2>
+
+<p>jail 환경하에서는 보안상 네트웍 카드 설정을 할 수 없습니다. 호스트 환경으로 나와서 아래처럼 내부 내트웍을 구성해줍니다.</p>
+
+<pre><code>[root@host /]# ifconfig lo1 create
+[root@host /]# ifconfig lo1 inet 192.168.0.10 netmask 255.255.255.0 alias
+</code></pre>
+
+<p>이 작업을 부팅시에도 하려면 /etc/rc.con에 다음과 같이 추가해줍니다.</p>
+
+<pre><code>cloned_interfaces="lo1"
+ifconfig_lo1="inet 192.168.0.10 netmask 255.255.255.0"
+</code></pre>
+
+<p>그리고 jail에서 internet에 접근할 수 있도록 NAT 를 pf를 통해서 설정해줍니다.</p>
+
+<p><strong>/etc/pf.conf</strong></p>
+
+<pre><code>nat on re0 from lo1:network to any -&gt; (re0)
+</code></pre>
+
+<p>이제 다시 ezjail console로 들어가서 인터넷이 되는지 확인해봅시다.</p>
+
+<pre><code>apache_service# nslookup daum.net 8.8.8.8
+</code></pre>
+
+<p>(8.8.8.8은 <a href="http://code.google.com/speed/public-dns/index.html">google에서 제공하는 dns 서버</a>인데, 주소가 기억하기 쉬어서 씁니다.) 별 문제 없으면 daum.net의 아피 주소들이 주루륵 나올겁니다. 녜.. 이제 jail에서 외부로 연결이 완료되었군요.</p>
+
+<h2>apache 띄우기</h2>
+
+<p>이제 jail 환경에서 www/apache22를 설치하고 서비스를 실행합니다(뭐 여기는 다 알거니깐 자세한건 생략)</p>
+
+<p>그런 다음 호스트에서 jail 환경의 apache를 접근해 보도록 합니다.</p>
+
+<pre><code>[root@host /]# lynx http://192.168.0.10/
+</code></pre>
+
+<p>친근하게 It works! 라고 뜨지요. 예 host에서는 jail로 잘 연결됩니다. 그럼 외부에서 이 jail 환경의 apache로 접근이 될까요? 물론 안됩니다. 녜 jail 환경은 분리된 네트웍이기 때문이지요.</p>
+
+<p>이걸 해결하는 방법은 2가지가 있습니다. 첫번째는 jail에 NAT 환경을 구성했으니 port forwarding을 설정하면 됩니다. 하지만 이 경우에 같은 포트에 여러 다른 jail을 구성하려면 안되지요. 이런 경우를 위해서 두번째 apache의 mod_proxy를 이용합니다.</p>
+
+<h2>port forwarding to jailed apache</h2>
+
+<p>port forwarding은 간단합니다. /etc/pf.conf에 다음처럼 추가하면 끝</p>
+
+<pre><code>rdr on re0 proto tcp from any to ${public_ip_address} port http -&gt; 192.168.0.10 port http
+</code></pre>
+
+<h2>mod_proxy</h2>
+
+<p>mod_proxy는 www/apache22에서 PROXY, PRXY_HTTP 옵션을 켜고 다시 컴파일하고, 각 모듈을 로드합니다.</p>
+
+<p><strong>httpd.conf</strong></p>
+
+<pre><code>LoadModule proxy_module         libexec/apache22/mod_proxy.so
+LoadModule proxy_http_module    libexec/apache22/mod_proxy_http.so
+</code></pre>
+
+<p>그리고 jailed apache로 서비스할 것을 설정해 줍니다.</p>
+
+<pre><code>&lt;VirtualHost *:80&gt;
+  ServerName jail.woosum.net
+
+  ProxyPass / http://192.168.0.10/
+&lt;/VirtualHost&gt;
+</code></pre>
+
+<p>이제 아파치를 재시작하고 <a href="http://jail.woosum.net/phpinfo.php">http://jail.woosum.net/phpinfo.php</a> 로 접속해보면 HTTP_HOST가 192.168.0.10으로 나오는 것을 확인할 수 있다.</p>
+
+<h2>결론</h2>
+
+<ul>
+<li>jails를 이용하면 각각의 서비스를 분리할 수 있다.</li>
+<li>sysutils/ezjail을 이용하면 jails를 편하게 관리할 수 있다.</li>
+<li>원칙적으로 각 jail 마다 하나의 public ip를 가지지만 NAT, port forwarding, mod_proxy 등을 이용하면 내부 내트웍 만으로도 구성할 수 있다.</li>
+</ul>
+
+
+<p>참고:</p>
+
+<ul>
+<li><a href="http://www.woosum.net/wiki/Ezjail">http://www.woosum.net/wiki/Ezjail</a></li>
+</ul>
+
+
+<p>ps. 대부분의 jail 관련 예들은 public ip address를 가진 jail을 기준으로 되어있었습니다. 그래서 한참을 해멨네요.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/504">이 블로그가 위치한 서버 사진</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-10-19T00:00:00+09:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>19</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>호스팅 서비스 받고있는 회사의 facebook 계정에 올라온 이 사이트를 운영하는 서버의 사진..</p>
+
+<p><img src="http://sphotos.ak.fbcdn.net/hphotos-ak-snc1/hs259.snc1/10635_161181513235_116161928235_2620562_6325578_n.jpg"></p>
+
+<p>난.. 어디에 있는거냐? 궁금..</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+      <a class="prev" href="/posts/19">&larr; Older</a>
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/posts/17">Newer &rarr;</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/keystone-bootstrap/">Keystone Bootstrap</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/neutron-default-security-group/">Neutron Default Security Group</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1550">클라우드 네트워킹과 SDN 그리고 OpenStack</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Choe, Cheng-Dae -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

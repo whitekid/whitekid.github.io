@@ -1,0 +1,297 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Postfix Mail Archiving - Your wish is my command</title>
+  <meta name="author" content="Choe, Cheng-Dae">
+
+  
+  <meta name="description" content="메일을 보낼때 검토받아서 보내는 부분은 보류되었습니다. 역시나 하나가 끝나면 하나가 다시 오는법&hellip; 검토는 하지않지만 주고받은 메일을 archiving하는 것으로 선회했습니다. moderation은 영 정말로 껄그럽지만, archiving은 그보다는 좀 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://whitekid.github.io/archives/354">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Your wish is my command" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Your wish is my command</a></h1>
+  
+    <h2>It&#8217;s a long journey</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="whitekid.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Postfix Mail Archiving</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-08-24T00:00:00+09:00'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>24</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><a href="/2010/08/postfix-outgoing-mail-moderation/">메일을 보낼때 검토</a>받아서 보내는 부분은 보류되었습니다. 역시나 하나가 끝나면 하나가 다시 오는법&hellip; 검토는 하지않지만 주고받은 메일을 archiving하는 것으로 선회했습니다. moderation은 영 정말로 껄그럽지만, archiving은 그보다는 좀 낫네요.</p>
+
+<p>가장 간단한 방법은 모든 <a href="http://www.postfix.org/postconf.5.html#always_bcc">always_bcc</a>으로 모든 메일 메시지를 특정 계정으로 보내면 됩니다. archiving용 계정 하나 만들고 모두 보내면 되니깐 편하겠지요.</p>
+
+<p>그런데 모든 메일입니다. archiving에 필요없는 메시지도 가는 것이지요. 뭐 메일 root@로 날아오는 관리일이나 각종 보안 검사메일, cron 명령 메일등등 이런것을 굿이 archiving할 필요가 없는데 말입니다. 그래서 가장 간단하지만 always_bcc를 사용하지 않기로하고, 그런 다음에 눈에 들어온게 content_filter입니다.</p>
+
+<p>content_filter를 만들어서 거기서 메일을 저장하면 되겠지요. 간단한 내용이지만 이거 메커니즘 이해하느라 상당히 고생했습니다. <a href="http://www.postfix.org/FILTER_README.html">postfix 샘플</a>대로 하니 안됩니다. 계속 loop를 돌아서 에러를&hellip; ㅡㅜ;</p>
+
+<h2>설정</h2>
+
+<p>archiver 필터를 archiver라고 하면</p>
+
+<p>main.cf:</p>
+
+<pre><code>content_filter = archiver
+</code></pre>
+
+<p>이제 모든 메시지는 archiver 서비스를 통해서 전달됩니다.</p>
+
+<p>master.cf:</p>
+
+<pre><code>archiver   unix -       n       n       -       10      pipe
+   flags=Rq user=whitekid null_sender=
+   argv=/usr/local/bin/python /home/whitekid/work/postfix-archiver/archiver.py 127.0.0.1 20026 ${sender} ${recipient}
+
+127.0.0.1:20026 inet n - - - - smtpd
+        -o content_filter=
+        -o receive_override_options=no_unknown_recipient_checks,no_header_body_checks,no_milters
+        -o smtpd_helo_restrictions=
+        -o smtpd_client_restrictions=
+        -o smtpd_sender_restrictions=
+        -o smtpd_recipient_restrictions=permit_mynetworks,reject
+        -o mynetworks=127.0.0.0/8
+        -o smtpd_authorized_xforward_hosts=127.0.0.0/8
+</code></pre>
+
+<ul>
+<li>archiver 서비스에서 필터를 실행합니다.</li>
+<li>그리고 파라미터들은 필터를 처리하고 난 다음의 action들을 지정하는데 archiver 필터를 처리한 후 127.0.0.1:20026 서비스를 호출하기 위해 파라미터를 전달해줍니다. 이 파라미터는 archiver.py에서 받아서 다음 서비스에 전달합니다. 아래 서비스가 smtpd이므로 smtp로 메일을 보내는 것 처럼 합니다.</li>
+</ul>
+
+
+<p>content_filter -(pipe)-> archiver -(smtp)-> 127.0.0.1:20026 의 순서로 메시지가 전달됩니다.</p>
+
+<h2>archiver.py</h2>
+
+<p>이제 archiver.py의 대략적인 소스를 보면&hellip;</p>
+
+<pre><code>import sys
+import smtplib
+import email
+
+EX_OK   = 0
+EX_TEMPFAIL = 75
+EX_UNAVAILABLE = 69
+
+def main():
+    host, port, sender, recipient  = sys.argv[1], int(sys.argv[2]), sys.argv[3], sys.argv[4:]
+    msg = email.message_from_string(sys.stdin.read())
+    msg['X-Archive-Status'] = 'Archived'
+
+    server = smtplib.SMTP(host, port)
+    for r in recipient:
+        server.sendmail(sender, r, msg.as_string())
+    server.quit()
+
+if __name__ == '__main__':
+    try:
+        main()
+        sys.exit(EX_OK)
+    except Exception, e:
+        print e
+        sys.exit(EX_TEMPFAIL)
+</code></pre>
+
+<p>내용은 아주 간단합니다. stdin에서 받은 내용에서 약간의 메시지 조작을 하고, 그 메시지를 다시 파라미터로 받은 smtp로 연결해서 넘김니다. 자 이렇게고 maillog를 보면</p>
+
+<pre><code>Aug 24 14:23:39 freebsd postfix/qmgr[22880]: 537F51705A: from=&lt;root@freebsd.woosum.net&gt;, size=1013, nrcpt=1 (queue active)
+Aug 24 14:23:39 freebsd postfix/pipe[22890]: 3D3E217030: to=&lt;whitekid@freebsd.woosum.net&gt;, relay=archiver, delay=0.1, delays=0.01/0.01/0/0.09, dsn=2.0.0, status=sent (delivered via archiver service)
+Aug 24 14:23:39 freebsd postfix/qmgr[22880]: 3D3E217030: removed
+Aug 24 14:23:39 freebsd postfix/local[22894]: 537F51705A: to=&lt;whitekid@freebsd.woosum.net&gt;, relay=local, delay=0.01, delays=0.01/0/0/0, dsn=2.0.0, status=sent (delivered to mailbox)
+Aug 24 14:23:39 freebsd postfix/qmgr[22880]: 537F51705A: removed
+</code></pre>
+
+<p>음 archiver 서비스를 이용해서 mailbox가지 간게 보이나요? 보이면 OK!</p>
+
+<h2>amavisd-new와 공존</h2>
+
+<p>amavisd도 content_filter를 사용합니다. 그런데 이게 2개가 적용되지 않습니다. content_filter는 1개인것이고, 이게 chain으로 역여서 돌아가는 것이지요. 이렇게 chain에 넣어야하는데, 그건 간단하게&hellip;</p>
+
+<pre><code>amavis unix - - - - 2 smtp
+   -o smtp_data_done_timeout=1200
+   -o smtp_send_xforward_command=yes
+
+127.0.0.1:10025 inet n - - - - smtpd
+-o content_filter=archiver
+</code></pre>
+
+<p>처럼 content_filter에 archiver를 넣어주면 됩니다.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">whitekid</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2010-08-24T00:00:00+09:00'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>24</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://whitekid.github.io/archives/354" data-via="" data-counturl="http://whitekid.github.io/archives/354" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/archives/343" title="Previous Post: postfix outgoing mail moderation">&laquo; postfix outgoing mail moderation</a>
+      
+      
+        <a class="basic-alignment right" href="/archives/367" title="Next Post: python email header 인코딩 오류 수정l">python email header 인코딩 오류 수정l &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/keystone-bootstrap/">Keystone Bootstrap</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/neutron-default-security-group/">Neutron Default Security Group</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1550">클라우드 네트워킹과 SDN 그리고 OpenStack</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Choe, Cheng-Dae -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

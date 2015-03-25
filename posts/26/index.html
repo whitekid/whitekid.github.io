@@ -1,0 +1,903 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Your wish is my command</title>
+  <meta name="author" content="Choe, Cheng-Dae">
+
+  
+  <meta name="description" content="제목 드래도 drupal6-simply_modern은 php  ctype 모듈이 필요함
+">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://whitekid.github.io/posts/26/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Your wish is my command" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Your wish is my command</a></h1>
+  
+    <h2>It&#8217;s a long journey</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="whitekid.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/59">Drupal6-simply_modern은 Ctype이 필요하다.</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-03-11T00:00:00+09:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>제목 드래도 drupal6-simply_modern은 php  ctype 모듈이 필요함</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/45">Www/drupal6-zeropoint Update to 6.x-2.3</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-03-10T00:00:00+09:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>10</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><pre><code>diff -ruN drupal6-zeropoint.orig/Makefile drupal6-zeropoint/Makefile
+--- drupal6-zeropoint.orig/Makefile 2010-03-10 07:25:31.000000000 +0900
++++ drupal6-zeropoint/Makefile 2010-03-10 02:31:11.000000000 +0900
+@@ -6,7 +6,7 @@
+#
+
+PORTNAME= zeropoint
+-DISTVERSION= 6.x-1.10
++DISTVERSION= 6.x-2.3
+CATEGORIES= www
+
+MAINTAINER= &lt;whitekid@gmail.com&gt;
+@@ -17,7 +17,6 @@
+MODULE_DIRS= _custom/headerimg _custom css images/all images/ink \
+images/icons/blocks images/icons images/ivy images/lime \
+images/nature images/sangue images/sky images js
+-
+MODULE_FILES= _custom/custom-style.css _custom/headerimg/credits.txt \
+_custom/headerimg/ephemeral_a.jpg \
+_custom/headerimg/ephemeral_b.jpg \
+@@ -25,19 +24,21 @@
+_custom/headerimg/ephemeral_d.jpg \
+_custom/headerimg/ephemeral_e.jpg _custom/headerimg/rotate.php \
+block.tpl.php box.tpl.php comment-wrapper-forum.tpl.php \
+- comment-wrapper.tpl.php comment.tpl.php css/ie6.css css/ie7.css \
+- css/iepngfix.htc css/ink.css css/ivy.css css/lime.css \
+- css/nature.css css/print.css css/round.css css/sangue.css \
+- css/sky.css css/style-zero-rtl.css css/style-zero.css \
+- favicon.ico images/all/_brand.png images/all/_sidebarimg.png \
+- images/all/fill_left.png images/all/fill_right.png \
+- images/all/forum-container.jpg images/all/forum-link.png \
+- images/all/icon-comment.png images/all/ltr_forum-container.jpg \
++ comment-wrapper.tpl.php comment.tpl.php css/ie6.css \
++ css/ie7.css css/iepngfix.htc css/ink.css css/ivy.css \
++ css/lime.css css/nature.css css/print.css css/round.css \
++ css/sangue.css css/sky.css css/style-zero-rtl.css \
++ css/style-zero.css favicon.ico images/all/_brand.png \
++ images/all/_sidebarimg.png images/all/fill_left.png \
++ images/all/fill_right.png images/all/forum-container.jpg \
++ images/all/forum-link.png images/all/icon-comment.png \
++ images/all/ltr_forum-container.jpg \
+images/all/ltr_forum-link.png images/all/ltr_icon-comment.png \
+- images/all/ltr_menu-collapsed.png images/all/menu-collapsed.png \
+- images/all/menu-expanded.png images/all/menu-leaf.png \
+- images/all/menu-up.png images/all/spacer.gif images/arr.png \
+- images/fill_block.png images/fill_block2.png images/fill_top.png \
++ images/all/ltr_menu-collapsed.png \
++ images/all/menu-collapsed.png images/all/menu-expanded.png \
++ images/all/menu-leaf.png images/all/menu-up.png \
++ images/all/spacer.gif images/arr.png images/fill_block.png \
++ images/fill_block2.png images/fill_top.png \
+images/fill_top_left.png images/fill_top_right.png \
+images/icons/attach.png images/icons/blocks/icon_01_32.png \
+images/icons/blocks/icon_01_48.png \
+@@ -137,12 +138,13 @@
+images/sky/fill_top_right.png js/preloadCssImages.jQuery_v5.js \
+js/suckerfish.js logo.png maintenance-page.tpl.php \
+node-product.tpl.php node-webform.tpl.php node.tpl.php \
+- page.tpl.php screenshot-drupal.org.jpg screenshot-drupal.org.png \
+- screenshot.png search-result.tpl.php search-theme-form.tpl.php \
+- template.php theme-settings.php views-view.tpl.php \
+- zeropoint.info
++ page.tpl.php screenshot-drupal.org.jpg \
++ screenshot-drupal.org.png screenshot.png search-result.tpl.php \
++ search-theme-form.tpl.php template.php theme-settings.php \
++ views-view.tpl.php zeropoint.info
+DOC_FILES= CHANGELOG.txt LICENSE.txt README.txt
+
+.include &lt;bsd.port.pre.mk&gt;
+.include "${.CURDIR}/../../www/drupal5/bsd.drupal.mk"
+.include &lt;bsd.port.post.mk&gt;
++
+diff -ruN drupal6-zeropoint.orig/distinfo drupal6-zeropoint/distinfo
+--- drupal6-zeropoint.orig/distinfo 2010-03-10 07:25:31.000000000 +0900
++++ drupal6-zeropoint/distinfo 2010-03-10 02:26:33.000000000 +0900
+@@ -1,3 +1,3 @@
+-MD5 (drupal/zeropoint-6.x-1.10.tar.gz) = dbaa5fc01b0bc79bb5459b3dc3fe1c79
+-SHA256 (drupal/zeropoint-6.x-1.10.tar.gz) = c6c5f159f0d3519dc9fa254cc9ddbaea399731de7c06ada0aa8cbeb75cca539c
+-SIZE (drupal/zeropoint-6.x-1.10.tar.gz) = 384303
++MD5 (drupal/zeropoint-6.x-2.3.tar.gz) = 510bca2664e7cb13735af87b64a4f2d0
++SHA256 (drupal/zeropoint-6.x-2.3.tar.gz) = dc6eec4c57067ec98ec2b5b09187bf65383250d4fcb3cbfb79a6fd8e7dfd5adc
++SIZE (drupal/zeropoint-6.x-2.3.tar.gz) = 384299
+</code></pre>
+
+<p><a href="http://www.freebsd.org/cgi/query-pr.cgi?pr=144610">http://www.freebsd.org/cgi/query-pr.cgi?pr=144610</a></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/43">Www/drupal6-r4032login</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-03-09T00:00:00+09:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>9</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><pre><code># This is a shell archive. Save it in a file, remove anything before
+# this line, and then unpack it by entering "sh file". Note, it may
+# create directories; files and directories will be owned by you and
+# have default permissions.
+#
+# This archive contains:
+#
+# www/drupal6-r4032login
+# www/drupal6-r4032login/Makefile
+# www/drupal6-r4032login/distinfo
+# www/drupal6-r4032login/pkg-descr
+#
+echo c - www/drupal6-r4032login
+mkdir -p www/drupal6-r4032login &gt; /dev/null 2&gt;&amp;1
+echo x - www/drupal6-r4032login/Makefile
+sed 's/^X//' &gt;www/drupal6-r4032login/Makefile &lt;&lt; '5cde0bc78d03feafc52b54f67bed9395&amp;'
+X# New ports collection makefile for: drupal6-r4032login
+X# Date created: 9 Mar 2010
+X# Whom: &lt;whitekid@gmail.com&gt;
+X#
+X# $FreeBSD$
+X#
+X
+XPORTNAME= r4032login
+XDISTVERSION= 6.x-1.2
+XCATEGORIES= www
+X
+XMAINTAINER= whitekid2gmail.com
+XCOMMENT= r4032login drupal module
+X
+XDRUPAL6_MODULE= yes
+XMODULE_FILES= r4032login.module r4032login.info r4032login.install
+XMODULE_DIRS= translations
+XDOC_FILES= README.TXT LICENSE.txt
+X
+X.include &lt;bsd.port.pre.mk&gt;
+X.include "${.CURDIR}/../../www/drupal5/bsd.drupal.mk"
+X.include &lt;bsd.port.post.mk&gt;
+5cde0bc78d03feafc52b54f67bed9395
+echo x - www/drupal6-r4032login/distinfo
+sed 's/^X//' &gt;www/drupal6-r4032login/distinfo &lt;&lt; 'a6f822bd1235d42329ab9498b569e634&amp;'
+XMD5 (drupal/r4032login-6.x-1.2.tar.gz) = 106cbd4e6e87d344c10f510856e70836
+XSHA256 (drupal/r4032login-6.x-1.2.tar.gz) = 62c20d6d7a3126ef22e5feed5872a920f44ecfcab15d6f0883d04a6fad9e6276
+XSIZE (drupal/r4032login-6.x-1.2.tar.gz) = 8868
+a6f822bd1235d42329ab9498b569e634
+echo x - www/drupal6-r4032login/pkg-descr
+sed 's/^X//' &gt;www/drupal6-r4032login/pkg-descr &lt;&lt; 'f8bb830a87e7c75f347ab592e8dd9528&amp;'
+XRedirect the HTTP 403 error page to the Drupal /user/login page with an
+Xoptional message.
+X
+XWWW: http://drupal.org/project/r4032login
+f8bb830a87e7c75f347ab592e8dd9528
+exit
+</code></pre>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/40">Drupal6-admin_menu</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-03-08T00:00:00+09:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>see <a href="http://www.woosum.net/ports/www/drupal6-admin_menu">http://www.woosum.net/ports/www/drupal6-admin_menu</a></p>
+
+<pre><code># This is a shell archive.  Save it in a file, remove anything before
+# this line, and then unpack it by entering "sh file".  Note, it may
+# create directories; files and directories will be owned by you and
+# have default permissions.
+#
+# This archive contains:
+#
+#       www/drupal6-admin_menu
+#       www/drupal6-admin_menu/Makefile
+#       www/drupal6-admin_menu/distinfo
+#       www/drupal6-admin_menu/pkg-descr
+#
+echo c - www/drupal6-admin_menu
+mkdir -p www/drupal6-admin_menu &gt; /dev/null 2&gt;&amp;1
+echo x - www/drupal6-admin_menu/Makefile
+sed 's/^X//' &gt;www/drupal6-admin_menu/Makefile &lt;&lt; '6f47df969b7ef7c1e3f076d6bb57f21d'
+X# New ports collection makefile for:   drupal6-admin_menu
+X# Date created:                                23 Feb 2010
+X# Whom:                                        whitekid@gmail.com
+X#
+X# $FreeBSD$
+X#
+X
+XPORTNAME=      admin_menu
+XDISTVERSION=   6.x-1.5
+XCATEGORIES=    www
+X
+XMAINTAINER=    ports@FreeBSD.org
+XCOMMENT=       Theme-independent administration interface for drupal.
+X
+XDRUPAL6_MODULE=        yes
+XMODULE_DIRS=   images tests translations
+XMODULE_FILES=  admin_menu-rtl.css admin_menu.css admin_menu.inc \
+X               admin_menu.info admin_menu.install admin_menu.js \
+X               admin_menu.module images/arrow-rtl.png images/arrow.png \
+X               images/bkg.png images/bkg_tab.png images/icon_users.png \
+X               tests/admin_menu.test translations/admin_menu.pot \
+X               translations/da.po translations/de.po translations/es.po \
+X               translations/fr.po translations/hu.po translations/ja.po \
+X               translations/nl.po translations/pt-br.po translations/ru.po \
+X               translations/sv.po
+XDOC_FILES=     CHANGELOG.txt README.txt LICENSE.txt
+X
+X.include &lt;bsd.port.pre.mk&gt;
+X.include "${.CURDIR}/../../www/drupal5/bsd.drupal.mk"
+X.include &lt;bsd.port.post.mk&gt;
+6f47df969b7ef7c1e3f076d6bb57f21d
+echo x - www/drupal6-admin_menu/distinfo
+sed 's/^X//' &gt;www/drupal6-admin_menu/distinfo &lt;&lt; '5a46b96780d00134834a4fb436cad805'
+XMD5 (drupal/admin_menu-6.x-1.5.tar.gz) = efa340632c9fd0b9a964671bed27a722
+XSHA256 (drupal/admin_menu-6.x-1.5.tar.gz) = 41bef68b0599f781dfe4887055979a677e09b5be3c2a020c3534b95292da3b26
+XSIZE (drupal/admin_menu-6.x-1.5.tar.gz) = 45284
+5a46b96780d00134834a4fb436cad805
+echo x - www/drupal6-admin_menu/pkg-descr
+sed 's/^X//' &gt;www/drupal6-admin_menu/pkg-descr &lt;&lt; '4d3b06cf926ae9928613690e8cb7eb92'
+XAdministration menu module provides a theme-independent administration interface
+X(aka. "navigation", "back-end") for Drupal. It's a helper for novice Drupal
+Xusers coming from other CMS, a real time-saver for Drupal site administrators,
+Xand definitely a must for Drupal developers and site builders.
+X
+XWWW: http://drupal.org/project/admin_menu
+4d3b06cf926ae9928613690e8cb7eb92
+exit
+</code></pre>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/31">Drupal Themesettingsapi Module</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-03-08T00:00:00+09:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><pre><code># This is a shell archive. Save it in a file, remove anything before
+# this line, and then unpack it by entering "sh file". Note, it may
+# create directories; files and directories will be owned by you and
+# have default permissions.
+#
+# This archive contains:
+#
+# www/drupal6-themesettingsapi
+# www/drupal6-themesettingsapi/Makefile
+# www/drupal6-themesettingsapi/distinfo
+# www/drupal6-themesettingsapi/pkg-descr
+#
+echo c - www/drupal6-themesettingsapi
+mkdir -p www/drupal6-themesettingsapi &gt; /dev/null 2&gt;&amp;1
+echo x - www/drupal6-themesettingsapi/Makefile
+sed 's/^X//' &gt;www/drupal6-themesettingsapi/Makefile &lt;&lt; 'bcb04d505305fd2621e9906bb6352875&amp;'
+X# New ports collection makefile for: drupal6-themesettingsapi
+X# Date created: 3 Mar 2010
+X# Whom: &lt;whitekid@gmail.com&gt;
+X#
+X# $FreeBSD$
+X#
+X
+XPORTNAME= themesettingsapi
+XDISTVERSION= 6.x-1.4
+XCATEGORIES= www
+X
+XMAINTAINER= &lt;ports@FreeBSD.org&gt;
+XCOMMENT= Add custom settings to you theme for drupal.
+X
+XDRUPAL6_MODULE= yes
+XMODULE_DIRS= translations
+XMODULE_FILES= themesettingsapi.admin.inc themesettingsapi.info \
+X themesettingsapi.module translations/de.po translations/ja.po \
+X translations/themesettingsapi.pot
+XDOC_FILES= CHANGELOG.txt README.txt LICENSE.txt
+X
+X.include &lt;bsd.port.pre.mk&gt;
+X.include "${.CURDIR}/../../www/drupal5/bsd.drupal.mk"
+X.include &lt;bsd.port.post.mk&gt;
+bcb04d505305fd2621e9906bb6352875
+echo x - www/drupal6-themesettingsapi/distinfo
+sed 's/^X//' &gt;www/drupal6-themesettingsapi/distinfo &lt;&lt; '935c639b4a6c51408e999d94bc5cd788&amp;'
+XMD5 (drupal/themesettingsapi-6.x-1.4.tar.gz) = a2b5b5f156ea5b571be9f87638b9f471
+XSHA256 (drupal/themesettingsapi-6.x-1.4.tar.gz) = 62be4dcc9ddae6930c3e985b0b0ffbb62584c9b6652a03202ae62053218315fa
+XSIZE (drupal/themesettingsapi-6.x-1.4.tar.gz) = 9855
+935c639b4a6c51408e999d94bc5cd788
+echo x - www/drupal6-themesettingsapi/pkg-descr
+sed 's/^X//' &gt;www/drupal6-themesettingsapi/pkg-descr &lt;&lt; 'afe1ea8baa59a0619c70f98199a10a5f'
+XPathauto is a Drupal module which automatically generates path aliases for
+Xvarious kinds of content (nodes, categories, users) without requiring the
+Xuser to manually specify the path alias.
+X
+XWWW: http://drupal.org/project/pathauto
+afe1ea8baa59a0619c70f98199a10a5f
+exit
+[/code]
+</code></pre>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/29">Drupal Simply_moderm Theme</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-03-08T00:00:00+09:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><a href="/2010/03/drupal-themesettingsapi-module/">themesettingsapi-module</a> 필요함</p>
+
+<pre><code># This is a shell archive. Save it in a file, remove anything before
+# this line, and then unpack it by entering "sh file". Note, it may
+# create directories; files and directories will be owned by you and
+# have default permissions.
+#
+# This archive contains:
+#
+# www/drupal6-simply_modern
+# www/drupal6-simply_modern/Makefile
+# www/drupal6-simply_modern/distinfo
+# www/drupal6-simply_modern/pkg-descr
+#
+echo c - www/drupal6-simply_modern
+mkdir -p www/drupal6-simply_modern &gt; /dev/null 2&gt;&amp;1
+echo x - www/drupal6-simply_modern/Makefile
+sed 's/^X//' &gt;www/drupal6-simply_modern/Makefile &lt;&lt; 'b8cdc2bb06814f1bbeab576f974258a1&amp;'
+X# New ports collection makefile for: drupal6-simply_modern
+X# Date created: 3 Mar 2010
+X# Whom: &lt;whitekid@gmail.com&gt;
+X#
+X# $FreeBSD$
+X#
+X
+XPORTNAME= simply_modern
+XDISTVERSION= 6.x-3.1
+XCATEGORIES= www
+X
+XMAINTAINER= &lt;ports@FreeBSD.org&gt;
+XCOMMENT= The simply modern drupal theme
+X
+XRUN_DEPENDS= drupal6-themesettingsapi&gt;=0:${PORTSDIR}/www/drupal6-themesettingsapi
+X
+XDRUPAL6_THEME= yes
+XMODULE_DIRS= css/images/tabs css/images css js images/black images/blue \
+X images/copper images/green images/red images translations
+X
+XMODULE_FILES= block.tpl.php css/default.css css/ie6.css css/ie7.css \
+X css/images/bg_pattern_brown.jpg css/images/header.gif \
+X css/images/screenshot.png css/images/tabs/tab-bar.png \
+X css/images/tabs/tab-left-ie6.png css/images/tabs/tab-left.png \
+X css/images/tabs/tab-right-ie6.png \
+X css/images/tabs/tab-right.png \
+X css/images/tabs/tab-secondary-bg.png \
+X css/images/tabs/tab-secondary.png \
+X css/images/top_gradient_dark.jpg \
+X css/images/top_gradient_light.jpg css/layout.css css/print.css \
+X css/style.css css/tabs.css favicon.ico \
+X images/bg_pattern_brown.jpg images/black/BottomBG.png \
+X images/black/MastBG.png images/black/MenuDiv.png \
+X images/black/RoopleThemeLogo.png images/black/header.gif \
+X images/black/logo.png images/blue/BottomBG.png \
+X images/blue/MastBG.png images/blue/MenuDiv.png \
+X images/blue/RoopleThemeLogo.png images/blue/header.gif \
+X images/blue/logo.png images/copper/BottomBG.png \
+X images/copper/MastBG.png images/copper/MenuDiv.png \
+X images/copper/RoopleThemeLogo.png images/copper/header.gif \
+X images/copper/logo.png images/favicon.ico \
+X images/green/BottomBG.png images/green/MastBG.png \
+X images/green/MenuDiv.png images/green/RoopleThemeLogo.png \
+X images/green/header.gif images/green/logo.png \
+X images/menu_arrow.png images/page_bg_left.png \
+X images/page_bg_right.png images/red/BottomBG.png \
+X images/red/MastBG.png images/red/MenuDiv.png \
+X images/red/RoopleThemeLogo.png images/red/header.gif \
+X images/red/logo.png images/top_gradient_dark.jpg \
+X images/top_gradient_light.jpg js/jquery.pngFix.js \
+X js/pickstyle.js js/suckerfish.js logo.png node.tpl.php \
+X page.tpl.php simply_modern.info template.php \
+X theme-settings.php translations/hu.po
+XDOC_FILES= LICENSE.txt
+X
+X.include &lt;bsd.port.pre.mk&gt;
+X.include "${.CURDIR}/../../www/drupal5/bsd.drupal.mk"
+X.include &lt;bsd.port.post.mk&gt;
+b8cdc2bb06814f1bbeab576f974258a1
+echo x - www/drupal6-simply_modern/distinfo
+sed 's/^X//' &gt;www/drupal6-simply_modern/distinfo &lt;&lt; 'c3558f3948d3ec2f8921c637916fff39&amp;'
+XMD5 (drupal/simply_modern-6.x-3.1.tar.gz) = 63ec13e369262adbfe20460838c639f6
+XSHA256 (drupal/simply_modern-6.x-3.1.tar.gz) = 193eff35afe3cee7c2270bd7900c04bf4e4a05e2d8e3b579de3ff1dca525ea1a
+XSIZE (drupal/simply_modern-6.x-3.1.tar.gz) = 66612
+c3558f3948d3ec2f8921c637916fff39
+echo x - www/drupal6-simply_modern/pkg-descr
+sed 's/^X//' &gt;www/drupal6-simply_modern/pkg-descr &lt;&lt; '12a37c37db8f35cffa85aa6be8a15627&amp;'
+XSimply Modern is a table-less, CSS driven design sporting an advanced feature
+Xset.
+X
+XWWW: http://drupal.org/project/simply_modern
+12a37c37db8f35cffa85aa6be8a15627
+exit
+</code></pre>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/26">Drupal Apache Vhost Setup</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-03-08T00:00:00+09:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><pre><code>&lt;VirtualHost *:80&gt;
+    DocumentRoot "/usr/local/www/drupal6"
+    ServerName www.woosum.net
+    ServerAlias woosum.net
+    &lt;Directory "/usr/local/www/drupal6"&gt;
+        Options Indexes FollowSymlinks MultiViews
+        AllowOverride None
+        Order allow,deny
+        Allow from all
+
+        RewriteEngine on
+        RewriteBase /
+        RewriteCond %{REQUEST_FILENAME} !-f
+        RewriteCond %{REQUEST_FILENAME} !-d
+        RewriteRule ^(.*)$ index.php?q=$1 [L,QSA]
+    &lt;/Directory&gt;
+&lt;/VirtualHost&gt;
+</code></pre>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/35">Drupal 몇가지 링크들..</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-03-08T00:00:00+09:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><ul>
+<li>How to connect to multiple databases within Drupal: <a href="http://drupal.org/node/18429">http://drupal.org/node/18429</a></li>
+<li>How to create pagers: <a href="http://drupal.org/node/492552">http://drupal.org/node/492552</a></li>
+</ul>
+
+
+<p>흠.. Drupal 사이트 문서는 나중에 찾기는 힘들다..</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/9">Some Wordpress Plugins to Setup</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-03-03T00:00:00+09:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>3</span><span class='date-suffix'>rd</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><ul>
+<li><a href="http://wordpress.org/extend/plugins/syntaxhighlighter/">http://wordpress.org/extend/plugins/syntaxhighlighter/</a></li>
+<li><a href="http://wordpress.org/extend/plugins/sem-autolink-uri/">http://wordpress.org/extend/plugins/sem-autolink-uri/</a></li>
+</ul>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/14">Some Drupal Modules to Update</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-03-03T00:00:00+09:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>3</span><span class='date-suffix'>rd</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>www/drupal6-print</h2>
+
+<p>PDF 생성을 위해서 <a href="http://tcpdf.sourceforge.net/">http://tcpdf.sourceforge.net/</a> 가 필요하다.
+근데 이게 한글이 될까? 폰트도 없는데&hellip; 음 우선 해보고..</p>
+
+<pre><code>diff -ruN drupal6-print.orig/Makefile drupal6-print/Makefile
+--- drupal6-print.orig/Makefile 2010-02-05 20:44:48.000000000 +0900
++++ drupal6-print/Makefile  2010-03-03 00:36:38.000000000 +0900
+@@ -5,8 +5,7 @@
+ # $FreeBSD: ports/www/drupal6-print/Makefile,v 1.2 2010/02/05 11:44:48 dinoex Exp $
+
+ PORTNAME=  print
+-DISTVERSION= 6.x-1.0-rc5
+-PORTREVISION=  1
++DISTVERSION= 6.x-1.10
+ CATEGORIES=  www
+ MASTER_SITES=  http://ftp.drupal.org/files/projects/
+
+@@ -14,14 +13,17 @@
+ COMMENT= Drupal 6 module that add printer-friendly pages
+
+ DRUPAL6_MODULE=  yes
+-MODULE_DIRS= icons translations
++MODULE_DIRS= css icons print_mail print_pdf translations
+ MODULE_FILES=  icons/mail_icon.gif icons/pdf_icon.gif icons/print_icon.gif \
+-   print-rtl.css print.admin.inc print.css print.info \
+-   print.install print.module print.pages.inc print.pdf.inc \
+-   print.tpl.php print_mail.admin.inc print_mail.inc \
+-   print_mail.info print_mail.install print_mail.module \
+-   print_pdf.admin.inc print_pdf.info print_pdf.install \
+-   print_pdf.module \
++   css/print-rtl.css css/print.css css/printlinks-rtl.css css/printlinks.css \
++   print.admin.inc print.info print.install print.module \
++   print.pages.inc print.tpl.php README.txt \
++   print_mail/print_mail.admin.inc print_mail/print_mail.inc \
++   print_mail/print_mail.info print_mail/print_mail.install \
++   print_mail/print_mail.module print_pdf/print_pdf.admin.inc \
++   print_pdf/print_pdf.class.inc print_pdf/print_pdf.class_php4.inc \
++   print_pdf/print_pdf.info print_pdf/print_pdf.install \
++   print_pdf/print_pdf.module print_pdf/print_pdf.pages.inc \
+    translations/print.pot translations/ca.po \
+    translations/cs.po translations/da.po translations/de.po \
+    translations/es.po translations/fi.po translations/fr.po \
+@@ -30,7 +32,7 @@
+    translations/pl.po translations/pt-br.po \
+    translations/pt-pt.po translations/ro.po \
+    translations/ru.po translations/sk.po translations/sv.po \
+-   translations/tr.po translations/uk.po
++   translations/tr.po translations/uk.po translations/vi.po
+ DOC_FILES= CHANGELOG.txt CREDITS.txt INSTALL.txt \
+    LICENSE.txt MAINTAINERS.txt README.txt
+
+diff -ruN drupal6-print.orig/distinfo drupal6-print/distinfo
+--- drupal6-print.orig/distinfo 2008-08-02 22:58:10.000000000 +0900
++++ drupal6-print/distinfo  2010-03-03 00:11:12.000000000 +0900
+@@ -1,3 +1,3 @@
+-MD5 (drupal/print-6.x-1.0-rc5.tar.gz) = cbf6e9cfbed672cc58fca3d9821714d1
+-SHA256 (drupal/print-6.x-1.0-rc5.tar.gz) = e2ed21a3ed96f4f41114fcab94a334cd261c1dfbe07c24faf0df15bd64fbb3b1
+-SIZE (drupal/print-6.x-1.0-rc5.tar.gz) = 71435
++MD5 (drupal/print-6.x-1.10.tar.gz) = 93ef2b851df2cb47082fd605a309cdeb
++SHA256 (drupal/print-6.x-1.10.tar.gz) = 74f0a54ad85519d919226c44212a49f56724dbde696ceea0d54f0539c3ffd6b8
++SIZE (drupal/print-6.x-1.10.tar.gz) = 163040
+</code></pre>
+
+<h2>www/drupal6-pathauto</h2>
+
+<pre><code>diff -ruN drupal6-pathauto.orig/Makefile drupal6-pathauto/Makefile
+--- drupal6-pathauto.orig/Makefile  2010-02-05 20:44:48.000000000 +0900
++++ drupal6-pathauto/Makefile 2010-03-03 01:00:35.000000000 +0900
+@@ -6,8 +6,7 @@
+ #
+
+ PORTNAME=  pathauto
+-DISTVERSION= 6.x-1.2
+-PORTREVISION=  1
++DISTVERSION= 6.x-1.3
+ CATEGORIES=  www
+
+ MAINTAINER=  nick@foobar.org
+diff -ruN drupal6-pathauto.orig/distinfo drupal6-pathauto/distinfo
+--- drupal6-pathauto.orig/distinfo  2009-12-26 04:51:28.000000000 +0900
++++ drupal6-pathauto/distinfo 2010-03-03 01:00:38.000000000 +0900
+@@ -1,3 +1,3 @@
+-MD5 (drupal/pathauto-6.x-1.2.tar.gz) = e27d8578aa485a68e9cc48d150d24dcc
+-SHA256 (drupal/pathauto-6.x-1.2.tar.gz) = a475f57b39a017c990d696c7b9e1ef9384904e0b7ae3e85497c85130f9ebc6cb
+-SIZE (drupal/pathauto-6.x-1.2.tar.gz) = 127507
++MD5 (drupal/pathauto-6.x-1.3.tar.gz) = 9d612b248ba1de5887ee52b69cbd1ad3
++SHA256 (drupal/pathauto-6.x-1.3.tar.gz) = e0adbc6629649b171b6f2c79a7d27b7f6317eed8db4773a3999d86dbcdb50732
++SIZE (drupal/pathauto-6.x-1.3.tar.gz) = 138251
+</code></pre>
+</div>
+  
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+      <a class="prev" href="/posts/27">&larr; Older</a>
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/posts/25">Newer &rarr;</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/keystone-bootstrap/">Keystone Bootstrap</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/neutron-default-security-group/">Neutron Default Security Group</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1550">클라우드 네트워킹과 SDN 그리고 OpenStack</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Choe, Cheng-Dae -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

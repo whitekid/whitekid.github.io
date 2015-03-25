@@ -1,0 +1,254 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>OpenStack: Quantum과 사용할 때 Metadata Request Back Routing 문제 - Your wish is my command</title>
+  <meta name="author" content="Choe, Cheng-Dae">
+
+  
+  <meta name="description" content="Quantum으로 tenant network를 디자인 할 때, 딱 드는 생각은 tenant subnet을 private network을 구성하자 입니다. 물론 그렇겠죠. aws처럼 모든 생성되는 가상머신이 모두 public ip를 가질 필요는 없으니깐요. 필요한 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://whitekid.github.io/archives/1077">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Your wish is my command" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Your wish is my command</a></h1>
+  
+    <h2>It&#8217;s a long journey</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="whitekid.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">OpenStack: Quantum과 사용할 때 Metadata Request Back Routing 문제</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-11-06T00:00:00+09:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>6</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Quantum으로 tenant network를 디자인 할 때, 딱 드는 생각은 tenant subnet을 private network을 구성하자 입니다. 물론 그렇겠죠. aws처럼 모든 생성되는 가상머신이 모두 public ip를 가질 필요는 없으니깐요. 필요한 인스턴스에 floating ip를 연결해서 외부에서 접속이 가능하게 하면 됩니다.</p>
+
+<p>Quantum 가이드에 나온 <a href="http://docs.openstack.org/trunk/openstack-network/admin/content/use_cases_tenant_router.html">Per-tenant Routers with Private Networks</a>처럼 말이지요. 아래 그림처럼 된다면 참으로 멋진 구성이 될 텐데 말입니다. 사용자가 알아서 DMZ도 구성할 수 있고, 개발환경, production 환경의 네트웍을 똑같이 구성하여 테스트할 수 있고&hellip; 그런데 이렇게 하면서 quantum에서 예상치 못하는 결과가 발생합니다.</p>
+
+<p><img src="http://docs.openstack.org/trunk/openstack-network/admin/content/figures/UseCase-MultiRouter.png""></p>
+
+<p>그중에 하나가(overlapping_ip 문제는 별도의 문제!) instance가 처음 부팅할 때 보내는 meta data request의 패킷이 metadata api 서버로는 잘 가지만, 다시 돌아올 경로가 없습니다.</p>
+
+<p>Network Node -> Controller 노드까지 경로를 보면, metadata api가 public_ip이기 때문에 instance에서는 잘 접속이 됩니다. 하지만 패킷이 다시 돌아갈 instance의 주소는 private 네트워크이고 api-host에서 다시 돌아간 패킷은 external-router에서 내부 routing 경로가 아니라고 세상 밖으로 던져져 버립니다.</p>
+
+<p>그래서 metadata connection이 맺여지지 않습니다.</p>
+
+<p><img src="http://docs.openstack.org/trunk/openstack-network/admin/content/figures/Quantum-PhysNet-Diagram.png""></p>
+
+<p>metadata를 가져오지 못하면, 다른 것 다 제쳐두고라도 instance에 ssh keypair를 설정할 수 없기 때문에 가상 머신에 ssh 할 수 없는&hellip; 즉 만들었지만 접근하지 못하는 오직 ping만 할 수 있는 상황이 발생합니다. ㅎㅎ</p>
+
+<p>그래서 external-router에서 내부 network으로 routing 틀어줘야 합니다.</p>
+
+<p>어쨌든 그래서 아래처럼 quantum l3_agent를 소스를 기반으로 간단하게 routing 경로를 잡는 agent를 만들었고, 그 일을 하는 소스는 아래와 같습니다. 하나도 정리안된.. 막무가내 소스입니다. ㅎㅎ</p>
+
+<p>tenant의 external router로 연결된 router에 대해서 해당 tenant의 subnet으로 가는 경로를 그 tenant에 기본으로 할당된 public ip로 잡아주는 것이죠. 그러면 해당 l3 name space에서는 적당히 알아서 그 instance로 보내줍니다.</p>
+
+<pre><code>def do_single_loop(self):
+    routers = self.qclient.list_routers()['routers'];
+    ports = self.qclient.list_ports()
+
+    route_info = []
+    for r in routers:
+        # get tenant's subnet
+        subnet = self.qclient.list_ports(device_id=r['id'],
+                device_owner='network:router_interface')['ports'][0]['fixed_ips'][0]['subnet_id']
+        cidr = self.qclient.show_subnet(subnet=subnet)['subnet']['cidr']
+
+        # get the tenant's gw
+        fixed_ip = self.qclient.list_ports(device_id=r['id'],
+                device_owner='network:router_gateway')['ports'][0]['fixed_ips'][0]['ip_address']
+        route_info.append((cidr, fixed_ip))
+
+    # get current route info
+    old_routes = [x.split() for x in subprocess.check_output(['ip', 'route']).splitlines()[2:] if ('via' in x and 'default' not in x) ]
+    old_routes = [(x[0], x[2]) for x in old_routes]
+
+    # add new routing info
+    for cidr, fixed_ip in set(route_info) - set(old_routes):
+        subprocess.check_call(['route', 'add', '-net', cidr, 'gw', fixed_ip])
+
+    # remove routing info
+    for cidr, fixed_ip in set(old_routes) - set(route_info):
+            subprocess.check_call(['route', 'del', '-net', cidr, 'gw', fixed_ip])
+</code></pre>
+
+<p>그리고 더 해야하는 게, openstack에서 외부 명령을 실행하는 것은 rootwarp을 이용해서 사용하도록 되어있습니다. 아무래도 보안상 이유겠지요. 근데 지금은 우선 잘 되는지 테스트 하기 위해서 그거 신경 안썻습니다. 나중에 시간나면 정리 합니다~ ㅎㅎ</p>
+
+<p>마지막으로 소스 위치~</p>
+
+<p><a href="https://github.com/whitekid/metadata_route_agent">https://github.com/whitekid/metadata_route_agent</a></p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">whitekid</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2012-11-06T00:00:00+09:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>6</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://whitekid.github.io/archives/1077" data-via="" data-counturl="http://whitekid.github.io/archives/1077" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/archives/1072" title="Previous Post: github에서 패치 가져와 적용하기 + chef">&laquo; github에서 패치 가져와 적용하기 + chef</a>
+      
+      
+        <a class="basic-alignment right" href="/archives/1083" title="Next Post: OpenStack: allow_overlapping_ip의 해결 아이디어 간단 구현">OpenStack: allow_overlapping_ip의 해결 아이디어 간단 구현 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/keystone-bootstrap/">Keystone Bootstrap</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/neutron-default-security-group/">Neutron Default Security Group</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1550">클라우드 네트워킹과 SDN 그리고 OpenStack</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Choe, Cheng-Dae -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

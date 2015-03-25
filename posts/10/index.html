@@ -1,0 +1,853 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Your wish is my command</title>
+  <meta name="author" content="Choe, Cheng-Dae">
+
+  
+  <meta name="description" content="텍스트 파일을 편집하다 보면 아래와 비슷한 형식의 내용을 접한 적이 있을 것이다. 이것은 modeline이라 부르는 것으로 vimrc의 설정이 vim을 실행하면 바로 적용되는 것인 반면에, modeline은 파일에 적은 것으로 알 수 있듯이 파일 단위로 설정을 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://whitekid.github.io/posts/10/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Your wish is my command" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Your wish is my command</a></h1>
+  
+    <h2>It&#8217;s a long journey</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="whitekid.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/977">Vim Modeline</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-09-25T00:00:00+09:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>25</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>텍스트 파일을 편집하다 보면 아래와 비슷한 형식의 내용을 접한 적이 있을 것이다.</p>
+
+<p>이것은 modeline이라 부르는 것으로 vimrc의 설정이 vim을 실행하면 바로 적용되는 것인 반면에, modeline은 파일에 적은 것으로 알 수 있듯이 파일 단위로 설정을 적용하는 것이다.</p>
+
+<p>물론 filetype plugin을 통해서 파일 타입별로 셋팅을 맞출 수 있으나, 다른 사람과의 공동작업을 위해서는 다른 사람도 같은 설정 하에서 작업하기 위해서는 이 방법이 편한다.</p>
+
+<pre><code># vim: ts=4 sw=4 tw=80 nu
+</code></pre>
+
+<p>python이라면 일반적으로 아래와 같이 modeline을 적을 것이다.</p>
+
+<pre><code># vim: expandtab ts=4 sw=4 tw=80 nu
+</code></pre>
+
+<p>만일 C 소스라면 modeline은 아래와 같이 적을 수 있다.</p>
+
+<pre><code>/* vim: expandtab ts=4 sw=4 tw=80 nu */
+</code></pre>
+
+<p>그리고 이 설정은 modeline 옵션이 설정되어 있어야 한다. 따라서 안된다면 set modeline 으로 설정하거나 vimrc에 넣으면 된다. Ubuntu에서는 기본으로 꺼져있다.</p>
+
+<p>ps. 이 글을 적는 이유는 이렇게 사용한다는 것은 알겠는데, 이게 modeline이라는 사실을 잃어버려 항상 검색할 때 키워드를 못찾아서 그런다. ㅎㅎ</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/972">Screen으로 여러 윈도우 한번에 열기</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-09-25T00:00:00+09:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>25</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>screen을 이용해 여러 윈도우를 한번에 열고 각각의 윈도우에서는 적당한 호스트를 연결하는 쉘 스크립트 입니다. <a href="http://blog.woosum.net/2012/07/screen-session-%ec%a0%80%ec%9e%a5/">이전에 시도했던 것</a>에서 많은 문제가 발생해서 사용하지 않고 있었으나 이것은 좀 쓸만합니다.</p>
+
+<pre><code>#!/bin/bash
+SCREENNAME=stack
+NL=`echo -ne '\015'`
+
+if screen -ls | egrep -q "[0-9].$SCREENNAME"; then
+        echo "screen named $SCREEN_NAME already exists"
+        exit
+fi
+
+screen -d -m -S $SCREENNAME -t shell
+sleep 1
+
+host_spec="host1/192.168.0.10 host2/192.168.0.11"
+for spec in $host_spec; do
+        name=`echo "$spec" | cut -d '/' -f 1`
+        host=`echo "$spec" | cut -d '/' -f 2`
+
+        screen -S $SCREENNAME -X screen -t "$name"
+        screen -S $SCREENNAME -p "$name" -X stuff "sshpass -ppassword ssh root@$host$NL"
+done
+
+echo "please run screen -r 'screen -r $SCREENNAME'"
+</code></pre>
+
+<p>물론 이것도 약간의 문제점이 있습니다. 명령을 실행하면 screen이 background에서 detach된 상태로 만들어 지는데, 이를 수동으로 attach해야하는 문제가 있습니다.</p>
+
+<p>그래도 이전에 화면 깨지는 것보다는 훨씬 낫죠. ㅎㅎ</p>
+
+<p>ps. 이 스크립트는 devstack의 stack.sh를 많이 참고했습니다.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/949">Gluster With Chef #1</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-07-25T00:00:00+09:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>25</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>공부삼아서 Chef로 Gluster를 셋업하는 것(<a href="https://github.com/whitekid/chef-glusterfs">https://github.com/whitekid/chef-glusterfs</a>) 해 봤는데, 역시나 공부삼아 코멘트 적어봅니다.</p>
+
+<p>물론 당연히도 저는 Chef와 Ruby를 처음 다르기에 정석과는 많이 다를 수 있고, 여기에서 이야기하는 것들이 틀릴 수 도 있습니다. ㅎㅎ..</p>
+
+<p><a href="https://github.com/whitekid/chef-glusterfs">https://github.com/whitekid/chef-glusterfs</a> 는 chef에서 사용하는 cookbook입니다. cookbook 즉 요리책은 형상관리할 대상을 어떻게 요리할 지 적어 놓은 것이죠. 이 cookbook안에 recipe가 있으며, 이 recipe를 작성하여 하나의 인프라를 관리합니다.</p>
+
+<p>recipes 디렉토리를 보시면 client.rb, server.rb, default.rb 라는 파일이 있습니다. 이게 recipe이며, 이것들이 여러개 모여서 glusterfs 클라이언트와 서버를 관리하는 cookbook이 되는 것이죠. 이름에서 보이다시피 client.rb는 glusterfs 클라이언트를 설치하고 서버와 연결하여 마운트하는 recipe이고, server.rb는 glusterfs 클러스터를 구성하고 volume을 생성하는 recipe입니다.</p>
+
+<p>우선 간단한 recipes/client.rb부터 봅니다.</p>
+
+<pre><code>package "glusterfs-fuse" do
+  action :install
+end
+</code></pre>
+
+<p>여기서 &ldquo;:install&rdquo; 이 뭘까요?</p>
+
+<p>저는 한참 고민했습니다. 엇듯 봐서는 method 같기도 하고, action이 method이면 :install은 parameter인 것 같기도 하고.. 처음에는 우선 려러니 하고 넘어갔었는데, 찾아보니 :install은 문자열 &ldquo;install&#8221;의 symbol이라고 합니다. 문자열 reference죠.</p>
+
+<pre><code>irb&gt; :install.equal? :install
+=&gt; true
+</code></pre>
+
+<p>로 나옵니다. 여기서 equals?는 값 비교가 아닌 object 비교, 즉 같은 메모리를 점유하고 있는 오브젝트인가를 검사하는 것인데 같이 나오는 으로 보면 같은 object이죠.</p>
+
+<p>python의 immutable과 비슷하다고 봐야합니다. ruby symbol도 immutable입니다.</p>
+
+<blockquote><p>&ldquo;Symbols are a way to represent strings and names in ruby.&rdquo;</p></blockquote>
+
+<p>라 설명하고 있네요.</p>
+
+<p>근데 그럼 action은 뭘까요? 이건.. attribute입니다. 즉 package 리소스의 action attribute를 &ldquo;install&#8221;로 설정하는 것입니다.</p>
+
+<p>package라는 리소스를 이용해서 gluster-fuse 패키지를 설치합니다. package는 각 chef node의 OS에 맞게 패키지를 설치합니다. 따라서 CentOS는 yum을 Ubuntu는 apt-get을 FreeBSD는 ports를 이용하여 설치를 합니다.</p>
+
+<p>chef에서 사용되는 리소스는 opscode의 리소스 패이지(<a href="http://wiki.opscode.com/display/chef/Resources">http://wiki.opscode.com/display/chef/Resources</a>)를 보시기 바랍니다. 아주 자세히 설명되어 있습니다.</p>
+
+<p>당연히 gluster-fuse는 CentOS에서 있는 패키지 이름입니다. 만일 Ubuntu를 사용한다면 다른 이름을 넣어주겠죠.</p>
+
+<p>이렇게 각 노드의 특성에 따라서 달라지는 것들은 attribute에 설정합니다. 아마 attrbiute/default.rb 파일은 다음처럼 될 겁니다.</p>
+
+<pre><code>case platform do
+  when "ubutu", "debian"
+    default[:node][:gluster_client_package] = "gluster-client"
+  when "centos", "redhat"
+    default[:node][:gluster_client_package] = "gluster-fuse"
+end
+</code></pre>
+
+<p>recipes는 아래처럼 사용합니다.</p>
+
+<pre><code>package node[:ntp][:gluster_client_package] do
+  action :install
+end
+</code></pre>
+
+<p>근데 이런 node 특성에 따른 설정을 attribute에서만 꼭 둬야하냐? 라고 말하면 recipe에 둬도 됩니다. 편하실대로 하는는 것이 좋겠습니다. 예전에 잠깐 듣기론 recipe에 넣는 것이 더 편하는 이야기를 들은 것 같아요.</p>
+
+<p>클라이언트 패키지를 설치했으므로 glusterfs 클러스터에 마운트합니다. glusterfs 클러스터는 server recipe에서 셋업을 진행했고 attributes/server.rb에서 설정한 peer의 첫번째로 마운트 하도록 하겠습니다.</p>
+
+<pre><code>node[:glusterfs][:client][:mount].each do |volume, mount_to|  # ---- [1]
+  if not File.directory?(mount_to)                      # ---- [2]
+    directory mount_to do
+      action :create
+      recursive true
+    end
+  end
+
+  # mount -t glusterfs -o log-level=WARNING,log-file=/var/log/gluster.log \
+  #       10.200.1.11:/test /mnt
+  server = node[:glusterfs][:server][:peers][0]
+  mount mount_to do                                    # ---- [3]
+    device "#{server}:/#{volume}"
+    options "log-level=WARNING,log-file=/var/log/gluster.log"
+  end
+end
+</code></pre>
+
+<p>&mdash;-[1] glusterfs의 볼륨은 여러개 있을 수 있습니다. 따라서 각각의 볼륨에 대해서 glusterfs 마운트를 진행합니다. recipes/server.rb에 아래처럼 array로 정의되어 있습니다.</p>
+
+<pre><code>default[:glusterfs][:server][:volumes] = ["test"]
+</code></pre>
+
+<p>array의 each를 이용하여 모든 element를 돌면서 주어진 코드 블럭을 수행합니다. ruby 스타일의 언어를 처음 접하면 어색하겠지만, for문과 같다고 보시면 됩니다.</p>
+
+<pre><code>for volume, mount in node['glusterfs']['client']['mount']:
+    bla bla
+</code></pre>
+
+<p>python 스타일로 하면 위와 같은데.. python은 for 안의 실행하는 문장이 같은 for 문에 속하는 scope에 속하는 반면에, ruby에서는 do ~ end 가 코드 블럭이 되어서 each 함수의 파라미터로 전달이 되고 each 안에서 다시 호출되는 방식입니다. 아마도 javascript의 이벤트 핸들러를 작성해 봤다면 그것과 비슷하도고 보시면 됩니다.</p>
+
+<p>&mdash;-[2] 마운트 포인트 디렉토리가 없는 경우는 새로 만들어 줍니다. 디렉토리 생성은 directory라는 리소스를 통해서 생성하며 :create action으로 수행됩니다.</p>
+
+<p>&mdash;- [3] mount 리소스를 이용해서 gluster 서버로 마운트 합니다. 위의 주석으로 달린 명령과 동일한 과정을 수행합니다.</p>
+
+<p>그리고 어찌보면 요상한 &ldquo;#{server}:/#{volume}&rdquo; 문자열이 나오는데, sh로 치면 &ldquo;${server}:/${volume}&#8221;과 동일하며 python으로 치면 &rdquo;%s:/%s&#8221; % (server, volume)와 동일한 문자열 치환 입니다. python 스타일보다 훨씬 직관적으로 보기 좋습니다. 그렇다고 python &ldquo;%{server}s:/%{volume}s&rdquo; % locals() 가 있나고 하신다면.. 그래도 ruby style이 더 좋습니다..</p>
+
+<p>음.. 대충 적으려고 계획했는데.. 글 재주도 없고 모르는 것 적으려니 이것저것 찾아보면서 해서 오래걸리네요.. 오늘은 이만하고 다음에 나머지 진행하겠습니다&hellip; 이거 참 하루 저녁 작업하고 설명하는데 몇일 걸리겠네요.. ㅡㅡ; 게다가 서버쪽은 더 복잡해 큰일군요.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/965">귀찮다. Ssh 접속 키 확인 무시하자구!</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-07-25T00:00:00+09:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>25</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>테스트용으로 가상 머신을 많이 사용하다 보면&hellip; 가상 머신 안에서 IP가 중복됩니다.  지금 이 순간에도 제 VMWare에는 약 20개 정도가 생성되어있고, 8개가 running 중입니다.</p>
+
+<p>이런 상황에서 귀찮은 것은 ssh로 접속할 때 ssh key fingerprint가 변경되었다느니&hellip; 서버의 핑커프린트를 저장할 것이라는둥 귀찮은 질문을 막 합니다. 귀찮아서 찾아봤더니 StrictHostsKeyChecking 옵션이 있군요. 이렇게 하면 간단하게 경고 메시지를 보이면서 서버 키를 무조건 저장합니다. 귀찮게 물어보는 것이 없어졌네요</p>
+
+<pre><code>$ ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null 10.200.1.10
+Warning: Permanently added '10.200.1.10' (ECDSA) to the list of known hosts.
+</code></pre>
+
+<p>그리고 물론 .ssh/config 파일에 넣을 수 있습니다.</p>
+
+<pre><code>Host 10.200.*
+        StrictHostKeyChecking no
+UserKnownHostsFile /dev/null
+</code></pre>
+
+<p>물론 실제 환경에서는 핑커 프린트가 변경된 경우는 뭔가 이상이 있는 거니 이런거 쓰지 말기 바랍니다.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/936">초간단 Chef 설치하기</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-07-12T00:00:00+09:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>12</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>-Ubuntu에서 Chef  초간단 설치하기 입니다.</p>
+
+<h2>About Chef</h2>
+
+<p>Chef는 1. 서버 형상 관리 툴 2. 서버 관리 자동화 툴 3. 요세는 클라우드 자동화 툴이라고도 합니다. puppet도 같은 비슷하죠.</p>
+
+<p>Chef는 ruby로 작성되어 있으며, 작업하다보면 rails와 비슷하단 느낌을 많이 받습니다. 근데 저도 아직 잘 chef에 관해서 모릅니다. 공부하고 있는 단계죠. 어쨌든!</p>
+
+<h2>chef-server</h2>
+
+<h3>레포지트리 설정</h3>
+
+<p>Ubuntu나 CentOS로 공식적으로 들어간 chef 패키지는 없고, 개발사인 <a href="http://opscode.com">opscode</a>에서 관리하는 레포지트리를 사용합니다.</p>
+
+<pre><code>$ echo "deb http://apt.opscode.com/ `lsb_release -cs`-0.10 main" | sudo tee /etc/apt/sources.list.d/opscode.list
+</code></pre>
+
+<h4>Repository PGP 키 추가</h4>
+
+<pre><code>$ sudo mkdir -p /etc/apt/trusted.gpg.d
+$ gpg -keyserver keys.gnupg.net -recv-keys 83EF826A
+$ gpg -export packages@opscode.com | sudo tee /etc/apt/trusted.gpg.d/opscode-keyring.gpg &gt; /dev/null
+</code></pre>
+
+<h4>레포지트리 업데이트</h4>
+
+<pre><code>$ sudo apt-get update
+</code></pre>
+
+<h3>Chef 설치</h3>
+
+<pre><code>$ sudo apt-get install chef-server
+</code></pre>
+
+<ul>
+<li>설치하면서 URL을 물어보는데 <a href="http://">http://</a><ip-address>:4040 으로 설정합니다. localhost로 설정하면 나중에 bootstrap으로 클라이언트 설치하는데 오류가 발생합니다.</li>
+</ul>
+
+
+<h4>knife 설정</h4>
+
+<p>knife는 chef를 움직이는 cli 툴입니다. 현재 계정(root가 아닌)에서 knife를 사용하여 명령을 내릴 수 있도록 설정합니다.</p>
+
+<pre><code>$ mkdir -p ~/.chef
+$ sudo cp /etc/chef/validation.pem /etc/chef/webui.pem ~/.chef
+$ sudo chown -R `whoami` ~/.chef
+$ knife configuration -i
+</code></pre>
+
+<ul>
+<li>인증서의 위치는 위에서 복사한 ~/.chef의 경로로 입력</li>
+</ul>
+
+
+<h4>knife 설치 확인</h4>
+
+<pre><code>$ knife client list
+$ knife cookbook list
+</code></pre>
+
+<h2>클라이언트 설치(precise)</h2>
+
+<p>chef bootstrap은 Ubuntu 10.04를 지원하지만, 12.04(precise)를 지원하지 않습니다. 하지만 간단히 그냥 lucid를 precise로 바꾸기만 하면 됩니다. 물론 lucid를 이용하는 경우는 기존 것 그대로 이용하면 됩니다.</p>
+
+<p>  $ cd /usr/lib/ruby/vendor_ruby/chef/knife/bootstrap
+  $ cp ubuntu10.04-apt.erb ubuntu12.04-apt.erb
+  $ sed  -i &rsquo;s/lucid/precise/g&#8217; ubuntu12.04-apt.erb
+  $ knife bootstrap 10.200.1.5 -d ubuntu12.04-apt -sudo -x <user_id> -P <password> -bootstrap-version 0.10</p>
+
+<ul>
+<li>10.200.1.5: chef-client를 설치할 호스트 아이피</li>
+<li>-d: 배포판을 지정한다. lucid인 경우는 ubuntu10.04</li>
+<li>-sudo: sudo를 이용해서 명령을 실행한다.</li>
+<li>-x: ssh로 접속할 사용자를 지정한다. root 계정으로 직접 접근하지 못하는 서버들에 설정한다.</li>
+<li>-P: ssh password</li>
+<li>-bootstrap-version 0.10: bootstrap 설치할 버전</li>
+</ul>
+
+
+<p>에러없이 잘 실행된다면</p>
+
+<pre><code>$ knife node list
+</code></pre>
+
+<p>로 해당 호스트가 등록된 것을 확인할 수 있습니다.</p>
+
+<p>정상적으로 설치가 완료되었는데, 노드가 등록이 안되는 경우는 거의 대부분 시간이 안맞아서 그렇습니다. chef는 ampq를 사용하는데, 여기선 시간이 아주 중요하기 때문이지요. 시간이 안맞다면 ntpdate -u kr.pool.ntp.org 이렇게 시간이 중요하기 때문에 서버를 포함한 모든 노드는 ntpd를 설치하여 시간을 동기화하시기 바랍니다.</p>
+
+<h2>Cookbook 시작하기&hellip;</h2>
+
+<p>이제 Chef 설치는 잘 되었을 것이고, cookbook, knife등을 익힐 차례입니다. <a href="http://wiki.opscode.com/display/chef/Cookbook+Fast+Start+Guide">Cookbook Fast Start Guide</a>에서 시작하기 바랍니다.</p>
+
+<p><a href="http://wiki.woosum.net/Chef">http://wiki.woosum.net/Chef</a></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/928">Ubuntu: Eth1에 기본 Gateway 두기..</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-07-09T00:00:00+09:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>9</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>eth0, eth1이렇게 2개 NIC가 있는 상황에서 거의 기본으로는 eth0에서 public internet이 나가도록 설정이 될 겁니다. 대부분 그렇지요. 그런데 필요에 따라서는 eth1가 public internet인 경우가 있습니다. 그리고 eth0는 다른 목적으로 사용되는 경우로 말입니다.</p>
+
+<p>이 경우 CentOS의 경우는 그냥 아무 생각없이 /etc/sysconfig/network-script/ifcfg-eth1에 설정하면 eth0 설정한거 무시되면서 eth1의 설정이 먹히는 데 Ubuntu의 경우는 안그럽니다.</p>
+
+<pre><code>auto eth2
+iface eth2 inet static
+address 10.100.0.11
+netmask 255.255.255.0
+gateway 10.100.0.1
+</code></pre>
+
+<p>이렇게 두면 이녀석이 eth2의 gateway 설정을 알어먹지 못합니다. 그래서 수동으로 해 줘아합니다. 근데 수동으로하면 골치아프죠. 그럴땐 post-up, pre-down으로..</p>
+
+<pre><code>auto eth0
+iface eth0 inet static
+address 10.200.1.11
+netmask 255.255.255.0
+dns-nameservers 168.126.63.1
+
+auto eth1
+iface eth1 inet static
+address 10.100.0.11
+netmask 255.255.255.0
+post-up route add default gw 10.100.0.1
+pre-down route del default gw 10.100.0.1
+</code></pre>
+
+<p>이렇게 하면 되지요.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/926">Shell Script에서 Python의 Range 같은것 쓰려면&#8230;</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-07-09T00:00:00+09:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>9</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>아주 간단함..</p>
+
+<pre><code>seq 1 10
+</code></pre>
+
+<p>또는</p>
+
+<pre><code>{1..10}
+</code></pre>
+
+<p><a href="http://stackoverflow.com/questions/169511/how-do-i-iterate-over-a-range-of-numbers-in-bash">http://stackoverflow.com/questions/169511/how-do-i-iterate-over-a-range-of-numbers-in-bash</a></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/919">Screen Session 저장?</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-07-09T00:00:00+09:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>9</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>제목이 영 이상하긴 한데요.. screen으로 작업하다보면 가끔 난감한 경우가 있습니다.</p>
+
+<p>screen의 세션이 저 멀리 서버에 있어서 이 세션이 영원이 닫히지 않는다고 생각하면 별 문제 없을텐데, 이게 가끔 리부팅한다던가, 아니면 로컬에 있어서 리부팅하면 날라가는 경우.. .근데 이 세션들이 아주아주 자주 사용하는 경우 계속 세로운 세션 만드는 것 영 귀찮습니다.</p>
+
+<p>저같은 경우는 개발, 테스트하면서 여러 서버들을 동시에 봐야해서, screen으로 여러개 움직이면서 작업하는데, 이거 참 날아가니깐.. 귀찮습니다.</p>
+
+<p>뒤져보니 세션을 완전히 저장하고, 다시 살리는 방법은 없습니다. 하지만 가능한 방법은 screen.rc를 이용하여 그 서버에 연결되는 윈도우만 열어도 상당히 편리합니다.</p>
+
+<p>screen.rc 파일을 적당히 만들고 screen -c screen.rc 로 그 세션을 시작하면 되죠..</p>
+
+<p>screen.rc:</p>
+
+<pre><code>sessionname my-persistent-session
+
+screen -t 'server01&amp;' sshpass -p &lt;pass&gt; ssh &lt;server&gt;
+screen -t 'server01&amp;' sshpass -p &lt;pass&gt; ssh &lt;server&gt;
+</code></pre>
+
+<p>여기까지 하면 괜찮습니다. 그런데 사람의 욕심이라는게 말이죠. 위처럼하면 문제는 sshpass 명령이 종료되거나 ssh 연결이 안되면 해당 윈도우는 닫힌다는 것입니다. 이거 참 난감하죠.. 궁리해봤는데, screen 의 명령으로는 해결할 수 없고 아래처럼 ssh를 실행하는 스크립트를 만들어서 그걸로 연결하고, 해당 스크립트에서는 ssh 연결후 bash를 실행하면 됩니다.</p>
+
+<p>bin/sshpass.sh:</p>
+
+<pre><code>#!/bin/sh
+sshpass $1 $2 $3 $4
+$SHELL
+</code></pre>
+
+<p>그러면, screen.rc의 내용도 바뀌겠죠?</p>
+
+<p>screen.rc:</p>
+
+<pre><code>sessionname my-persistent-session
+
+screen -t 'server01&amp;' sshpass.sh -p &lt;pass&gt; ssh &lt;server&gt;
+screen -t 'server01&amp;' sshpass.sh -p &lt;pass&gt; ssh &lt;server&gt;
+</code></pre>
+
+<p>이제 screen -s screen.rc 하면 언제나 원하는 윈도우를 연 스크린으로&hellip; ㅎㅎ</p>
+
+<p>물론 더 좋은 방법 있으면 알려주삼~~</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/917">Request_module: Runaway Loop Modprobe Binfmt-464c</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-06-29T00:00:00+09:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>29</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>가상 머신을 띄우는데&hellip; 아래처럼 당황스런 메시지가 뜨면서, 커널이 올라오지 않는다.</p>
+
+<pre><code>request_module: runaway loop modprobe binfmt-464c
+</code></pre>
+
+<p>인터넷을 뒤져보니 해당 문제는 32비트 커널을 사용하는 머신에서 64비트 바이너리를 실행할 때 생기는 문제라고 한다. 즉 다시 말해서 내가 뭔가 잘못 건드려서 커널이 32비트로 바뀐거다. 전혀 한 기억이 없는데 말이다.</p>
+
+<ul>
+<li><a href="https://bbs.archlinux.org/viewtopic.php?pid=253794">https://bbs.archlinux.org/viewtopic.php?pid=253794</a></li>
+</ul>
+
+
+<p>역시 경험으로 느낀건&hellip; 가상머신의 커널은 그냥 가상머신 안에 두는 것이 좋겠다. 요즘 리눅스는 hvm으로 돌아간다고  하드라도, 기본적으로 pv driver가 설치되어있기 때문에 io가 문제가 없으니 말이다.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/911">Nova-network Floating Ip</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-06-20T00:00:00+09:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>20</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>floating ip는 amazone의 elastic ip와 비슷한 기능으로, 할당받은 ip를 가상머신에 자유롭게 할당, 제거할 수 있다. 직접 NIC을 조절하는 것이 아닌 nova-network 노드에서 1:1 NAT으로 할당한다.</p>
+
+<p>float ip 생성</p>
+
+<pre><code>$ nova-manage floating create --ip_range=10.200.3.0/24
+</code></pre>
+
+<p>만들어진 floating ip를 확인할 수 있다.</p>
+
+<pre><code>$ nova-manage floating list
+None    10.200.3.1      None    nova    eth0
+None    10.200.3.2      None    nova    eth0
+None    10.200.3.3      None    nova    eth0
+.....
+</code></pre>
+
+<p>floating ip를 하나 할당받는다.</p>
+
+<pre><code>$ nova floating-ip-create
++------------+-------------+----------+------+
+|     Ip     | Instance Id | Fixed Ip | Pool |
++------------+-------------+----------+------+
+| 10.200.3.1 | None        | None     | nova |
++------------+-------------+----------+------+
+$ nova floating-ip-create
++------------+-------------+----------+------+
+|     Ip     | Instance Id | Fixed Ip | Pool |
++------------+-------------+----------+------+
+| 10.200.3.2 | None        | None     | nova |
++------------+-------------+----------+------+
+</code></pre>
+
+<p>할당받은 ip를 instance에 설정한다.</p>
+
+<pre><code>$ nova add-floating-ip 6618a76e-a1d3-4912-a71f-42dc3daf893b 10.200.3.2
+$ nova-manage floating list
+c99bd5af477d403e9421f6924836412a        10.200.3.1      None    nova    eth0
+c99bd5af477d403e9421f6924836412a        10.200.3.2      6618a76e-a1d3-4912-a71f-42dc3daf893b    nova    eth0
+None    10.200.3.3      None    nova    eth0
+None    10.200.3.4      None    nova    eth0
+.....
+</code></pre>
+
+<ul>
+<li>10.200.3.1은 할당 받았지만, instance에 연결되지 않았다.</li>
+<li>10.200.3.2은 할당 받아서 6618a76e-a1d3-4912-a71f-42dc3daf893b에 연결되었다.</li>
+</ul>
+
+
+<p>nova-network 노드에서 iptables를 확인해보면 아래와 같이 NAT이 설정된 것을 확인할 수 있다.</p>
+
+<pre><code>$ iptables -L -t nat
+....
+
+Chain nova-network-OUTPUT (1 references)
+target     prot opt source               destination
+DNAT       all  --  anywhere             10.200.3.2           to:10.200.2.5
+
+....
+
+Chain nova-network-PREROUTING (1 references)
+target     prot opt source               destination
+DNAT       tcp  --  anywhere             169.254.169.254      tcp dpt:http to:10.200.1.9:8775
+DNAT       all  --  anywhere             10.200.3.2           to:10.200.2.5
+
+.....
+
+Chain nova-network-float-snat (1 references)
+target     prot opt source               destination
+SNAT       all  --  10.200.2.5           anywhere             to:10.200.3.2
+
+....
+</code></pre>
+
+<p><a href="http://wiki.woosum.net/nova#floating_ip">http://wiki.woosum.net/nova#floating_ip</a></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+      <a class="prev" href="/posts/11">&larr; Older</a>
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/posts/9">Newer &rarr;</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/keystone-bootstrap/">Keystone Bootstrap</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/neutron-default-security-group/">Neutron Default Security Group</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1550">클라우드 네트워킹과 SDN 그리고 OpenStack</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Choe, Cheng-Dae -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

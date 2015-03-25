@@ -1,0 +1,289 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>auth.log가 Quantum Agent가 수행하는 Sudo 로그로 꽉 찼어요.. - Your wish is my command</title>
+  <meta name="author" content="Choe, Cheng-Dae">
+
+  
+  <meta name="description" content="어제 시스템 팀에서 연락이 왔습니다. /var/log/auth.log에 아래처럼 지속적으로 quantum-agent가 남기는 로그가 남는다구요. Jun 23 06:33:26 network sudo: pam_unix(sudo:session): session opened &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://whitekid.github.io/archives/1337">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Your wish is my command" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Your wish is my command</a></h1>
+  
+    <h2>It&#8217;s a long journey</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="whitekid.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">auth.log가 Quantum Agent가 수행하는 Sudo 로그로 꽉 찼어요..</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2013-06-27T00:00:00+09:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>27</span><span class='date-suffix'>th</span>, <span class='date-year'>2013</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>어제 시스템 팀에서 연락이 왔습니다. /var/log/auth.log에 아래처럼 지속적으로 quantum-agent가 남기는 로그가 남는다구요.</p>
+
+<pre><code>Jun 23 06:33:26 network sudo: pam_unix(sudo:session): session opened for user root by (uid=106)
+Jun 23 06:33:26 network sudo: pam_unix(sudo:session): session closed for user root
+Jun 23 06:33:26 network sudo: pam_unix(sudo:session): session closed for user root
+Jun 23 06:33:26 network sudo: quantum : TTY=unknown ; PWD=/ ; USER=root ; COMMAND=/usr/bin/quantum-rootwrap /etc/quantum/    rootwrap.conf ovs-vsctl -timeout=2 get Interface tapae222d3c-61 external_ids
+Jun 23 06:33:26 network sudo: pam_unix(sudo:session): session opened for user root by (uid=106)
+Jun 23 06:33:26 network sudo: quantum : TTY=unknown ; PWD=/ ; USER=root ; COMMAND=/usr/bin/quantum-rootwrap /etc/quantum/    rootwrap.conf ovs-vsctl -timeout=2 get Interface tapae222d3c-61 external_ids
+</code></pre>
+
+<p>음.. 그렇군 하면서 보니까 /var/log/auth.log에는 로그가 정신없이 쌓이고 있군요. 한 호스트에 일주일에 쌓인 로그가 약 500M 정도입니다. 한 호스트에 이정도이니 다른 quantum-agent가 동작중인 network, compute 노드를 합치면.. 헐&hellip; 이 녀석을 처리하기로 했습니다. 당연히 모든 sudo의 로그를 날릴 수 없고, quantum agent가 날리는 sudo 명령만 없에기로 했습니다.</p>
+
+<p>/var/log/auth.log는 어디서 생기느냐.. 당연히 아시겠지만 syslog가가 auth,authpriv.*인 내용만 골라서 분리한 내용입니다. Ubuntu의 경우는 rsyslog를 사용하기 때문에 /etc/rsyslog.d/50-default.conf에 정의되어 있지요.</p>
+
+<pre><code>auth,authpriv.*                 /var/log/auth.log
+</code></pre>
+
+<p>즉&hellip; 어디선가 syslog로 날리는 저 내용을 없애면 되는 것이죠.</p>
+
+<p>로그 내용을 보면</p>
+
+<ol>
+<li>sudo에서 이용하는 pam의 세션이 열리고 닫혔다.</li>
+<li>sudo로 수행하는 명령은 어떤 것이다.</li>
+</ol>
+
+
+<p>입니다. 첫번째 로그와 두번째 로그를 날리는 주체는 다릅니다. 첫번째는 pam.d, 두번째는 sudo&hellip;</p>
+
+<p>두번째는 간단합니다. /etc/sudoers.d/quantum_sudoers에서 아래 라인을 추가하면 됩니다.</p>
+
+<pre><code>Defaults        logfile=/var/log/sudo.log
+Defaults        !syslog
+</code></pre>
+
+<p>내용 보면 간단하죠? syslog로 로그를 남기지 않고 /var/log/sudo.log로 남깁니다. 그래서 /var/log/authl.log에 로그가 가지 않습니다.</p>
+
+<p>여기까지 하고 /var/log/auth.log를 보면 여전히 세션이 열리고 닫힌 기록이 계속 남습니다. 이는 pam.d에서 해 줘야하는 것이죠. 그래서 /etc/pam.d/sudo를 보면</p>
+
+<pre><code>@include common-auth
+@include common-account
+@include common-session-noninteractive
+</code></pre>
+
+<p>이렇게 나와있습니다. 세션에 관련딘 내용은 세번째 줄 같죠? 맞습니다. 조금 긴 내용이 나옵니다. 여기서 잠깐 위의 로그 파일을 자세히 보면 &hellip;</p>
+
+<pre><code>Jun 23 06:33:26 lion034 sudo: pam_unix(sudo:session): session closed for user root
+</code></pre>
+
+<p>뭔가 보이나요? 그렇죠.. pam_unix라는 곳에서 로그를 남기고 있다고 친절하게 알려주고 있습니다. 다시 pam_unix 관련된 라인이 있는지 찾아보면</p>
+
+<p>session required        pam_unix.so</p>
+
+<p>라고 친절히 있습니다. 그렇습니다.. 여기서 뭔가 해줘야 하겠는데.. 어떤게 있을까 하고 뒤져보니깐&hellip; 방법이 아주 간단히  있더군요.</p>
+
+<pre><code>session [success=1 default=ignore] pam_succeed_if.so service in sudo quiet use_uid
+session required        pam_unix.so
+</code></pre>
+
+<p>자세한 내용은 모르겠고, sudo service에서 성공한 인증은 로그를 무시하라는 이야기 이군요.</p>
+
+<p>자&hellip; 여기까지 하면&hellip; 그렇게 많이 쌓이던 로그가 갑자기 없어지는 신기한 경험을 합니다~~ ㅎ~</p>
+
+<p>그리고 마지막으로 quantum sudo log를 /var/log/sudo.log로 보낸 것 기억하시죠? 이것까지 마무리 하면 되겠습니다.</p>
+
+<p>/etc/logrotate.d/sudo:</p>
+
+<pre><code>/var/log/sudo.log {
+  daily
+  missingok
+  compress
+  delaycompress
+  notifempty
+}
+</code></pre>
+
+<p>추가) 이런 방법 말고 rsyslog에서 필터링 하는 방법도 있군요. /etc/rsyslog.d/50-default.conf의 시작 부분에 다음을 추가합니다.
+    :msg, contains, &ldquo;uid=106&rdquo;
+    &amp; ~</p>
+
+<pre><code>:msg, contains, "ovs-vsctl"
+&amp; ~
+</code></pre>
+
+<p>참고:</p>
+
+<ul>
+<li><a href="http://ubuntuforums.org/showthread.php?t=1256801">http://ubuntuforums.org/showthread.php?t=1256801</a></li>
+<li><a href="http://www.ruwebit.net/article/406">http://www.ruwebit.net/article/406</a></li>
+</ul>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">whitekid</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2013-06-27T00:00:00+09:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>27</span><span class='date-suffix'>th</span>, <span class='date-year'>2013</span></span> <span class='time'>12:00 am</span></time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://whitekid.github.io/archives/1337" data-via="" data-counturl="http://whitekid.github.io/archives/1337" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/archives/1323" title="Previous Post: OpenStack: block migration">&laquo; OpenStack: block migration</a>
+      
+      
+        <a class="basic-alignment right" href="/archives/1345" title="Next Post: chef-client using lots of memory">chef-client using lots of memory &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/keystone-bootstrap/">Keystone Bootstrap</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/neutron-default-security-group/">Neutron Default Security Group</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1550">클라우드 네트워킹과 SDN 그리고 OpenStack</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Choe, Cheng-Dae -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,322 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Host-aggregation을 Availability-zone으로 사용하기 - Your wish is my command</title>
+  <meta name="author" content="Choe, Cheng-Dae">
+
+  
+  <meta name="description" content="Host aggregation은 Availability zone 처럼 사용할 수 있습니다. 기본 설치 상태에서 보면 아래처럼 nova zone만 보입니다. # nova availability-zone-list &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://whitekid.github.io/archives/1454">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Your wish is my command" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Your wish is my command</a></h1>
+  
+    <h2>It&#8217;s a long journey</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="whitekid.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Host-aggregation을 Availability-zone으로 사용하기</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2013-12-11T00:00:00+09:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2013</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><a href="http://docs.openstack.org/grizzly/openstack-compute/admin/content/host-aggregates.html">Host aggregation</a>은 Availability zone 처럼 사용할 수 있습니다.</p>
+
+<p>기본 설치 상태에서 보면 아래처럼 nova zone만 보입니다.</p>
+
+<pre><code># nova availability-zone-list
++-----------------------+----------------------------------------+
+| Name                  | Status                                 |
++-----------------------+----------------------------------------+
+| internal              | available                              |
+| |- control0           |                                        |
+| | |- nova-conductor   | enabled :-) 2013-12-11T08:36:33.000000 |
+| | |- nova-consoleauth | enabled :-) 2013-12-11T08:36:36.000000 |
+| | |- nova-cert        | enabled :-) 2013-12-11T08:36:36.000000 |
+| | |- nova-scheduler   | enabled :-) 2013-12-11T08:36:31.000000 |
+| nova                  | available                              |
+| |- compute003         |                                        |
+| | |- nova-compute     | enabled :-) 2013-12-11T08:36:31.000000 |
+| |- compute002         |                                        |
+| | |- nova-compute     | enabled :-) 2013-12-11T08:36:31.000000 |
+| |- compute001         |                                        |
+| | |- nova-compute     | enabled :-) 2013-12-11T08:36:31.000000 |
+| |- compute000         |                                        |
+| | |- nova-compute     | enabled :-) 2013-12-11T08:36:31.000000 |
++-----------------------+----------------------------------------+
+</code></pre>
+
+<p>여기서 host-aggregate를 2개 만들고 각각에 2개씩 compute node를 넣어봅니다.</p>
+
+<pre><code># nova aggregate-create agg1
+# nova aggregate-create agg2
+# nova aggregate-list
++----+------+-------------------+
+| Id | Name | Availability Zone |
++----+------+-------------------+
+| 1  | agg1 | None              |
+| 2  | agg2 | None              |
++----+------+-------------------+
+# nova aggregate-add-host 1 compute000
+Aggregate 1 has been successfully updated.
++----+------+-------------------+-----------------+----------+
+| Id | Name | Availability Zone | Hosts           | Metadata |
++----+------+-------------------+-----------------+----------+
+| 1  | agg1 | None              | [u'compute000'] | {}       |
++----+------+-------------------+-----------------+----------+
+# nova aggregate-add-host 1 compute001
+Aggregate 1 has been successfully updated.
++----+------+-------------------+--------------------------------+----------+
+| Id | Name | Availability Zone | Hosts                          | Metadata |
++----+------+-------------------+--------------------------------+----------+
+| 1  | agg1 | None              | [u'compute000', u'compute001'] | {}       |
++----+------+-------------------+--------------------------------+----------+
+# nova aggregate-add-host 2 compute002
+Aggregate 2 has been successfully updated.
++----+------+-------------------+-----------------+----------+
+| Id | Name | Availability Zone | Hosts           | Metadata |
++----+------+-------------------+-----------------+----------+
+| 2  | agg2 | None              | [u'compute002'] | {}       |
++----+------+-------------------+-----------------+----------+
+# nova aggregate-add-host 2 compute003
+Aggregate 2 has been successfully updated.
++----+------+-------------------+--------------------------------+----------+
+| Id | Name | Availability Zone | Hosts                          | Metadata |
++----+------+-------------------+--------------------------------+----------+
+| 2  | agg2 | None              | [u'compute002', u'compute003'] | {}       |
++----+------+-------------------+--------------------------------+----------+
+</code></pre>
+
+<p>여기서 다시 nova availability-zone-list 하면 아무런 변화기 없습니다. nova aggregate-list 결과에 보면 &ldquo;Availability Zone&#8221;이라는 항목이 있습니다. 녜.. host aggregate에 zone 설정이 없어서 그런 것이죠..</p>
+
+<p>다시 host aggregate에 availability zone을 설정해보죠.</p>
+
+<pre><code># nova aggregate-update 1 agg1 zone1
+Aggregate 1 has been successfully updated.
++----+------+-------------------+--------------------------------+----------------------------------+
+| Id | Name | Availability Zone | Hosts                          | Metadata                         |
++----+------+-------------------+--------------------------------+----------------------------------+
+| 1  | agg1 | zone1             | [u'compute000', u'compute001'] | {u'availability_zone': u'zone1'} |
++----+------+-------------------+--------------------------------+----------------------------------+
+# nova aggregate-update 2 agg1 zone2
+Aggregate 2 has been successfully updated.
++----+------+-------------------+--------------------------------+----------------------------------+
+| Id | Name | Availability Zone | Hosts                          | Metadata                         |
++----+------+-------------------+--------------------------------+----------------------------------+
+| 2  | agg1 | zone2             | [u'compute002', u'compute003'] | {u'availability_zone': u'zone2'} |
++----+------+-------------------+--------------------------------+----------------------------------+
+</code></pre>
+
+<p>이제 다시 availability zone을 보면</p>
+
+<pre><code># nova availability-zone-list
++-----------------------+----------------------------------------+
+| Name                  | Status                                 |
++-----------------------+----------------------------------------+
+| internal              | available                              |
+| |- control0           |                                        |
+| | |- nova-conductor   | enabled :-) 2013-12-11T09:01:15.000000 |
+| | |- nova-consoleauth | enabled :-) 2013-12-11T09:01:09.000000 |
+| | |- nova-cert        | enabled :-) 2013-12-11T09:01:09.000000 |
+| | |- nova-scheduler   | enabled :-) 2013-12-11T09:01:14.000000 |
+| zone1                 | available                              |
+| |- compute001         |                                        |
+| | |- nova-compute     | enabled :-) 2013-12-11T09:01:15.000000 |
+| |- compute000         |                                        |
+| | |- nova-compute     | enabled :-) 2013-12-11T09:01:15.000000 |
+| zone2                 | available                              |
+| |- compute003         |                                        |
+| | |- nova-compute     | enabled :-) 2013-12-11T09:01:15.000000 |
+| |- compute002         |                                        |
+| | |- nova-compute     | enabled :-) 2013-12-11T09:01:15.000000 |
++-----------------------+----------------------------------------+
+</code></pre>
+
+<p>녜.. 그렇습니다. host aggregate를 availability zone으로 사용할 수 있습니다.</p>
+
+<p>그리고 이렇게 만들어진 존을 지정하여 인스턴스를 만드는 것은 아래처럼 할 수 있습니다.</p>
+
+<pre><code># nova boot --flavor=&lt;flavor&gt; --nic net-id=&lt;net-id&gt; \
+    --image=&lt;image-id&gt; --key_name=&lt;keyname&gt; \
+    --availability-zone zone1:compute000 &lt;instance-name&gt;
+</code></pre>
+
+<p>admin 권한으로는 compute node까지 지정이 가능하고, admin이 아닌 경우는 zone 까지만 지정 가능합니다.</p>
+
+<p>참고링크: <a href="http://russellbryantnet.wordpress.com/2013/05/21/availability-zones-and-host-aggregates-in-openstack-compute-nova/">http://russellbryantnet.wordpress.com/2013/05/21/availability-zones-and-host-aggregates-in-openstack-compute-nova/</a></p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">whitekid</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2013-12-11T00:00:00+09:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2013</span></span> <span class='time'>12:00 am</span></time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://whitekid.github.io/archives/1454" data-via="" data-counturl="http://whitekid.github.io/archives/1454" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/archives/1444" title="Previous Post: flavor에 따라서 생성되는 인스턴스가 생성되는 존 설정하기">&laquo; flavor에 따라서 생성되는 인스턴스가 생성되는 존 설정하기</a>
+      
+      
+        <a class="basic-alignment right" href="/archives/1182" title="Next Post: kvm: linux bridge 대신 openvswitch  사용하기">kvm: linux bridge 대신 openvswitch  사용하기 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/keystone-bootstrap/">Keystone Bootstrap</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/neutron-default-security-group/">Neutron Default Security Group</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1550">클라우드 네트워킹과 SDN 그리고 OpenStack</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Choe, Cheng-Dae -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

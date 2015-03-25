@@ -1,0 +1,264 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Flavor에 따라서 생성되는 인스턴스가 생성되는 존 설정하기 - Your wish is my command</title>
+  <meta name="author" content="Choe, Cheng-Dae">
+
+  
+  <meta name="description" content="가끔 이런 경우가 있습니다. 이 flavor로 만드는 인스턴스는 성능이 좋아야 합니다. 그러니 이 flavor로 만드는 인스턴스는 성능이 좋은 물리 호스트에 만들어 주세요. SSD를 사용하는 호스트, RAM이 특별하게 많이 필요한 인스턴스, Disk I/O가 많이 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://whitekid.github.io/archives/1444">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Your wish is my command" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Your wish is my command</a></h1>
+  
+    <h2>It&#8217;s a long journey</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="whitekid.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Flavor에 따라서 생성되는 인스턴스가 생성되는 존 설정하기</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2013-12-11T00:00:00+09:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2013</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>가끔 이런 경우가 있습니다.</p>
+
+<blockquote><p>이 flavor로 만드는 인스턴스는 성능이 좋아야 합니다. 그러니 이 flavor로 만드는 인스턴스는 성능이 좋은 물리 호스트에 만들어 주세요.</p></blockquote>
+
+<p>SSD를 사용하는 호스트, RAM이 특별하게 많이 필요한 인스턴스, Disk I/O가 많이 필요한 인스턴스 등등 이런 요청은 다양합니다. 그런 경우는 이전에서 만든 <a href="http://blog.woosum.net/archives/1454" title="host-aggregation을 availability-zone으로 사용하기">host aggregate</a>와 flavor를 연결하여 특정 flavor는 특정 존에 생성되도록 강제 할 수 있습니다.</p>
+
+<p>인스턴스를 어떤 compute node에 위치시킬 것인가는 nova-scheduler에 의해서 결정되므로, nova-scheduler에서 flavor와 host aggregate를 동시에 고려하는 Filter가 있으면 되겠죠. 녜.. 당연히 있고, 그 것이 <a href="http://docs.openstack.org/grizzly/openstack-compute/admin/content/scheduler-filters.html#aggregateinstanceextraspecsfilter">AggregateInstanceExtraSpecsFilter</a> 입니다.</p>
+
+<p>당연히 이 필터를 nova scheduler 필터에 추가하고..</p>
+
+<p>/etc/nova.conf:</p>
+
+<pre><code>scheduler_default_filters=AggregateInstanceExtraSpecsFilter,AvailabilityZoneFilter,RamFilter,ComputeFilter
+</code></pre>
+
+<p>특정 zone에 인스턴스를 생성할 flavor에 아래처럼 flavor의 extra-specs에 넣습니다.</p>
+
+<pre><code># nova flavor-show 1
++----------------------------+----------------------------+
+| Property                   | Value                      |
++----------------------------+----------------------------+
+| name                       | m1.tiny                    |
+| ram                        | 512                        |
+| OS-FLV-DISABLED:disabled   | False                      |
+| vcpus                      | 1                          |
+| extra_specs                | {u'locate_zone1': u'true'} |
+| swap                       |                            |
+| os-flavor-access:is_public | True                       |
+| rxtx_factor                | 1.0                        |
+| OS-FLV-EXT-DATA:ephemeral  | 0                          |
+| disk                       | 0                          |
+| id                         | 1                          |
++----------------------------+----------------------------+
+</code></pre>
+
+<p>이제 host aggregate에서 해당 extra-specs에 locate_zone1=true가 설정된 인스턴스를 만들 수 있게 meta-data로 설정하면 됩니다.</p>
+
+<pre><code># nova aggregate-set-metadata 1 locate_zone1=true
+Aggregate 1 has been successfully updated.
++----+------+-------------------+----------------------------------+--------------------------------------------------------------+
+| Id | Name | Availability Zone | Hosts                            | Metadata                                                     |
++----+------+-------------------+----------------------------------+--------------------------------------------------------------+
+|  1 | agg1 | zone1             | [u'compute000&amp;', u'compute001&amp;'] | {u'locate_zone1&amp;': u'true', u'availability_zone': u'zone1&amp;'} |
++----+------+-------------------+-------------------------------+-----------------------------------------------------------------+
+</code></pre>
+
+<p>이제 flavor 1로 인스턴스를 만들면 zone1에 생성되는 것을 볼 수 있습니다.</p>
+
+<pre><code># nova list -all-tenants -fields flavor,host
++--------------------------------------+--------+------------+
+| ID                                   | Flavor | Host       |
++--------------------------------------+--------+------------+
+| 0a3e3ff7-fa2e-47c5-b820-25d3c6f005aa | 1      | compute001 |
+| 2211556d-abef-48d1-91fa-3fd2bc4286d5 | 1      | compute000 |
+| 70535b26-a284-4ad3-8f14-e09bde385b97 | 1      | compute000 |
+| ba8bf1ce-acd8-4b25-8a08-56ff71283c32 | 1      | compute001 |
++--------------------------------------+--------+------------+
+</code></pre>
+
+<p>참고 링크</p>
+
+<ul>
+<li><a href="http://russellbryantnet.wordpress.com/2013/05/21/availability-zones-and-host-aggregates-in-openstack-compute-nova/">http://russellbryantnet.wordpress.com/2013/05/21/availability-zones-and-host-aggregates-in-openstack-compute-nova/</a></li>
+<li><a href="http://docs.openstack.org/grizzly/openstack-compute/admin/content/host-aggregates.html">http://docs.openstack.org/grizzly/openstack-compute/admin/content/host-aggregates.html</a></li>
+</ul>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">whitekid</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2013-12-11T00:00:00+09:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2013</span></span> <span class='time'>12:00 am</span></time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://whitekid.github.io/archives/1444" data-via="" data-counturl="http://whitekid.github.io/archives/1444" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/archives/1436" title="Previous Post: nova/keystone...  bash completion">&laquo; nova/keystone&#8230;  bash completion</a>
+      
+      
+        <a class="basic-alignment right" href="/archives/1454" title="Next Post: host-aggregation을 availability-zone으로 사용하기">host-aggregation을 availability-zone으로 사용하기 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/keystone-bootstrap/">Keystone Bootstrap</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/neutron-default-security-group/">Neutron Default Security Group</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1550">클라우드 네트워킹과 SDN 그리고 OpenStack</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Choe, Cheng-Dae -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

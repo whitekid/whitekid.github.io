@@ -1,0 +1,568 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Your wish is my command</title>
+  <meta name="author" content="Choe, Cheng-Dae">
+
+  
+  <meta name="description" content="Python의 Decorator 기능은 한마디로 멋지다. 잘 쓰면 유용하지&hellip; 근데 작성하면 항상 헷갈린단 말이지&hellip; decorator에 파라미터를 넘겨주고자 하는 경우에도 상당히 헷갈린다. 파라미터가 없는 것하고 형태가 아주 또 달라지거든.. &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://whitekid.github.io/posts/15/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Your wish is my command" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Your wish is my command</a></h1>
+  
+    <h2>It&#8217;s a long journey</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="whitekid.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/688">파라미터가 있는 Decorator</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2011-03-31T00:00:00+09:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>31</span><span class='date-suffix'>st</span>, <span class='date-year'>2011</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Python의 Decorator 기능은 한마디로 멋지다. 잘 쓰면 유용하지&hellip; 근데 작성하면 항상 헷갈린단 말이지&hellip;</p>
+
+<p>decorator에 파라미터를 넘겨주고자 하는 경우에도 상당히 헷갈린다. 파라미터가 없는 것하고 형태가 아주 또 달라지거든.. 간단히 기억하자 파라미터가 있는 데코레이터는 wrapp 함수를 한번 더 두어야한다는 것..</p>
+
+<pre><code>def prefix_decorator(func):
+        def new_func(*args, **kwargs):
+                return 'prefix: ' + func(*args, **kwargs)
+        return new_func
+
+def my_decorator(str):
+        def wrap(func):
+                def new_func(*args, **kwargs):
+                        return func(*args, **kwargs) + ' :' + str
+                return new_func
+
+        return wrap
+
+@prefix_decorator
+@my_decorator('added by decorator')
+def test():
+        return "I'm test"
+
+print test()
+</code></pre>
+
+<p>실행 결과는 아래와 같음..</p>
+
+<pre><code>prefix: I'm test :added by decorator
+</code></pre>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/684">Python-mcrypt 사용 예</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2011-03-25T00:00:00+09:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>25</span><span class='date-suffix'>th</span>, <span class='date-year'>2011</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><a href="http://niemeyer.net/python-mcrypt">python-mcrypt</a>은 문서가 없다. 포함된 test.py를 보면 되는데&hellip; 좀 길고..</p>
+
+<pre><code>#! -*- encoding: utf8 -*-
+import base64
+import urllib
+import mcrypt
+import random
+import string
+
+def random_string(length):
+        return ''.join([random.choice(string.ascii_letters + string.digits) for x in range(length)])
+
+chiper_key = random_string(16)
+
+# encode
+def encrypt(data):
+        m = mcrypt.MCRYPT('rijndael-256', 'cfb')
+        iv_size = m.get_iv_size()
+        iv = random_string(iv_size)
+
+        m.init(chiper_key, iv)
+        return base64.b64encode(m.encrypt(iv + data))
+
+
+# decode
+def decrypt(data):
+        data = base64.b64decode(data)
+        m = mcrypt.MCRYPT('rijndael-256', 'cfb')
+        iv_size = m.get_iv_size()
+        iv = data[:iv_size]
+        encrypted = data[iv_size:]
+        m.init(chiper_key, iv)
+        return m.decrypt(encrypted)
+
+data = '안녕하세요'
+assert data == decrypt(encrypt(data))
+</code></pre>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/680">MySQL XXX_general_ci면&#8230;</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2011-03-22T00:00:00+09:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>22</span><span class='date-suffix'>nd</span>, <span class='date-year'>2011</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>MySQL에서 LIKE로 검색하는데 이놈이 대소문자를 구별하지 않고 검색하는거다. 이거 참 이놈은 ILIKE가 기본값인가? 하고 넘어갔었는데 오늘은 = 로 검색하는데도 대소문자를 구별하지 않고 검색하는거다&hellip; 나로썬 황당~</p>
+
+<p>주위 분들게 물어봤더니 euckr_general_ci로 되어있으면 기본으로 대소문자를 구별하지 않는다고 한다. _cs면 대소문자를 구분한다나&hellip; ㅡㅡ</p>
+
+<p>뭐 이런 일이&hellip; 하여간 이상한 MySQL이다.~</p>
+
+<p>그럼 Case Sentive 검색을 하려면 어떻게 하느냐? euckr_general_ci는 Case Insentive로 되기때문에 _cs로 해야하는데 euckr_general_cs가 없다. 대신 euckr_bin이 있으니 그걸로 하면 된다.</p>
+
+<pre><code>select field from table where field COLLATE euckr_bin = 'test string'
+</code></pre>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/678">Cannot Write Mode P as JPEG</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2011-03-12T00:00:00+09:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>12</span><span class='date-suffix'>th</span>, <span class='date-year'>2011</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>PIL로 이미지 썸내일 만드는데&hellip; 이런 에러가&hellip;</p>
+
+<p><a href="http://www.errorhelp.com/search/details/80884/ioerror-cannot-write-mode-p-as-jpeg">http://www.errorhelp.com/search/details/80884/ioerror-cannot-write-mode-p-as-jpeg</a></p>
+
+<p>간단하다.. P 모드가 아닌 RGB 모드로..</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/676">Google Task Sync</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2011-03-09T00:00:00+09:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>9</span><span class='date-suffix'>th</span>, <span class='date-year'>2011</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><a href="http://gmailblog.blogspot.com/2011/01/top-tasks-for-google-tasks.html">http://gmailblog.blogspot.com/2011/01/top-tasks-for-google-tasks.html</a></p>
+
+<p>Tasks API and synchronization이 들어갔다. 이거 되면 정말 좋겠다. 얼른~</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/673">Ubuntu 휴지통 아이콘 보이기</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2011-03-03T00:00:00+09:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>3</span><span class='date-suffix'>rd</span>, <span class='date-year'>2011</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>이상하게 우분투 시스템에 휴지통 아이콘이 없어서 찾아봤더니 아래처럼 하면 휴지통이 보인다..</p>
+
+<p><a href="http://www.howtogeek.com/howto/ubuntu/add-the-trash-can-icon-to-your-ubuntu-desktop/">http://www.howtogeek.com/howto/ubuntu/add-the-trash-can-icon-to-your-ubuntu-desktop/</a></p>
+
+<p><a href="http://zodiac12k.egloos.com/1382797">http://zodiac12k.egloos.com/1382797</a></p>
+
+<p>그리고 휴지통을 열었더니, 지금까지 삭제한 파일이 거의 5G가 있네&hellip; 숨어있는 5G를 찾았다.!</p>
+
+<p>근데 왜? 삭제하면 휴지통으로 보내면서 휴지통이 기본으로 안보이게 한거야!!</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/668">GeoIP Python</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2011-03-01T00:00:00+09:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>1</span><span class='date-suffix'>st</span>, <span class='date-year'>2011</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><a href="http://www.pointlessrants.com/2010/05/python-geoip-python-geoip-cities-tutorial/">http://www.pointlessrants.com/2010/05/python-geoip-python-geoip-cities-tutorial/</a></p>
+
+<pre><code>import GeoIP
+import socket
+
+host = 'www.daum.net'
+
+gi = GeoIP.new(GeoIP.GEOIP_MEMORY_CACHE)
+print socket.gethostbyname(host), gi.country_code_by_name(host),
+
+gi = GeoIP.open('GeoLiteCity.dat', GeoIP.GEOIP_STANDARD)
+city = gi.record_by_name(host)
+if city:
+print city['city'], city['region_name']
+</code></pre>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/662">Web Terminal Ajaxterm</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2011-02-22T00:00:00+09:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>22</span><span class='date-suffix'>nd</span>, <span class='date-year'>2011</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>글쎄 오늘 네트웍이 불안하다. ssh가 계속 연결이 끊긴다. 그래 네트웍 공사중이라 이해는 하겠다만 일을 할 수가 없잖아!!!</p>
+
+<p>그래서 웹에서 구현되는 터미널을 혹시나하고 뒤져보니 바로나온다. <a href="http://en.wikipedia.org/wiki/Web-based_SSH#Open_source_examples">http://en.wikipedia.org/wiki/Web-based_SSH#Open_source_examples</a></p>
+
+<p>우분투 패키지있는 ajaxterm 설치하고 실행하니 바로 되는구나~ 멋진 세상이다.</p>
+
+<pre><code>$ apt-get install ajaxterm
+$ service start ajaxterm
+</code></pre>
+
+<p><a href="http://localhost:8022/">http://localhost:8022/</a> 로 연결하니 그냥 뜬다.. 물론 로그인해야하는것이고, 속도는 물론 느리지만 급한김에 쓸만한 놈인듯하다.</p>
+
+<p><img src="/images/ajaxterm.png"></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/656">Python 함수에서 Static 변수처럼 사용하기&#8230;</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2011-02-19T00:00:00+09:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>19</span><span class='date-suffix'>th</span>, <span class='date-year'>2011</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>class에서는 static 변수가 지원됩니다. 그런데 함수에서 가끔 static이 필요할 때가 있습니다.</p>
+
+<p>static을 사용하지 않는다면, global을 써야하는데, global을 사용한다는 것은 항상 꺼려지는 것이기에 static이 권장되죠. 하지만 python은 함수에 static을 지원하지 않고, 비슷하게 이를 흉내낼 수 있습니다.</p>
+
+<p>_static을 잘 보시면 됩니다. 자세한 내용은 생략 ㅋㅋ</p>
+
+<pre><code>def get_connection(_static = {}):
+    if 'conn' not in _static:
+        conn = MySQLdb.connect(host=DB_HOST, user=DB_USER, passwd=DB_PASS, db=DB_NAME, use_unicode=True, charset='utf8')
+        _static['conn'] = conn
+    return _static['conn']
+
+def get_cursor():
+    return get_connection().cursor()
+</code></pre>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/654">Ubuntu에서 설치할 패키지 찾기</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2011-02-17T00:00:00+09:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>17</span><span class='date-suffix'>th</span>, <span class='date-year'>2011</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Ubuntu를 테스트탑으로 사용하면서 참.. 어색한 것이 많다. 그중에 하나가 설치할 package를 찾는 것인데.. FreeBSD는 make search 하면 되는데.. 뭘까 한참 찼았다.</p>
+
+<p>간단하다.</p>
+
+<pre><code># apt-cache search package-name
+</code></pre>
+</div>
+  
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+      <a class="prev" href="/posts/16">&larr; Older</a>
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/posts/14">Newer &rarr;</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/keystone-bootstrap/">Keystone Bootstrap</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/neutron-default-security-group/">Neutron Default Security Group</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1550">클라우드 네트워킹과 SDN 그리고 OpenStack</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Choe, Cheng-Dae -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

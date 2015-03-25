@@ -1,0 +1,854 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Your wish is my command</title>
+  <meta name="author" content="Choe, Cheng-Dae">
+
+  
+  <meta name="description" content="일전에 지금의 Quantum 구현에 overlapping networks에서 metadata를 가져오는 문제가 있고, 이에 대한 해결책에 대해서 이야기한 적이 있었죠. 시간내서 이 것을 제대로 정리해서 패치를 보낼 생각이었는데&hellip; 허걱 오늘 Dream &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://whitekid.github.io/posts/8/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Your wish is my command" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Your wish is my command</a></h1>
+  
+    <h2>It&#8217;s a long journey</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="whitekid.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1111">Metadata_overlapping_networks에 대한 패치가 올라와 벼렸군</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-11-17T00:00:00+09:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>17</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><a href="http://blog.woosum.net/archives/1083">일전에 지금의 Quantum 구현에 overlapping networks에서 metadata를 가져오는 문제가 있고, 이에 대한 해결책에 대해서 이야기한 적이 있었죠</a>. 시간내서 이 것을 제대로 정리해서 패치를 보낼 생각이었는데&hellip; 허걱 오늘 Dream Host에서 이 문제에 대한 패치를 보냈군요.</p>
+
+<ul>
+<li><a href="https://review.openstack.org/#/c/16282/">https://review.openstack.org/#/c/16282/</a> - Quantum에서의 metadata proxy &amp; agent</li>
+<li><a href="https://review.openstack.org/#/c/16281/">https://review.openstack.org/#/c/16281/</a> - Nova에서 handling</li>
+</ul>
+
+
+<p>기본 구현을 보면 기본적인 아이디어는 제 아이디어와 비슷합니다. 역시나 namespace에서 agent를 router_id, network_id를 가지고 있는 agent를 띄우고, 다시 agent가 proxy 역할을 해서 실제 metadata로 proxy 형태로 request를 보내는 겁니다.</p>
+
+<p>소스를 보니 깔끔하군요. 지금 적용해도 큰 무리는 없겠습니다. 다음주에 시도해봐야 겠습니다.</p>
+
+<p>역시.. 빨리 했어야 하는건데. ㅡㅡ;</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1108">Fork(?) in Bash</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-11-16T00:00:00+09:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>16</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>shell script에서 fork와 비슷한 같은 작업을 하는 것은 간단하다. 함수를 호출뒤에 &amp;를 넣어주면 되니깐&hellip; 이게 정확하게 fork와 같은 역할을 하는 지는 잘 모르겠지만, 비슷한 역할을 한다.</p>
+
+<pre><code>#!/bin/bash
+function foo() {
+    echo "function foo $1"
+    sleep 5
+    echo "exiting foo $1"
+}
+
+for x in {1..5}; do
+    foo $x &amp;
+done
+
+echo 'waiting...'
+wait
+</code></pre>
+
+<p>foo 함수를 5개 호출하면서 child process로 호출하고, parent에서는 child process가 종료할 때 까지 기다린다. 다음은 실행 결과</p>
+
+<pre><code>$ bash fork.sh
+function foo 1
+function foo 2
+waiting...
+function foo 3
+function foo 5
+function foo 4
+exiting foo 1
+exiting foo 4
+exiting foo 3
+exiting foo 5
+exiting foo 2
+</code></pre>
+
+<p>이걸 어디에 사용하냐구요? 그래요 snapshot를 뜨는데, 하나하나 하기가 너무 느려서 백그라운드로 돌릴려구요.. 잘 될려나..</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1096">Ubuntu Repository Mirror</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-11-15T00:00:00+09:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>15</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>간단하게 apt-mirror를 이용해서 apt repository mirror를 구축하는 것에 대해 정리해본다. OpenStack을 설치하는데, 원격으로 패키지를 가져오는 것이 영 맘에 안들어 간단히 구축해본 것이다.</p>
+
+<p>물론 현재는 squid를 이용한 proxy를 apt-get에서 이용하도록 하고 있지만, 그래도 외부로 나가는 traffic이 있으니.. 그것을 완전히 없애려고 하는 것이다.</p>
+
+<p>rsync를 이용하는 방법도 있으나, 이것은 전체를 통체로 가져오는 것이라 크기가 너무 크다. 물론 필요한 것만 가져온다고 하지만, 그게 실상 쉽지 않다. ubuntu의 경우는 .pool에 실제 파일이 들어가 있는데, 여기서 구분하기가 만만치 않아서&hellip;</p>
+
+<pre><code>$ apt-get install apt-mirror
+</code></pre>
+
+<p>/etc/apt/mirror.list 파일은 적당히 편집하여 미러링 원하는 레포지트리를 선택한다.</p>
+
+<pre><code>deb-amd64 http://apt.opscode.com quantal-0.10 main testing
+deb-i386 http://apt.opscode.com precise-0.10 main testing
+deb-i386 http://apt.opscode.com quantal-0.10 main testing
+clean http://apt.opscode.com
+
+deb-amd64 http://ubuntu-cloud.archive.canonical.com/ubuntu/ precise-updates/folsom main
+deb-amd64 http://ubuntu-cloud.archive.canonical.com/ubuntu/ precise-proposed/folsom main
+deb-i386 http://ubuntu-cloud.archive.canonical.com/ubuntu/ precise-updates/folsom main
+deb-i386 http://ubuntu-cloud.archive.canonical.com/ubuntu/ precise-proposed/folsom main
+clean http://ubuntu-cloud.archive.canonical.com/ubuntu
+</code></pre>
+
+<ul>
+<li>apt-mirror는 기본으로 구동되는 OS의 arch에 맞춰서 해당 패키지만 가져오도록 되어있다. 따라서 deb-[amd64|i386]처럼 직접 아키텍쳐를 지정한다.</li>
+</ul>
+
+
+<p>OpenStack을 chef로 자동하하기 때문에 chef repository를&hellip; OpenStack은 cloud-archive를 가져오기로 했다.</p>
+
+<pre><code>choe@choe-pc:~/public_html$ du -sh /var/spool/apt-mirror/mirror/*
+22M /var/spool/apt-mirror/mirror/apt.opscode.com
+357M /var/spool/apt-mirror/mirror/ubuntu-cloud.archive.canonical.com
+</code></pre>
+
+<p>설정이 되었으면 미러링이 잘 되는지 테스트 해본다.</p>
+
+<pre><code>$ sudo apt-mirror
+</code></pre>
+
+<p>별 문제 없다면 주기적으로 미러링을 하기 위해서 crontab 파일을 수정한다. apt-mirror 패키지에서 기본적인 crontab 파일을 만들어 놨지만, 주석처리되어서 실제로 미러링되지 않는다.</p>
+
+<pre><code>$ sudo vi /etc/cron.d/apt-mirror
+</code></pre>
+
+<p>참고로 ubuntu 공식 패키지 미러링은 하루에 4번 하는 것을 권장하고 있다. 따라서 crontab도 6시간 간격으로 지정해 놓으면 되겠다.
+이제 미러링 된 파일을 웹 서버에 링크하면 된다.</p>
+
+<pre><code>$ ln -s /var/spool/apt-mirror/mirror ~/public_html/apt-mirror
+</code></pre>
+
+<p>ps. precise의 전체 패키지(precise, precise-updates, precise-security, precise-proposed, precise-backports/ main, multiverse, universe, restricted)는 약 80G 정도 소요된다.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1086">Twisted Powered Http Proxy Server</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-11-07T00:00:00+09:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>7</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>역시 간단한 서버 작업 하는 데는 twisted 만한 것이 없습니다.</p>
+
+<pre><code>from twisted.web import proxy, http
+from twisted.internet import reactor
+from twisted.python import log
+import sys
+
+log.startLogging(sys.stdout)
+
+class ProxyFactory(http.HTTPFactory):
+protocol = proxy.Proxy
+
+reactor.listenTCP(8080, ProxyFactory())
+reactor.run()
+</code></pre>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1083">OpenStack: Allow_overlapping_ip의 해결 아이디어 간단 구현</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-11-07T00:00:00+09:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>7</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>quantum 제한사항에서 <a href="http://blog.woosum.net/archives/1047">allow_overlapping_ip 기능이 안된다</a>고 이전에 포스트 했었고, 이에 대해서 잠깐 생각을 하다가 아이디어가 떠올라서 몇 가지 작업했더니 대충은 동작합니다.</p>
+
+<p>안되는 근본 원인은 instance의 ip를 가지고 어떤 instance인지 특정할 수 없다는 것이었는데, 여기다 tenant-id를 같이 조합하면 된다는 것이죠. 문제는 어떻게 tenant-id를 넘기느냐 였는데, http를 사용하니 header에 집어넣고, 이 header를 집어 넣는 역할을 하는 proxy를 l3 router namespace에서 동작하면 되는 것입니다.</p>
+
+<p>이제 아래처럼 metadata 요청 흐름이 바뀌는 것이죠.</p>
+
+<ul>
+<li>instance -> DNAT -> metadata server</li>
+<li>instance -> proxy in router namespace -> metadata server</li>
+</ul>
+
+
+<p>prox 서버는 간단히 twisted를 이용해서 만들었습니다.</p>
+
+<p>적용 순서는&hellip;</p>
+
+<ol>
+<li>metadata patch 적용: <a href="https://github.com/whitekid/nova/commit/de9b371a4667dd66f510093a1e207bc7f9e02c6d">https://github.com/whitekid/nova/commit/de9b371a4667dd66f510093a1e207bc7f9e02c6d</a></li>
+<li>metadata api restart</li>
+</ol>
+
+
+<p>router name space에서</p>
+
+<ol>
+<li>lo device에 metadata ip 추가
+<code>
+$ ip netns exec qrouter-XXXX ip addr add 169.254.169.254/32 device lo
+</code></li>
+<li><p>DNAT하는 iptables rule 삭제
+<code>
+$ ip netns exec qrouter-XXXX
+$ iptables -t nat -L quantum-l3-agent-PREROUTING | grep 169.254.169.254 &gt; /dev/null &amp;&amp; iptables -t nat -D quantum-l3-agent-PREROUTING 1
+$ exit
+</code></p></li>
+<li><p>metadata proxy 실행
+  <code>
+  $ ip netns exec qrouter-XXX python metadata-proxy [real-metadata-api-server-ip] [tenant-id]
+ </code></p></li>
+</ol>
+
+
+<p>그냥 단순히 아이디어 검증 차원이라, 실제로 쓰고자 한다면 많은 추가 작업이 필요할 것 같습니다.</p>
+
+<p><a href="https://github.com/whitekid/metadata_proxy">https://github.com/whitekid/metadata_proxy</a></p>
+
+<p>ps. 아.. 영어 어렵다.. ㅡㅡ</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1077">OpenStack: Quantum과 사용할 때 Metadata Request Back Routing 문제</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-11-06T00:00:00+09:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>6</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Quantum으로 tenant network를 디자인 할 때, 딱 드는 생각은 tenant subnet을 private network을 구성하자 입니다. 물론 그렇겠죠. aws처럼 모든 생성되는 가상머신이 모두 public ip를 가질 필요는 없으니깐요. 필요한 인스턴스에 floating ip를 연결해서 외부에서 접속이 가능하게 하면 됩니다.</p>
+
+<p>Quantum 가이드에 나온 <a href="http://docs.openstack.org/trunk/openstack-network/admin/content/use_cases_tenant_router.html">Per-tenant Routers with Private Networks</a>처럼 말이지요. 아래 그림처럼 된다면 참으로 멋진 구성이 될 텐데 말입니다. 사용자가 알아서 DMZ도 구성할 수 있고, 개발환경, production 환경의 네트웍을 똑같이 구성하여 테스트할 수 있고&hellip; 그런데 이렇게 하면서 quantum에서 예상치 못하는 결과가 발생합니다.</p>
+
+<p><img src="http://docs.openstack.org/trunk/openstack-network/admin/content/figures/UseCase-MultiRouter.png""></p>
+
+<p>그중에 하나가(overlapping_ip 문제는 별도의 문제!) instance가 처음 부팅할 때 보내는 meta data request의 패킷이 metadata api 서버로는 잘 가지만, 다시 돌아올 경로가 없습니다.</p>
+
+<p>Network Node -> Controller 노드까지 경로를 보면, metadata api가 public_ip이기 때문에 instance에서는 잘 접속이 됩니다. 하지만 패킷이 다시 돌아갈 instance의 주소는 private 네트워크이고 api-host에서 다시 돌아간 패킷은 external-router에서 내부 routing 경로가 아니라고 세상 밖으로 던져져 버립니다.</p>
+
+<p>그래서 metadata connection이 맺여지지 않습니다.</p>
+
+<p><img src="http://docs.openstack.org/trunk/openstack-network/admin/content/figures/Quantum-PhysNet-Diagram.png""></p>
+
+<p>metadata를 가져오지 못하면, 다른 것 다 제쳐두고라도 instance에 ssh keypair를 설정할 수 없기 때문에 가상 머신에 ssh 할 수 없는&hellip; 즉 만들었지만 접근하지 못하는 오직 ping만 할 수 있는 상황이 발생합니다. ㅎㅎ</p>
+
+<p>그래서 external-router에서 내부 network으로 routing 틀어줘야 합니다.</p>
+
+<p>어쨌든 그래서 아래처럼 quantum l3_agent를 소스를 기반으로 간단하게 routing 경로를 잡는 agent를 만들었고, 그 일을 하는 소스는 아래와 같습니다. 하나도 정리안된.. 막무가내 소스입니다. ㅎㅎ</p>
+
+<p>tenant의 external router로 연결된 router에 대해서 해당 tenant의 subnet으로 가는 경로를 그 tenant에 기본으로 할당된 public ip로 잡아주는 것이죠. 그러면 해당 l3 name space에서는 적당히 알아서 그 instance로 보내줍니다.</p>
+
+<pre><code>def do_single_loop(self):
+    routers = self.qclient.list_routers()['routers'];
+    ports = self.qclient.list_ports()
+
+    route_info = []
+    for r in routers:
+        # get tenant's subnet
+        subnet = self.qclient.list_ports(device_id=r['id'],
+                device_owner='network:router_interface')['ports'][0]['fixed_ips'][0]['subnet_id']
+        cidr = self.qclient.show_subnet(subnet=subnet)['subnet']['cidr']
+
+        # get the tenant's gw
+        fixed_ip = self.qclient.list_ports(device_id=r['id'],
+                device_owner='network:router_gateway')['ports'][0]['fixed_ips'][0]['ip_address']
+        route_info.append((cidr, fixed_ip))
+
+    # get current route info
+    old_routes = [x.split() for x in subprocess.check_output(['ip', 'route']).splitlines()[2:] if ('via' in x and 'default' not in x) ]
+    old_routes = [(x[0], x[2]) for x in old_routes]
+
+    # add new routing info
+    for cidr, fixed_ip in set(route_info) - set(old_routes):
+        subprocess.check_call(['route', 'add', '-net', cidr, 'gw', fixed_ip])
+
+    # remove routing info
+    for cidr, fixed_ip in set(old_routes) - set(route_info):
+            subprocess.check_call(['route', 'del', '-net', cidr, 'gw', fixed_ip])
+</code></pre>
+
+<p>그리고 더 해야하는 게, openstack에서 외부 명령을 실행하는 것은 rootwarp을 이용해서 사용하도록 되어있습니다. 아무래도 보안상 이유겠지요. 근데 지금은 우선 잘 되는지 테스트 하기 위해서 그거 신경 안썻습니다. 나중에 시간나면 정리 합니다~ ㅎㅎ</p>
+
+<p>마지막으로 소스 위치~</p>
+
+<p><a href="https://github.com/whitekid/metadata_route_agent">https://github.com/whitekid/metadata_route_agent</a></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1072">Github에서 패치 가져와 적용하기 + Chef</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-11-05T00:00:00+09:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>5</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>오늘 작업하다 보니 OpenStack에 몇가지 버그가 있었습니다. 버그 있는 것을 확인하고 퇴근했는데, 마침 메일링 리스트에 관련 이야기가 나오더니 커밋 링크(<a href="https://github.com/openstack/quantum/commit/84d60f5fd477237bd856b97b9970dd796b10647e">https://github.com/openstack/quantum/commit/84d60f5fd477237bd856b97b9970dd796b10647e</a>)를 알려줍니다.</p>
+
+<p>이걸 지금 chef로 작업하고 있는 것에 적용 시키기로 했지요.</p>
+
+<pre><code>package quantum-l3-agent
+
+# apply l3 agent bug fix patch
+execute "apply fetch" do
+    action :nothing
+
+    command "wget -O /dev/stdout -q https://github.com/openstack/quantum/commit/84d60f5fd477237bd856b97b9970dd796b10647e.patch | \
+        patch -p1"
+    cwd "/usr/lib/python2.7/dist-packages"
+
+    subscribes :run, "package[quantum-l3-agent]", :immediately
+end
+</code></pre>
+
+<ol>
+<li>github에서 커밋 아이디를 가져오는 것은 커밋 링크에 .patch를 붙여준다.</li>
+<li>patch는 관련 패키지를 설치할 경우만 필요하기 때문에 action :nothing을 주고 subscribe로 해당 패키지가 설치되었을 때 패치를 진행한다.</li>
+<li>소스로 작업했으면 git apply로 할텐데.. 패키지로 작업하기 때문에 patch -p1으로..</li>
+</ol>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1065">Chef Data_bag/ Cookbook Upload Script</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-11-02T00:00:00+09:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>2</span><span class='date-suffix'>nd</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>chef로 작업하다보면 참 불편한 것이 있다.</p>
+
+<pre><code>$ knife cookbook upload -a -o cookbook # ---- [1]
+$ knife data bag from file hosts default.json # ---- [2]
+</code></pre>
+
+<p>#1은 cookbook을 업로드하고 #2는 data bag을 업로드한다. 그런데 여기서 문제는 이 명령을 실행하는 디렉토리가 중요하다는 것이다. cookbook을 업로드 할 때는 -o로 cookbook 디렉토리를 지정해줘야하고, data bag을 업로드할 때는 chef-repository의 root에서 실행해야하는 것이다.</p>
+
+<p>작업하다보면 여기저기 디렉토리를 이동하게 되는데, 그에 따라서 명령이 다르단 말이지.. 이거 귀찮아서 간단히 스크립트 만들었다. 원리는 간단하다. chef-repository의 root 디레토리에는 .chef 디렉토리에서 해당 레포지트리의 chef-server를 관리하는데, 이 디렉토리를 찾아서 해당 명령을 수행하는 것이다. 단순히 아래처럼 하면 된다.</p>
+
+<pre><code>$ kup.sh
+$ bag.sh
+</code></pre>
+
+<p>이러면 자동으로 chef-repository root 디렉토리에서 cookbook, data bag upload를 수행한다.</p>
+
+<p>kup.sh</p>
+
+<pre><code>#!/bin/bash
+# upload all cookbooks
+set -e
+
+base_dir=`dirname $0`
+if [ -f $base_dir/cheflib.sh ]; then
+    source $base_dir/cheflib.sh
+fi
+
+chef_dir=$(find_chef_repo)
+
+knife cookbook upload -a -o $chef_dir/cookbooks
+</code></pre>
+
+<p>bag.sh</p>
+
+<pre><code>#!/bin/bash
+# upload all data bags
+
+set -e
+
+base_dir=`dirname $0`
+if [ -f $base_dir/cheflib.sh ]; then
+    source $base_dir/cheflib.sh
+fi
+
+chef_dir=$(find_chef_repo)
+
+cd $chef_dir
+
+for x in `(cd data_bags; find . -name '*.json' -type f)`; do
+    bag=$(echo $x | cut -d / -f 2)
+    item=$(echo $x | cut -d / -f 3)
+
+    knife data bag from file $bag $item
+done
+</code></pre>
+
+<p>cheflib.sh</p>
+
+<pre><code>#!/bin/bash
+
+function fatal() {
+    echo $@
+    exit
+}
+
+function find_chef_repo() {
+    pushd `pwd` &gt; /dev/null
+
+    # find .chef directory
+    until [ -d .chef ]; do
+        [ $(pwd) = '/' ] &amp;&amp; break
+        cd ..
+    done
+
+    [ `pwd` = '/' ] &amp;&amp; fatal "Can't find chef repository"
+
+    echo `pwd`
+    popd &gt; /dev/null
+}
+</code></pre>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1056">VMWare에서 Hostonly Vmnet간의 Routing</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-10-29T00:00:00+09:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>29</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>VMWare를 사용하면서 뭔가 복잡한 네트워크 모델을 사용하려면 hostonly vmnet을 여러개 사용하게 됩니다. VMWare를 OpenStack 테스트 용으로 사용하고 있는 저는 현재 테스트 환경에서 hostonly vmnet을 4개 사용하고 있으며 실제 환경을 그대로 묘사하기 위해서 조만간 6~7개로 늘려서 테스트할 예정입니다.</p>
+
+<p>그런데 처음에 잘 모르고 지나갔다가 낭패를 본게 hostonly로 네트웍을 구성하면 host-pc에서 vmnet간에 routing을 지원하지 않습니다. 정리하면 아래와 같습니다.</p>
+
+<ul>
+<li>host-pc <-> vmnet: OK</li>
+<li>vmnet <-> Internet: N/A</li>
+<li>vnmet <->  vmnet : N/A</li>
+</ul>
+
+
+<p>당연히 되는지 알았는데, <a href="/archives/1010">vmnet간에 NATing이 되고 있었던 것</a>과 이로 인한 <a href="/archives/997">routering filter의 간섭</a>이었죠. 이 상황을 알아채려면 상대방의 ip까지 확인 해야하는데, 그럴 일이 거의 없다가 문제가 발생해 추척하다 발견한 것이죠.. ㅎㅎ</p>
+
+<p>어쨌든 vmnet간에 routing하는 방법은 <a href="http://www.vmware.com/support/ws5/doc/ws_net_advanced_2hostonly_routing.html">VMWare 사이트에 잘 설명</a>이 되어있습니다. 근데 여기서 방법 중에 host-pc에서 routing을 잡는 방법은 ubuntu에서 테스트하니 안됩니다. 그래서 routing을 담당하는 VM을 만들어 합니다.</p>
+
+<p>간단히 정리하면</p>
+
+<ol>
+<li>hostonly network을 가지는 2개의 vm(10.20.1.10, 10.20.2.10)을 만든다. ==> 이하 internal vm</li>
+<li>두 hostonly network을 가지는 router vm을 만든다. ==> 이하 router vm
+eth0: NAT network for external internet access
+eth1: 10.20.1.2
+eth2: 10.20.2.2</li>
+<li>여기서 .2를 가지는 것은 .1은 host-pc에 연결하고 host-pc에서 management용으로 사용할 것이므로 .2를 사용한다.</li>
+<li>router vm에서 routing이 되도록 설정한다. 간단히
+$ systctl net.ipv4.ip_foward=1</li>
+<li>router vm에 internal vm이 외부 인터넷 접근을 위해 NATing을 설정한다. 외부 인터넷 접근 필요 하다면&hellip;
+$ iptables -t nat -A POSTROUTING -j MASQUERADE -o eth0</li>
+<li>internal vm의 default gateway를 .2번으로 설정한다.</li>
+<li>internal vm에서 tracepath <ip>를 통해서 각각의 vm을 router vm을 통해서 접근하는지 확인한다.</li>
+<li>internal vm에서 tracepath google.com으로 외부 인터넷 연결 확인</li>
+<li>끝..</li>
+</ol>
+
+
+<p>참고..</p>
+
+<ul>
+<li>iptables rule 저장은 <a href="http://wiki.woosum.net/iptables#A.2BrjDQwA-">여기</a>를 참고</li>
+</ul>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1040">Twisted를 이용한 심플한 Dns Proxy: Dnspost</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-10-26T00:00:00+09:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>26</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Mac OSX의 <a href="http://developer.apple.com/library/mac/#documentation/Darwin/Reference/ManPages/man5/resolver.5.html">resolver</a>라는 기능이 있습니다. 간단히 말해서 특정 도메인에 해당하는 DNS 쿼리를 특정 DNS 서버에 요청하는 것이지요.. 뭐 일상생활에서는 필요없겠는데, 개발용으로 내부 네임서버를 돌리고 있는 경우에 가끔 유용하게 쓸 수 있습니다.</p>
+
+<p>아래처럼 도메일별로 다른 서버에 DNS 쿼리가 가능하다는 것이죠.</p>
+
+<ul>
+<li>*.dev.company.com -> 192.168.1.199</li>
+<li>*.myteam.company.com -> 192.168.1.200</li>
+<li>나머지 -> 168.126.63.1</li>
+</ul>
+
+
+<p>OSX에서는 resover를 사용해서 하고.. 또한 우리 회사 개발자도 OSX를 좋아해서 이 기능을 쓰라고 그러고, 다른 OS는 별로 관심이 없습니다.(OSX가 기본 개발 OS인양&hellip;). Ubuntu를 데스크탑으로 사용하는 제가 이상하게 소외받는 ㅎㅎ</p>
+
+<p>그래서 목마른 사람이 우물을 판다고 python twisted name 라이브러리를 이용해서 간단히 뚝딱뚝딱 만들어 봤습니다. 로컬에서 네임서버 돌리고 이 것을 사용하면 됩니다.</p>
+
+<p><a href="https://github.com/whitekid/dnspost">https://github.com/whitekid/dnspost</a></p>
+
+<h3>Installation</h3>
+
+<pre><code>$ apt-get install python-twisted-names
+$ git clone https://github.com/whitekid/dnspost.git
+$ cd dnspost
+# edit dnspost.conf listen_port
+$ ./dnspost.py
+</code></pre>
+
+<h3>Ubuntu/NetworkManager note</h3>
+
+<p>ubuntu desktop에서는 NetworkManager를 사용하고, NetworkManager에서는 dnsmasq를 사용하여 dns를 캐슁하면서 로컬에서 서비스 하고 있습니다. NetworkManager에서 dnsmasq가 상위 dns 쿼리할때 특정 포트로 쿼리할 수 있는 기능이 있다면 로컬에서 별도의 포트로 돌리고있는 dnspost로 설정하여 할 수 있지만, 그런 기능이 없기에 dnsmasq를 사용하지 않고 합니다.</p>
+
+<h4>disable dnsmasq</h4>
+
+<p>/etc/NetworkManager/NetworkManager.conf에서 dns=dnsmasq라는 라인을 삭제합니다</p>
+
+<pre><code>#dns=dnsmasq
+</code></pre>
+
+<p>NetworkManager restart</p>
+
+<pre><code>$ service network-manager restart
+</code></pre>
+
+<p>px ax | grep dnsmasq로 dnsmasq가 없는지 확인합니다.</p>
+
+<h4>set nameserver to localhost</h4>
+
+<p>네트워크 연결 설정에서 DNS 서버를 127.0.0.1로 변경합니다. 설정을 변경한 후 /etc/resolv.conf에는 설정이 없거나 127.0.0.1로 설정이 됩니다.</p>
+
+<p>만일 반영이 안되면 network-manager를 다시 시작합니다.</p>
+
+<pre><code>$ service network-manager restart
+</code></pre>
+
+<h4>register dnspost upstart service</h4>
+
+<pre><code>$ cp dnspost.conf /etc/init/dnspost.conf
+$ ln -s /lib/upstart-job /etc/init.d/dnspost
+$ service dnspost start
+</code></pre>
+
+<h4>test</h4>
+
+<pre><code>$ dig daum.net localhost
+</code></pre>
+
+<p>잘 동작하는 것을 확인하였다면 이제 설정파일 적당히 바꿔서 도메인별로 DNS Server를 다르게 사용해보시기 바랍니다. - 끝 -</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+      <a class="prev" href="/posts/9">&larr; Older</a>
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/posts/7">Newer &rarr;</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/keystone-bootstrap/">Keystone Bootstrap</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/neutron-default-security-group/">Neutron Default Security Group</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
+      </li>
+    
+      <li class="post">
+        <a href="/archives/1550">클라우드 네트워킹과 SDN 그리고 OpenStack</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Choe, Cheng-Dae -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
