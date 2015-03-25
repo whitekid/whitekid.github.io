@@ -1,0 +1,24 @@
+
+						<ul>
+							<li>
+								<span class="twitter-date"><a href="http://twitter.com/kiddtm/statuses/10517728091701249">6 mins ago</a></span><br />
+								<span class="twitter-text">오랜만에 맑은 날씨 썬루프도 오랜만에 열었다</span>
+							</li>
+							<li>
+								<span class="twitter-date"><a href="http://twitter.com/kiddtm/statuses/10516902715588610">9 mins ago</a></span><br />
+								<span class="twitter-text">@<a href="http://twitter.com/tourbro">tourbro</a> 그래서 그런지 오늘 하늘 좋네요</span>
+							</li>
+							<li>
+								<span class="twitter-date"><a href="http://twitter.com/kiddtm/statuses/10516415421349888">11 mins ago</a></span><br />
+								<span class="twitter-text">고객센터 남자직원의 말투가 여자직원과 똑같다. 남자가 그러니깐 닭살 돋자나!!!</span>
+							</li>
+							<li>
+								<span class="twitter-date"><a href="http://twitter.com/kiddtm/statuses/10380245232259072">9 hours ago</a></span><br />
+								<span class="twitter-text">@<a href="http://twitter.com/fcsoullez">fcsoullez</a> 그렇구나 한장 줄어드는 걸 생각도 못했네뇨</span>
+							</li>
+							<li>
+								<span class="twitter-date"><a href="http://twitter.com/kiddtm/statuses/10374823310004224">10 hours ago</a></span><br />
+								<span class="twitter-text">누군가에겐 독이 되는 것이 누군가에게는 꼭 필요한 것이 되고 <a href="http://j.mp/dQ0coj">http://j.mp/dQ0coj</a></span>
+							</li>
+						</ul>
+						

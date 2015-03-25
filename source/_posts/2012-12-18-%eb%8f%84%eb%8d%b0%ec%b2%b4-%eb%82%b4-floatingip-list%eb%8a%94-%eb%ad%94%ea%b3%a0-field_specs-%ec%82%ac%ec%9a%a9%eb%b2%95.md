@@ -1,0 +1,83 @@
+---
+id: 1194
+title: 도데체 내 floatingip-list는 뭔고? + field_specs 사용법
+author: whitekid
+layout: post
+guid: http://blog.woosum.net/?p=1194
+permalink: /archives/1194
+dsq_thread_id:
+  - 979153360
+categories:
+  - Uncategorized
+tags:
+  - OpenStack
+  - Quantum
+---
+quantum은 nova와는 다르게 사용자를 구별하지 않습니다. 아직 keystone의 인증 기능이 완전하게 통합되지 않는 것이죠. 아마도 grizzly에서 해결할 것 같습니다.
+
+그런데 지금 너무 불편합니다. quantum floatingip-list하면 내가 할당받은 floatingip-list만 나와도 정신없는데, 다른 tenant의 것까지 나온다면 더욱 더 정신없습니다. nova처럼 내것만 나오면 좋을텐데 말입니다.
+
+목마른 사람이 우물판다고 간단하게 스크립트 만들어 봤습니다.
+
+    #!/bin/bash  
+    TENANT\_ID=$(keystone tenant-list | grep " $OS\_TENANT_NAME " | awk '{print $2}')  
+    ARG=$@
+
+    if [ ! -z "$TENANT_ID" ]; then  
+        EXTARG=-tenant\_id=${TENANT\_ID}
+
+        if [[ ! "$ARG" =~ ' --- ' ]]; then  
+            EXTARG="- $EXTARG"  
+        fi  
+    fi
+
+    quantum $ARG $EXTARG  
+
+사용법은 q.sh로 저장하시고 quantum 명령과 동일하게 쓰면 됩니다. 이제 q.sh로 실행하면 quantum의 대부분의 query 명령이 내가 속한 tenant의 것만 나옵니다. 이제 눈이 좀 정갈해 지는군요.
+
+quantum의 help를 아무리 뒤져봐도 특정 tenant의 목록을 가져오는 것은 없습니다. 유일하게 힌트가 보이는 것 이라고는 filter_specs가 있는데, 여기 키와 값에 뭘 넣어야할지 막막하기도 합니다. 녜 quantum은 이제 folsom 버전에 들어가서 아직 부족한 부분이 많아서 그렇습니다. 당연 문서도 부족합니다(cinder도 아마 그렇지요).
+
+filter_specs에 넣을 수 있는 값들은 리스트된 객체를 show 했을때 보이는 값입니다.
+
+    root@:~# quantum net-list  
+    +-------------------------------------+---------+-------------------------------------+  
+    | id | name | subnets |  
+    +-------------------------------------+---------+-------------------------------------+  
+    | 0ded8d5c-9820-4e90-8ca8-97e4a072b2e1 | demo2 | 5d21c90d-7640-4de4-bed7-ce27421851d3 |  
+    | 791d5c88-c437-4f82-97f0-ce435acb2172 | ext_net | c9f2a3cf-2013-4452-b3f5-c778143cc87f |  
+    | d4950d6e-d796-4e30-9fba-d33599ba3644 | admin | 304f2b2b-6e8f-403c-96b6-0b292007685d |  
+    | e8d18114-540d-4c5e-b2a9-32e4a2e29625 | demo1 | 67b07eb0-235b-4dc4-843c-81e41247e737 |  
+    +-------------------------------------+---------+-------------------------------------+  
+    root@:~# quantum net-show ext_net  
+    +---------------------------+-------------------------------------+  
+    | Field | Value |  
+    +---------------------------+-------------------------------------+  
+    | admin\_state\_up | True |  
+    | id | 791d5c88-c437-4f82-97f0-ce435acb2172 |  
+    | name | ext_net |  
+    | provider:network_type | gre |  
+    | provider:physical_network | |  
+    | provider:segmentation_id | 1 |  
+    | router:external | True |  
+    | shared | False |  
+    | status | ACTIVE |  
+    | subnets | c9f2a3cf-2013-4452-b3f5-c778143cc87f |  
+    | tenant_id | e949c418d49649c39005d6dfa7d3ade2 |  
+    +---------------------------+-------------------------------------+  
+
+이라고 했을때 여기서 ext_net을 찾는 방법은 아래와 같습니다.  
+
+    root@:~# quantum net-list --- -name=ext_net  
+    +-------------------------------------+---------+-------------------------------------+  
+    | id | name | subnets |  
+    +-------------------------------------+---------+-------------------------------------+  
+    | 791d5c88-c437-4f82-97f0-ce435acb2172 | ext_net | c9f2a3cf-2013-4452-b3f5-c778143cc87f |  
+    +-------------------------------------+---------+-------------------------------------+  
+    root@:~# quantum net-list --- -router:external=True  
+    +-------------------------------------+---------+-------------------------------------+  
+    | id | name | subnets |  
+    +-------------------------------------+---------+-------------------------------------+  
+    | 791d5c88-c437-4f82-97f0-ce435acb2172 | ext_net | c9f2a3cf-2013-4452-b3f5-c778143cc87f |  
+    +-------------------------------------+---------+-------------------------------------+  
+
+하지만.. 이게 절대적인 것은 아니고 대부분 이렇다는 것이네요.. ^^;
