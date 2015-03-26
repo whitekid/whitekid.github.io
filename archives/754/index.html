@@ -108,7 +108,7 @@
 <li>-L 3307 : 로컬에서 listen할 포트</li>
 <li>dbdev.woosum.net : 접속할 호스트</li>
 <li>4444 : ssh-host에서 ssh로 접속해서 다시 접속할 호스트</li>
-<li><a href="&#109;&#x61;&#x69;&#108;&#116;&#111;&#58;&#x77;&#104;&#105;&#116;&#x65;&#107;&#x69;&#100;&#64;&#x77;&#111;&#111;&#115;&#117;&#109;&#46;&#x6e;&#x65;&#116;">&#119;&#x68;&#105;&#x74;&#x65;&#107;&#x69;&#100;&#x40;&#x77;&#111;&#x6f;&#x73;&#117;&#x6d;&#x2e;&#x6e;&#x65;&#x74;</a> : ssh로 접속할 정보</li>
+<li><a href="&#109;&#97;&#105;&#x6c;&#x74;&#111;&#x3a;&#x77;&#104;&#x69;&#116;&#101;&#x6b;&#x69;&#100;&#x40;&#x77;&#111;&#111;&#x73;&#x75;&#109;&#46;&#110;&#101;&#x74;">&#119;&#104;&#x69;&#116;&#101;&#x6b;&#105;&#x64;&#x40;&#x77;&#x6f;&#111;&#115;&#x75;&#x6d;&#x2e;&#x6e;&#101;&#116;</a> : ssh로 접속할 정보</li>
 <li>sleep 864000 : 접속해서 하루동안 sleep 실행, -f 옵션이 있으므로 연결하고 바로 command prompt로 떨어진다.</li>
 </ul>
 
@@ -186,35 +186,6 @@
       </li>
     
   </ul>
-</section>
-
-<section>
-  <h1>GitHub Repos</h1>
-  <ul id="gh_repos">
-    <li class="loading">Status updating&#8230;</li>
-  </ul>
-  
-  <a href="https://github.com/whitekid">@whitekid</a> on GitHub
-  
-  <script type="text/javascript">
-    $(document).ready(function(){
-        if (!window.jXHR){
-            var jxhr = document.createElement('script');
-            jxhr.type = 'text/javascript';
-            jxhr.src = '/javascripts/libs/jXHR.js';
-            var s = document.getElementsByTagName('script')[0];
-            s.parentNode.insertBefore(jxhr, s);
-        }
-
-        github.showRepos({
-            user: 'whitekid',
-            count: 0,
-            skip_forks: true,
-            target: '#gh_repos'
-        });
-    });
-  </script>
-  <script src="/javascripts/github.js" type="text/javascript"> </script>
 </section>
 
 
