@@ -9,7 +9,8 @@
   <meta name="author" content="Choe, Cheng-Dae">
 
   
-  <meta name="description" content="screen 안에서 screen을 사용할 경우(방화벽을 통해서 들어가는 시스템&hellip; 등등)에 ctrl + a를 누르면 최초 실행한 screen이 이 명령을 먹어버린다. 그럼 screen 안의 screen에는 어떻게 명령을 내릴까? 아주 간단하다. Ctrl &hellip;">
+  <meta name="description" content="요즘 Xen을 가지고 놀고 있습니다. 아직 공부하는 중이라 커널 컴파일을 자주하게 되는데 이럴때 정말로 귀찮은게 커널의 옵션들을 일일이 맞춰주는 겁니다. 정말로 귀찮습니다. 그래서 걍 스크립트질로 처리해버렸네요~~ #!/bin/sh
+# Xen 관련 설정들: http &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -77,6 +78,118 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/795">커널 옵션 한방에 수정하기</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2011-12-15T00:00:00+09:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>15</span><span class='date-suffix'>th</span>, <span class='date-year'>2011</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>요즘 Xen을 가지고 놀고 있습니다.</p>
+
+<p>아직 공부하는 중이라 커널 컴파일을 자주하게 되는데 이럴때 정말로 귀찮은게 커널의 옵션들을 일일이 맞춰주는 겁니다. 정말로 귀찮습니다.</p>
+
+<p>그래서 걍 스크립트질로 처리해버렸네요~~</p>
+
+<pre><code>#!/bin/sh
+# Xen 관련 설정들: http://wiki.xensource.com/xenwiki/XenParavirtOps 참고
+configs="CONFIG_PARAVIRT=y
+CONFIG_XEN=y
+CONFIGPARAVIRTGUEST=y
+CONFIGPARAVIRTSPINLOCKS=y
+CONFIGHVCDRIVER=y
+CONFIGHVCXEN=y
+CONFIGXENFBDEV_FRONTEND=y
+CONFIGXENBLKDEV_FRONTEND=y
+CONFIGXENNETDEV_FRONTEND=y
+CONFIGXENPCIDEV_FRONTEND=y
+CONFIGINPUTXENKBDDEVFRONTEND=y
+CONFIGXENFBDEV_FRONTEND=y
+CONFIGXENXENBUS_FRONTEND=y
+CONFIGXENSAVE_RESTORE=y
+CONFIGXENGRANTDEVALLOC=m
+CONFIGXENTMEM=y
+CONFIG_CLEANCACHE=y
+CONFIG_FRONTSWAP=y
+CONFIGXENSELFBALLOONING=y
+CONFIGX86IO_APIC=y
+CONFIG_ACPI=y
+CONFIGACPIPROCFS=y
+CONFIGXENDOM0=y
+CONFIGPCIXEN=y
+CONFIGXENDEV_EVTCHN=y
+CONFIG_XENFS=y
+CONFIGXENCOMPAT_XENFS=y
+CONFIGXENSYS_HYPERVISOR=y
+CONFIGXENGNTDEV=y
+CONFIGXENBACKEND=y
+CONFIGXENNETDEV_BACKEND=m
+CONFIGXENBLKDEV_BACKEND=m
+CONFIGXENPCIDEV_BACKEND=m
+CONFIGXENPRIVILEGED_GUEST=y
+CONFIGXENBALLOON=y
+CONFIGXENSCRUB_PAGES=y
+CONFIGXENDEV_EVTCHN=y
+CONFIGXENGNTDEV=y
+"
+# Xen 추가 설정
+configs="$configs
+CONFIGXENBLKDEV_TAP=y
+CONFIGXENBLKDEV_BACKEND=y
+"
+
+# initramfs에 필요한 설정들
+configs="$configs
+CONFIGMDRAID0=y
+CONFIGMDRAID1=y
+CONFIGMDRAID10=y
+CONFIGMDRAID456=y
+"
+
+config_script='scripts/config'
+
+for _config in $configs ; do
+    key=`echo $_config | awk 'BEGIN {FS="=";} {print $1}'`
+    value=`echo $_config | awk 'BEGIN {FS="=";} {print $2}'`
+
+    case "$value" in
+        y)
+            $config_script -enable $key
+            ;;
+        m)
+            $config_script -module $key
+            ;;
+        *)
+            $config_script -disable $key
+    esac
+done
+</code></pre>
+
+<ul>
+<li>Update: BLKDEV_TAP 추가 (blktap2 디바이스 사용)</li>
+</ul>
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -474,47 +587,12 @@ The physical package has 12 of 8 possible cores implemented.
 <li>-L 3307 : 로컬에서 listen할 포트</li>
 <li>dbdev.woosum.net : 접속할 호스트</li>
 <li>4444 : ssh-host에서 ssh로 접속해서 다시 접속할 호스트</li>
-<li><a href="&#109;&#97;&#105;&#x6c;&#x74;&#111;&#x3a;&#x77;&#104;&#x69;&#116;&#101;&#x6b;&#x69;&#100;&#x40;&#x77;&#111;&#111;&#x73;&#x75;&#109;&#46;&#110;&#101;&#x74;">&#119;&#104;&#x69;&#116;&#101;&#x6b;&#105;&#x64;&#x40;&#x77;&#x6f;&#111;&#115;&#x75;&#x6d;&#x2e;&#x6e;&#101;&#116;</a> : ssh로 접속할 정보</li>
+<li><a href="&#x6d;&#x61;&#105;&#108;&#x74;&#x6f;&#x3a;&#x77;&#x68;&#x69;&#x74;&#x65;&#x6b;&#x69;&#100;&#x40;&#119;&#111;&#x6f;&#115;&#x75;&#109;&#46;&#110;&#x65;&#x74;">&#119;&#104;&#x69;&#116;&#x65;&#107;&#x69;&#x64;&#x40;&#x77;&#x6f;&#111;&#115;&#117;&#109;&#x2e;&#x6e;&#x65;&#116;</a> : ssh로 접속할 정보</li>
 <li>sleep 864000 : 접속해서 하루동안 sleep 실행, -f 옵션이 있으므로 연결하고 바로 command prompt로 떨어진다.</li>
 </ul>
 
 
 <p>주의: 연결할 때 localhost 말고 127.0.0.1로 접속할 것.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/archives/747">FreeBSD Ports의 Rails를 3.1.0으로 업데이트하기..</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2011-09-10T00:00:00+09:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>10</span><span class='date-suffix'>th</span>, <span class='date-year'>2011</span></span> <span class='time'>12:00 am</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>FreeBSD의 ports에 들어있는 rails는 3.0.10입니다. 뭐 예내들이 조금 늦는가 했습니다. 근데 대기중인 pr에도 rails 3.1.0으로 업데이트하는 pr이 없습니다.</p>
-
-<p>이미 rails guide는 3.1.0으로 가있는데.. 안되는 것도 있고&hellip; 지금와서 3.0.10에서 작업할 수 는 없잖아요.</p>
-
-<p>결국 몇 시간 삽질끝에 ports를 업데이트 했습니다. 역시 쉽지 않습니다. rails는 하나의 ports가 아닌 여러 ports의 집합이죠. 그래서 www/rubygems-rails만 수정한다고 되는 것이 아니죠. actionpack, activerecord, activeresource도 모두  ports에서 업데이트 해야합니다. 게다가 하다보니깐 rubygem의 ports들이 상당히 예전 버전이 많습니다. 현재하고 호환이 안되는 버전으로요&hellip; 결국 이것까지 같이 업데이트 되고~~ ^^;</p>
-
-<p>오랜만에 send-pr 할거냐구요? 글쎄요.. 아직은 모르겠습니다~ 우선 몇몇 project에 적용해서 되는지 보구요..</p>
 </div>
   
   
@@ -539,6 +617,10 @@ The physical package has 12 of 8 possible cores implemented.
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/03/30/visualize-iptable-rules/">Security Group의 Rule이 어떤 순서로 적용되는지 보기</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/03/25/keystone-bootstrap/">Keystone Bootstrap</a>
       </li>
     
@@ -552,10 +634,6 @@ The physical package has 12 of 8 possible cores implemented.
     
       <li class="post">
         <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
-      </li>
-    
-      <li class="post">
-        <a href="/archives/1550">클라우드 네트워킹과 SDN 그리고 OpenStack</a>
       </li>
     
   </ul>

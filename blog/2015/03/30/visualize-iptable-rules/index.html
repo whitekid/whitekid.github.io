@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Hello Octopress - Your wish is my command</title>
+  <title>Security Group의 Rule이 어떤 순서로 적용되는지 보기 - Your wish is my command</title>
   <meta name="author" content="Choe, Cheng-Dae">
 
   
-  <meta name="description" content="이전 블로그가 WordPress로 되어 있었습니다. 녜.. php로 되어있는데요.. 어느 순간 wordpress가 알아서 upgrade되더니만 갑자기 MySQL Database 연결오류를 내고 정신을 못차립니다. 고치느니.. 그냥 다른 블로그 툴로 넘어가렵니다.. &hellip;">
+  <meta name="description" content="iptables의 chain이 적용되는 순서를 쉽게 보고싶다면 http://atoato88.hatenablog.com/entry/2014/01/25/133852 를 참조~ +--------------------------------+ | v &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://whitekid.github.io/blog/2015/03/25/hello-octopress/">
+  <link rel="canonical" href="http://whitekid.github.io/blog/2015/03/30/visualize-iptable-rules/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Your wish is my command" type="application/atom+xml">
@@ -80,7 +80,7 @@
   
   <header>
     
-      <h1 class="entry-title">Hello Octopress</h1>
+      <h1 class="entry-title">Security Group의 Rule이 어떤 순서로 적용되는지 보기</h1>
     
     
       <p class="meta">
@@ -89,40 +89,56 @@
 
 
 
-<time class='entry-date' datetime='2015-03-25T00:12:30+09:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>25</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>12:12 am</span></time>
+<time class='entry-date' datetime='2015-03-30T16:56:41+09:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>30</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>4:56 pm</span></time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p><a href="http://blog.woosum.net">이전 블로그</a>가 WordPress로 되어 있었습니다. 녜.. php로 되어있는데요.. 어느 순간 wordpress가 알아서 upgrade되더니만 갑자기 MySQL Database 연결오류를 내고 정신을 못차립니다.</p>
+<div class="entry-content"><p>iptables의 chain이 적용되는 순서를 쉽게 보고싶다면 <a href="http://atoato88.hatenablog.com/entry/2014/01/25/133852">http://atoato88.hatenablog.com/entry/2014/01/25/133852</a> 를 참조~</p>
 
-<p>고치느니.. 그냥 다른 블로그 툴로 넘어가렵니다.. ㅎㅎㅎ(뭐.. 고치는 것은 금방이었지만요..)</p>
+<pre><code>                                  +--------------------------------+
+                                  |                                v
++-------------------------+     +--------------------------+     +------------------------------+     +------------------------------+     +------------------------------+
+|         FORWARD         | --&gt; | neutron-openvswi-FORWARD | --&gt; |  neutron-openvswi-sg-chain   | --&gt; | neutron-openvswi-i286a46e9-d | --&gt; | neutron-openvswi-sg-fallback |
++-------------------------+     +--------------------------+     +------------------------------+     +------------------------------+     +------------------------------+
+  |                                                                                                                                          ^
+  +-------------------------------+                                                                                                          |
+                                  v                                                                                                          |
++-------------------------+     +--------------------------+     +------------------------------+                                            |
+|         OUTPUT          | --&gt; |    neutron-filter-top    | --&gt; |    neutron-openvswi-local    |                                            |
++-------------------------+     +--------------------------+     +------------------------------+                                            |
+  |                                                                                                                                          |
+  |                                                                                                                                          |
+  v                                                                                                                                          |
++-------------------------+                                                                                                                  |
+| neutron-openvswi-OUTPUT |                                                                                                                  |
++-------------------------+                                                                                                                  |
++-------------------------+     +--------------------------+     +------------------------------+                                            |
+|          INPUT          | --&gt; |  neutron-openvswi-INPUT  | --&gt; | neutron-openvswi-o286a46e9-d | -------------------------------------------+
++-------------------------+     +--------------------------+     +------------------------------+
+                                                                   |
+                                                                   |
+                                                                   v
++-------------------------+                                      +------------------------------+
+|    nova-api-FORWARD     |                                      | neutron-openvswi-s286a46e9-d |
++-------------------------+                                      +------------------------------+
++-------------------------+
+|     nova-api-INPUT      |
++-------------------------+
++-------------------------+
+|     nova-api-OUTPUT     |
++-------------------------+
++-------------------------+
+|     nova-api-local      |
++-------------------------+
++-------------------------+
+|     nova-filter-top     |
++-------------------------+
+</code></pre>
 
-<p>업그레이드 되면서 플러그인들도 업그레이드 안되는 것도 많고&hellip; :)</p>
-
-<h2>wordpress to octopress</h2>
-
-<p>찾아보니깐 역시나 <a href="https://github.com/benbalter/wordpress-to-jekyll-exporter">좋은 툴</a>이 있습니다.</p>
-
-<p>하지만 역시나 완벽할 수는 없고.. 여기저기 글의 레이아웃이 깨집니다. 앞으로 쓸데없이 멋부리지 않아야 겠습니다.</p>
-
-<h2>octopress의 불편한 점</h2>
-
-<p>글을 조금 쓰다가 보니깐 역시나 눈에 거슬리는 것이 있습니다.</p>
-
-<ul>
-<li>이전 blog의 글을 모두 가져오다가 보니깐.. 글의 양이 많아서 블로그 생성하는데 시간이 걸린다. preview 하면서 보기는 조금 불편하다.</li>
-<li>역시나 markdown 기반이라 이미지 등 멀티미디어 작업이 좀 불편하다. 역시 텍스트 위주의 글을 써야겠다.(뭐 항상 그랬지만..)</li>
-</ul>
-
-
-<h2>Goodbye FreeBSD&hellip; may be&hellip;</h2>
-
-<p>지금까지는 FreeBSD에서 작동하는 아파치에서 돌렸는데, 이제 굳이 FreeBSD로 돌여야 하나 싶습니다. 제가 마지막으로 사용한 이후에&hellip; 7.x 였을겁니다. 지금 10.x 버전인데.. 미묘하게 뭔가 많이 바뀌고, 특히나 패키지 설정이 바뀌었는데&hellip; 그다지 공부하고 싶은 흥미가 사라졌습니다.</p>
-
-<p>요즘같은 세상에서.. Linux면되지&hellip; 그리서 좀 생각해보고 Digital Ocean 같은데로 가던가.. 아니면 국내 싼 VPS로 갈까 생각중입니다. (aws는 사양합니다..~)</p>
+<p>thanks rick</p>
 </div>
 
 
@@ -138,7 +154,7 @@
 
 
 
-<time class='entry-date' datetime='2015-03-25T00:12:30+09:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>25</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>12:12 am</span></time>
+<time class='entry-date' datetime='2015-03-30T16:56:41+09:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>30</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>4:56 pm</span></time>
       
 
 
@@ -146,7 +162,7 @@
     
       <div class="sharing">
   
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://whitekid.github.io/blog/2015/03/25/hello-octopress/" data-via="kiddtm" data-counturl="http://whitekid.github.io/blog/2015/03/25/hello-octopress/" >Tweet</a>
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://whitekid.github.io/blog/2015/03/30/visualize-iptable-rules/" data-via="kiddtm" data-counturl="http://whitekid.github.io/blog/2015/03/30/visualize-iptable-rules/" >Tweet</a>
   
   
   
@@ -157,10 +173,8 @@
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/archives/1561" title="Previous Post: [번역] Selecting CPU, processors and memory for virtualized environments">&laquo; [번역] Selecting CPU, processors and memory for virtualized environments</a>
+        <a class="basic-alignment left" href="/blog/2015/03/25/keystone-bootstrap/" title="Previous Post: keystone bootstrap">&laquo; keystone bootstrap</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2015/03/25/neutron-default-security-group/" title="Next Post: neutron default security group">neutron default security group &raquo;</a>
       
     </p>
   </footer>
@@ -226,8 +240,8 @@
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://whitekid.github.io/blog/2015/03/25/hello-octopress/';
-        var disqus_url = 'http://whitekid.github.io/blog/2015/03/25/hello-octopress/';
+        var disqus_identifier = 'http://whitekid.github.io/blog/2015/03/30/visualize-iptable-rules/';
+        var disqus_url = 'http://whitekid.github.io/blog/2015/03/30/visualize-iptable-rules/';
         var disqus_script = 'embed.js';
       
     (function () {

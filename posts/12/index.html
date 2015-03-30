@@ -9,8 +9,9 @@
   <meta name="author" content="Choe, Cheng-Dae">
 
   
-  <meta name="description" content="Naver Platform Day 2011을 훑어보다 정리합니다. 구체적으로 사용자 측면에서 클라우드 서비스의 장점 자본 비용과 운용, 유지의 부담 없이 저렴하게 고기능의 정보 처리 기능을 이용할 수 있다.
-시스템 구축, 개발 기간이 단축되고 수요 변동에 유연하고 &hellip;">
+  <meta name="description" content="$ apt-get install yum rpm python-m2crypto
+$ mkdir -p /tmp/centos/var/lib/rpm
+$ rpm -root /tmp/centos -initdb $HOME/.rpmdb 가 만들어지는데 그거는 마지막 삭제한다. &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -78,6 +79,59 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/835">CentOS Bootstraping in Ubuntu</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-01-20T00:00:00+09:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>20</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><pre><code>$ apt-get install yum rpm python-m2crypto
+$ mkdir -p /tmp/centos/var/lib/rpm
+$ rpm -root /tmp/centos -initdb
+</code></pre>
+
+<p>$HOME/.rpmdb 가 만들어지는데 그거는 마지막 삭제한다.</p>
+
+<p>rpmfind.net에서 원하는 버전의 rpm 찾아서 다운로드</p>
+
+<pre><code>$ wget ftp://195.220.108.108/linux/centos/5.7/os/x86_64/CentOS/centos-release-5-7.el5.centos.x86_64.rpm
+$ rpm -ivh -force-debian -nodeps -root /tmp/centos centos-release-5-7.el5.centos.x86_64.rpm
+$ ln -s /tmp/centos/etc/pki /etc/pki
+$ yum -installroot /tmp/centos install yum
+$ mount -t proc foo /tmp/centos/proc
+$ mount -t sysfs foo /tmp/centos/sys
+
+$ chroot /tmp/centos /bin/bash -login
+$ rm -rf /home/choe/.rpmdb # 위에서 initdb한것 지우기
+$ rpm -initdb
+$ echo nameserver 168.126.63.1 &gt; /etc/resolv.conf
+$ yum install yum
+$ yum install vim-minimal less
+</code></pre>
+
+<p>참고: <a href="http://www.lucas-nussbaum.net/blog/?p=385">http://www.lucas-nussbaum.net/blog/?p=385</a></p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -487,118 +541,6 @@ fi
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/archives/795">커널 옵션 한방에 수정하기</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2011-12-15T00:00:00+09:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>15</span><span class='date-suffix'>th</span>, <span class='date-year'>2011</span></span> <span class='time'>12:00 am</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>요즘 Xen을 가지고 놀고 있습니다.</p>
-
-<p>아직 공부하는 중이라 커널 컴파일을 자주하게 되는데 이럴때 정말로 귀찮은게 커널의 옵션들을 일일이 맞춰주는 겁니다. 정말로 귀찮습니다.</p>
-
-<p>그래서 걍 스크립트질로 처리해버렸네요~~</p>
-
-<pre><code>#!/bin/sh
-# Xen 관련 설정들: http://wiki.xensource.com/xenwiki/XenParavirtOps 참고
-configs="CONFIG_PARAVIRT=y
-CONFIG_XEN=y
-CONFIGPARAVIRTGUEST=y
-CONFIGPARAVIRTSPINLOCKS=y
-CONFIGHVCDRIVER=y
-CONFIGHVCXEN=y
-CONFIGXENFBDEV_FRONTEND=y
-CONFIGXENBLKDEV_FRONTEND=y
-CONFIGXENNETDEV_FRONTEND=y
-CONFIGXENPCIDEV_FRONTEND=y
-CONFIGINPUTXENKBDDEVFRONTEND=y
-CONFIGXENFBDEV_FRONTEND=y
-CONFIGXENXENBUS_FRONTEND=y
-CONFIGXENSAVE_RESTORE=y
-CONFIGXENGRANTDEVALLOC=m
-CONFIGXENTMEM=y
-CONFIG_CLEANCACHE=y
-CONFIG_FRONTSWAP=y
-CONFIGXENSELFBALLOONING=y
-CONFIGX86IO_APIC=y
-CONFIG_ACPI=y
-CONFIGACPIPROCFS=y
-CONFIGXENDOM0=y
-CONFIGPCIXEN=y
-CONFIGXENDEV_EVTCHN=y
-CONFIG_XENFS=y
-CONFIGXENCOMPAT_XENFS=y
-CONFIGXENSYS_HYPERVISOR=y
-CONFIGXENGNTDEV=y
-CONFIGXENBACKEND=y
-CONFIGXENNETDEV_BACKEND=m
-CONFIGXENBLKDEV_BACKEND=m
-CONFIGXENPCIDEV_BACKEND=m
-CONFIGXENPRIVILEGED_GUEST=y
-CONFIGXENBALLOON=y
-CONFIGXENSCRUB_PAGES=y
-CONFIGXENDEV_EVTCHN=y
-CONFIGXENGNTDEV=y
-"
-# Xen 추가 설정
-configs="$configs
-CONFIGXENBLKDEV_TAP=y
-CONFIGXENBLKDEV_BACKEND=y
-"
-
-# initramfs에 필요한 설정들
-configs="$configs
-CONFIGMDRAID0=y
-CONFIGMDRAID1=y
-CONFIGMDRAID10=y
-CONFIGMDRAID456=y
-"
-
-config_script='scripts/config'
-
-for _config in $configs ; do
-    key=`echo $_config | awk 'BEGIN {FS="=";} {print $1}'`
-    value=`echo $_config | awk 'BEGIN {FS="=";} {print $2}'`
-
-    case "$value" in
-        y)
-            $config_script -enable $key
-            ;;
-        m)
-            $config_script -module $key
-            ;;
-        *)
-            $config_script -disable $key
-    esac
-done
-</code></pre>
-
-<ul>
-<li>Update: BLKDEV_TAP 추가 (blktap2 디바이스 사용)</li>
-</ul>
-
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/13">&larr; Older</a>
@@ -616,6 +558,10 @@ done
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/03/30/visualize-iptable-rules/">Security Group의 Rule이 어떤 순서로 적용되는지 보기</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/03/25/keystone-bootstrap/">Keystone Bootstrap</a>
       </li>
     
@@ -629,10 +575,6 @@ done
     
       <li class="post">
         <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
-      </li>
-    
-      <li class="post">
-        <a href="/archives/1550">클라우드 네트워킹과 SDN 그리고 OpenStack</a>
       </li>
     
   </ul>

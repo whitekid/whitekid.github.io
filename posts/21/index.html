@@ -9,7 +9,7 @@
   <meta name="author" content="Choe, Cheng-Dae">
 
   
-  <meta name="description" content="postfix mail archiving을 진행하면서 메시지 헤더를 처리할 일이 생겼지요. 보내는 사람에 따라서 archiving을 하지 않으려구오. 뭐&hellip; cron에서 보내는거 daily 체크 메일등등 저장할 필요 없잖아요. 그런데 이거 하다보니 헤더 &hellip;">
+  <meta name="description" content="TLinkLabel은 사용하기 따라서 상당히 유용합니다. 근디 WordWrap이 없군요. 이게 없으니깐 AutoSize를 줘도 한줄로 길게 쭈욱 나와버립니다. TLabel의 WordWrap과 같이 동작하면 참 편하겠는데 말이지요. 어찌 되었건 아래처럼 MaxWidth &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -77,6 +77,65 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/342">TLinkLabel에 WordWrap 적용하기</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-08-26T00:00:00+09:00'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>26</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>TLinkLabel은 사용하기 따라서 상당히 유용합니다. 근디 WordWrap이 없군요. 이게 없으니깐 AutoSize를 줘도 한줄로 길게 쭈욱 나와버립니다. TLabel의 WordWrap과 같이 동작하면 참 편하겠는데 말이지요. 어찌 되었건 아래처럼 MaxWidth 변수가 사용되는 부분만 몇줄 추가하면 원하는데로 됩니다.</p>
+
+<pre><code>procedure TnxLinkLabel.AdjustBounds;
+var
+  DC: HDC;
+  SaveFont: HFont;
+  TextSize: TSize;
+  Parsed: string;
+  MaxWidth: Integer;
+begin
+  if not (csLoading in ComponentState) and FAutoSize then
+  begin
+    if CheckWin32Version(6) and UseThemes then
+    begin
+      if HandleAllocated then
+      begin
+        if FWordWrap then
+          MaxWidth := ClientWidth else
+          MaxWidth := MaxInt;
+
+        SendGetStructMessage(Handle, LM_GETIDEALSIZE, MaxWidth, TextSize);
+        SetBounds(Left, Top, TextSize.cx + (GetSystemMetrics(SM_CXBORDER) * 4),
+          TextSize.cy + (GetSystemMetrics(SM_CYBORDER) * 4));
+      end;
+    end
+    else
+</code></pre>
+
+<p>TCustomLinkLabel.AdjustBounds를 단 몇 줄 수정하면 되는데, AdjustBounds가 virtual로만 되어있어도 편한데 그게 아니라서 이렇게 수정만 해서는 안됩니다. 그렇다고 vcl을 직접 다시 컴파일하기도 그렇고..</p>
+
+<p>결국은 TCustomLinkLabel, TLinkLabel을 모두 몽땅 가져다가 새 이름으로 콤포넌트를 등록해버렸군요. 찝찝하지만 Go~</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -601,45 +660,6 @@ Replace with : \0 = :\1</p></blockquote>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/archives/301">Delphi의 새로운 라이센스 정책</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2010-07-16T00:00:00+09:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>16</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>델파이의 라이센스 정책에 <a href="http://blog.marcocantu.com/blog/delphi_toolcloud_many_versions.html">새로운 라이센스 타입이 추가</a>되었다는군요. 이름 재밌네요 TagCloud 라이센스. 뭐. 대략 읽어본 봐로는 하나의 라이센스를 가지면 Delphi 2007, Delphi 2010을 모두 설치할 수 있다고 합니다. 물론 일반 라이센스보다 25% 비싸답니다.</p>
-
-<p>이거 참 반가운 일입니다.</p>
-
-<p>새로운 버전의 기능을 쓰고싶은데, 라이센스 부담으로 설치못하고, 지금 것도 잘 되잖아라는 것에 반박할 거리 찾아내고.</p>
-
-<p>새로운 버전으로 마이그레이션 하고 싶은데, 트라이얼 버전에 제한된 시간으론 완벽한 테스트가 불가능하고,</p>
-
-<p>이러한 문제점을 일거에 해결할 수 있겠군요. 그런데.. 다른 새로운 버전이 나왔을 경우도 적용되는지에 대해선 언급이 없어 아쉽네요.</p>
-
-<p>덧) 제가 잘못 알고 있었던 것도 있었군요. 자세한 것은 임프님 댓글로 <a href="http://www.borlandforum.com/impboard/impboard.dll?action=read&amp;db=free&amp;no=18437">http://www.borlandforum.com/impboard/impboard.dll?action=read&amp;db=free&amp;no=18437</a></p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/22">&larr; Older</a>
@@ -657,6 +677,10 @@ Replace with : \0 = :\1</p></blockquote>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/03/30/visualize-iptable-rules/">Security Group의 Rule이 어떤 순서로 적용되는지 보기</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/03/25/keystone-bootstrap/">Keystone Bootstrap</a>
       </li>
     
@@ -670,10 +694,6 @@ Replace with : \0 = :\1</p></blockquote>
     
       <li class="post">
         <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
-      </li>
-    
-      <li class="post">
-        <a href="/archives/1550">클라우드 네트워킹과 SDN 그리고 OpenStack</a>
       </li>
     
   </ul>

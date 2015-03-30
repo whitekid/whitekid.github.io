@@ -9,7 +9,7 @@
   <meta name="author" content="Choe, Cheng-Dae">
 
   
-  <meta name="description" content="keystone bootstrap 이란 명령이 있는 것을 오늘 처음 알았다.. ^^ \1. 프로젝트를 만들고 2. 유저를 만들고 3. 해당 유저를 프로젝트에 어떤 롤로 지정한다.. 이것을 한번에 수행한다. 이전에 이거 하려고 몇번 명령 내렸던 뻘짓을&hellip &hellip;">
+  <meta name="description" content="iptables의 chain이 적용되는 순서를 쉽게 보고싶다면 http://atoato88.hatenablog.com/entry/2014/01/25/133852 를 참조~ +--------------------------------+ | v &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -77,6 +77,77 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/03/30/visualize-iptable-rules/">Security Group의 Rule이 어떤 순서로 적용되는지 보기</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-03-30T16:56:41+09:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>30</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>4:56 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>iptables의 chain이 적용되는 순서를 쉽게 보고싶다면 <a href="http://atoato88.hatenablog.com/entry/2014/01/25/133852">http://atoato88.hatenablog.com/entry/2014/01/25/133852</a> 를 참조~</p>
+
+<pre><code>                                  +--------------------------------+
+                                  |                                v
++-------------------------+     +--------------------------+     +------------------------------+     +------------------------------+     +------------------------------+
+|         FORWARD         | --&gt; | neutron-openvswi-FORWARD | --&gt; |  neutron-openvswi-sg-chain   | --&gt; | neutron-openvswi-i286a46e9-d | --&gt; | neutron-openvswi-sg-fallback |
++-------------------------+     +--------------------------+     +------------------------------+     +------------------------------+     +------------------------------+
+  |                                                                                                                                          ^
+  +-------------------------------+                                                                                                          |
+                                  v                                                                                                          |
++-------------------------+     +--------------------------+     +------------------------------+                                            |
+|         OUTPUT          | --&gt; |    neutron-filter-top    | --&gt; |    neutron-openvswi-local    |                                            |
++-------------------------+     +--------------------------+     +------------------------------+                                            |
+  |                                                                                                                                          |
+  |                                                                                                                                          |
+  v                                                                                                                                          |
++-------------------------+                                                                                                                  |
+| neutron-openvswi-OUTPUT |                                                                                                                  |
++-------------------------+                                                                                                                  |
++-------------------------+     +--------------------------+     +------------------------------+                                            |
+|          INPUT          | --&gt; |  neutron-openvswi-INPUT  | --&gt; | neutron-openvswi-o286a46e9-d | -------------------------------------------+
++-------------------------+     +--------------------------+     +------------------------------+
+                                                                   |
+                                                                   |
+                                                                   v
++-------------------------+                                      +------------------------------+
+|    nova-api-FORWARD     |                                      | neutron-openvswi-s286a46e9-d |
++-------------------------+                                      +------------------------------+
++-------------------------+
+|     nova-api-INPUT      |
++-------------------------+
++-------------------------+
+|     nova-api-OUTPUT     |
++-------------------------+
++-------------------------+
+|     nova-api-local      |
++-------------------------+
++-------------------------+
+|     nova-filter-top     |
++-------------------------+
+</code></pre>
+
+<p>thanks rick</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -628,44 +699,6 @@ index 92dcc7a..2438b53 100644
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/archives/1517">Haproxy로 이상한 녀석들 거부하기</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-05-15T00:00:00+09:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>15</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>12:00 am</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>보안팀 공지가 떳다.. 공격툴로 공격하는 녀석들은 막아달라고.. 그런 툴들은 User-Agent에 친절하게 자기가 누구라고 알리기 때문에 이 녀석만 막게 해달라고 말이지&hellip;</p>
-
-<p>우리는 haproxy가 전면에 있기 때문에, 그 단에서 막기로 했는데, 생각보다 아주 심플하다.</p>
-
-<pre><code>acl is-bad-agent hdr(Acunetix-Product) -m reg -i ^WVS
-acl is-bad-agent hdr(User-Agent) -m reg (ZmEu|paros|nikto|dirbuster|sqlmap|openvas|w3af|Morfeus|JCE|Zollard)
-block if is-bad-agent
-</code></pre>
-
-<p>딸랑 3줄~</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/2">&larr; Older</a>
@@ -681,6 +714,10 @@ block if is-bad-agent
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/03/30/visualize-iptable-rules/">Security Group의 Rule이 어떤 순서로 적용되는지 보기</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/03/25/keystone-bootstrap/">Keystone Bootstrap</a>
       </li>
     
@@ -694,10 +731,6 @@ block if is-bad-agent
     
       <li class="post">
         <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
-      </li>
-    
-      <li class="post">
-        <a href="/archives/1550">클라우드 네트워킹과 SDN 그리고 OpenStack</a>
       </li>
     
   </ul>

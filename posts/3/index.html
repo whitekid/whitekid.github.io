@@ -9,7 +9,7 @@
   <meta name="author" content="Choe, Cheng-Dae">
 
   
-  <meta name="description" content="Host aggregation은 Availability zone 처럼 사용할 수 있습니다. 기본 설치 상태에서 보면 아래처럼 nova zone만 보입니다. # nova availability-zone-list &hellip;">
+  <meta name="description" content="/etc/default/openvswitch-switch BRCOMPAT=yes bridge 호환 모듈, 데몬 $ apt-get install openvswitch-brcompat ">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -77,6 +77,43 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1182">Kvm: Linux Bridge 대신 Openvswitch 사용하기</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2013-12-11T00:00:00+09:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2013</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>/etc/default/openvswitch-switch</p>
+
+<pre><code>BRCOMPAT=yes
+</code></pre>
+
+<p>bridge 호환 모듈, 데몬</p>
+
+<pre><code>$ apt-get install openvswitch-brcompat
+</code></pre>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -749,37 +786,6 @@ $ ./get_user_from_ip.sh x.x.x.x
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/archives/1400">Moin 스팸 메시지/ 스팸 유저 삭제</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2013-08-21T00:00:00+09:00'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>21</span><span class='date-suffix'>st</span>, <span class='date-year'>2013</span></span> <span class='time'>12:00 am</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>moinmoin으로 위키를 유지하는데, 스팸이 너무 많이 들어온다.</p>
-
-<p>그렇다고 이를 다른 위키로 바꾸는 것도 귀찮고, 그냥 스팸으로 쌓인 패이지, 유저를 정기적으로 삭제하기로 했다. ㅠㅠ</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/4">&larr; Older</a>
@@ -797,6 +803,10 @@ $ ./get_user_from_ip.sh x.x.x.x
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/03/30/visualize-iptable-rules/">Security Group의 Rule이 어떤 순서로 적용되는지 보기</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/03/25/keystone-bootstrap/">Keystone Bootstrap</a>
       </li>
     
@@ -810,10 +820,6 @@ $ ./get_user_from_ip.sh x.x.x.x
     
       <li class="post">
         <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
-      </li>
-    
-      <li class="post">
-        <a href="/archives/1550">클라우드 네트워킹과 SDN 그리고 OpenStack</a>
       </li>
     
   </ul>

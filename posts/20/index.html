@@ -9,7 +9,7 @@
   <meta name="author" content="Choe, Cheng-Dae">
 
   
-  <meta name="description" content="psycopg2에서 쿼리의 결과는 client_encoding에 따른 그 형태 그대로 옮니다. 이 경우 인코딩을 처리하면서 해야하면 상당한 불편함이 따르지요. 무식하게 하나하나 unicode(row[0], &lsquo;utf8&rsquo;)로 인코딩해가면서 하고 &hellip;">
+  <meta name="description" content="Screen을 이용하면, 로그 아웃 이후에도 그 화면을 유지하고 나중에 동일한 환경으로 복원한다. 그리고 screen안에서 프로그램이 실행중이라면 그 프로그램이 실행중이므로 장시간 동작이 필요한 겨우 터미널을 닫고 다른데서(혹은 같은데서) 다시 작업을 이어가기 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -77,6 +77,55 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/434">Sysutils/screen 기본 사용법</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-09-14T00:00:00+09:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><a href="http://www.freshports.org/sysutils/screen">Screen</a>을 이용하면, 로그 아웃 이후에도 그 화면을 유지하고 나중에 동일한 환경으로 복원한다. 그리고 screen안에서 프로그램이 실행중이라면 그 프로그램이 실행중이므로 장시간 동작이 필요한 겨우 터미널을 닫고 다른데서(혹은 같은데서) 다시 작업을 이어가기 위함이다. 혹자는 텍스트 버전 vnc라고도 한다네&hellip;</p>
+
+<blockquote><p><strong>screen 실행 옵션</strong>
+screen -S [세션 이름]
+screen -list
+screen -r [세션 이름]: resume session
+screen -x: multi display mode</p>
+
+<p><strong>screen 명령어</strong>
+Ctrl+a,c 새 세션 열기
+Ctrl+a,a 다음 세션으로 이동
+Ctrl+a,k 스크린 닫기
+Ctrl+a,d Detatch
+Ctrl+a,w 스크린 리스트
+Ctrl+0~9: 지정 창으로 이동
+Ctrl+x
+Ctrl+a,S 화면 수평 분할
+Ctrl+a,Tab 화면 이동
+Ctrl+a,X 현재 화면 닫기</p></blockquote>
+
+<p>역시나 글을 적으면서 기억하는거다.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -507,65 +556,6 @@ name=&ldquo;winmail.dat&rdquo; 형식의 mime에 첨부파일이 있다.</li>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/archives/342">TLinkLabel에 WordWrap 적용하기</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2010-08-26T00:00:00+09:00'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>26</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>TLinkLabel은 사용하기 따라서 상당히 유용합니다. 근디 WordWrap이 없군요. 이게 없으니깐 AutoSize를 줘도 한줄로 길게 쭈욱 나와버립니다. TLabel의 WordWrap과 같이 동작하면 참 편하겠는데 말이지요. 어찌 되었건 아래처럼 MaxWidth 변수가 사용되는 부분만 몇줄 추가하면 원하는데로 됩니다.</p>
-
-<pre><code>procedure TnxLinkLabel.AdjustBounds;
-var
-  DC: HDC;
-  SaveFont: HFont;
-  TextSize: TSize;
-  Parsed: string;
-  MaxWidth: Integer;
-begin
-  if not (csLoading in ComponentState) and FAutoSize then
-  begin
-    if CheckWin32Version(6) and UseThemes then
-    begin
-      if HandleAllocated then
-      begin
-        if FWordWrap then
-          MaxWidth := ClientWidth else
-          MaxWidth := MaxInt;
-
-        SendGetStructMessage(Handle, LM_GETIDEALSIZE, MaxWidth, TextSize);
-        SetBounds(Left, Top, TextSize.cx + (GetSystemMetrics(SM_CXBORDER) * 4),
-          TextSize.cy + (GetSystemMetrics(SM_CYBORDER) * 4));
-      end;
-    end
-    else
-</code></pre>
-
-<p>TCustomLinkLabel.AdjustBounds를 단 몇 줄 수정하면 되는데, AdjustBounds가 virtual로만 되어있어도 편한데 그게 아니라서 이렇게 수정만 해서는 안됩니다. 그렇다고 vcl을 직접 다시 컴파일하기도 그렇고..</p>
-
-<p>결국은 TCustomLinkLabel, TLinkLabel을 모두 몽땅 가져다가 새 이름으로 콤포넌트를 등록해버렸군요. 찝찝하지만 Go~</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/21">&larr; Older</a>
@@ -583,6 +573,10 @@ begin
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/03/30/visualize-iptable-rules/">Security Group의 Rule이 어떤 순서로 적용되는지 보기</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/03/25/keystone-bootstrap/">Keystone Bootstrap</a>
       </li>
     
@@ -596,10 +590,6 @@ begin
     
       <li class="post">
         <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
-      </li>
-    
-      <li class="post">
-        <a href="/archives/1550">클라우드 네트워킹과 SDN 그리고 OpenStack</a>
       </li>
     
   </ul>

@@ -9,7 +9,7 @@
   <meta name="author" content="Choe, Cheng-Dae">
 
   
-  <meta name="description" content="Shell extension에 관심있다면 쭈욱 봐야겠다 The Complete Idiot&rsquo;s Guide to Writing Shell Extensions Context menu handler: 파일 또는 폴더 context menu에 항목 추가하기 &hellip;">
+  <meta name="description" content="http://stackoverflow.com/questions/3049652/how-do-i-programmatically-set-a-file-tag 를 보고 간단히 검색해봤다. Explorer column handler shell extension in C# &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -77,6 +77,44 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/124">Windows Explorer Column</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-06-16T00:00:00+09:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>16</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><a href="http://stackoverflow.com/questions/3049652/how-do-i-programmatically-set-a-file-tag">http://stackoverflow.com/questions/3049652/how-do-i-programmatically-set-a-file-tag</a> 를 보고 간단히 <a href="http://www.google.co.kr/search?q=explorer+column+handler">검색</a>해봤다.</p>
+
+<ul>
+<li><a href="http://www.codeproject.com/KB/shell/columnhandler.aspx">Explorer column handler shell extension in C#</a></li>
+<li><a href="http://msdn.microsoft.com/en-us/library/bb776831%28VS.85%29.aspx" title="CreateCreating Column Handlers">CreateCreating Column Handlers</a></li>
+<li><a href="http://www.codeproject.com/KB/shell/shellextguide8.aspx">The Complete Idiot&rsquo;s Guide to Writing Shell Extensions - Part VIII</a></li>
+</ul>
+
+
+<p>이것을 이용해서 탐색기에서 파일에 tag를 지정해준다면?? 괜찮을까?</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -487,53 +525,6 @@ pgsql_bugs_conn.commit()
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/archives/92">연결된 이미지 변환</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2010-04-30T00:00:00+09:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>30</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>MS Word에서 웹 페이지 주소를 직접입력해서 가져오는 경우 거기에 포함된 이미지는 HTML의 링크처럼 워드에 포함되지 않습니다.</p>
-
-<p>이 말은 무슨말이냐 하면 이미지가 보여줄 필요가 있을 때 실시간으로 웹을 접근해서 이미지를 가져옵니다. 그래서 워드파일을 저장할 때 보면 이미지가 빠져서 용량이 상당히 줄어듭니다.</p>
-
-<p>이렇게 되면 몇가지 문제점이 발생합니다.</p>
-
-<ul>
-<li>이 문서를 여는 곳은 항상 인터넷이 연결되어 있어야합니다. 안그러면 그림이 안보입니다.</li>
-<li>인쇄를 할 경우 이미지가 안보일 수 있습니다. 외부 연결 데이터를 다 가져온 다음에 인쇄를 해야할 텐데, 워드는 가져오지 않습니다. 방법은 전체선택(Ctrl+A)하고 F9를 클릭하여 수동으로 이미지를 업데이트하고 인쇄하면 됩니다.</li>
-</ul>
-
-
-<p>그래서 이런 연결된 이미지를 포함된 이미지로 바꾸려고 했는데, 쉽게 그 메뉴를 찾을 수 없습니다. 오피스는 이런게 문제지요. 고생끝네 구글링으로 아래 주소를 찾았네요.</p>
-
-<p><a href="http://www.onemanwrites.co.uk/2009/03/16/how-to-embed-linked-images-in-word-2007/">http://www.onemanwrites.co.uk/2009/03/16/how-to-embed-linked-images-in-word-2007/</a></p>
-
-<p>결국 메뉴에 있는데, 전혀 생각지도 못한 &ldquo;준비&rdquo; 메뉴에 있었다는 것, 그것도 기본으로 보이는게 아니라 스크롤해서 내려야만 보이는 곳에, 그리고 연결된 이미지가 없다면 보이지가 않아서 평소엔 있다는 사실조차 모른다는 것..</p>
-
-<p><img src="/images/edit-file-link-300x265.png"></p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/25">&larr; Older</a>
@@ -551,6 +542,10 @@ pgsql_bugs_conn.commit()
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/03/30/visualize-iptable-rules/">Security Group의 Rule이 어떤 순서로 적용되는지 보기</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/03/25/keystone-bootstrap/">Keystone Bootstrap</a>
       </li>
     
@@ -564,10 +559,6 @@ pgsql_bugs_conn.commit()
     
       <li class="post">
         <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
-      </li>
-    
-      <li class="post">
-        <a href="/archives/1550">클라우드 네트워킹과 SDN 그리고 OpenStack</a>
       </li>
     
   </ul>

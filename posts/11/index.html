@@ -9,7 +9,7 @@
   <meta name="author" content="Choe, Cheng-Dae">
 
   
-  <meta name="description" content="갑자기 컴퓨터가 느려져서 이상하다고 보고있는데 gnome-settings-daemon이 CPU르 엄청 먹는거다.. 게다가 자세히보니 키보드 Numlock 키가 켜졌다가 꺼졌다가&hellip; https://bugs.launchpad.net/ubuntu/+source/ &hellip;">
+  <meta name="description" content="floating ip는 amazone의 elastic ip와 비슷한 기능으로, 할당받은 ip를 가상머신에 자유롭게 할당, 제거할 수 있다. 직접 NIC을 조절하는 것이 아닌 nova-network 노드에서 1:1 NAT으로 할당한다. float ip 생성 $ nova &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -77,6 +77,109 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/911">Nova-network Floating Ip</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-06-20T00:00:00+09:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>20</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>floating ip는 amazone의 elastic ip와 비슷한 기능으로, 할당받은 ip를 가상머신에 자유롭게 할당, 제거할 수 있다. 직접 NIC을 조절하는 것이 아닌 nova-network 노드에서 1:1 NAT으로 할당한다.</p>
+
+<p>float ip 생성</p>
+
+<pre><code>$ nova-manage floating create --ip_range=10.200.3.0/24
+</code></pre>
+
+<p>만들어진 floating ip를 확인할 수 있다.</p>
+
+<pre><code>$ nova-manage floating list
+None    10.200.3.1      None    nova    eth0
+None    10.200.3.2      None    nova    eth0
+None    10.200.3.3      None    nova    eth0
+.....
+</code></pre>
+
+<p>floating ip를 하나 할당받는다.</p>
+
+<pre><code>$ nova floating-ip-create
++------------+-------------+----------+------+
+|     Ip     | Instance Id | Fixed Ip | Pool |
++------------+-------------+----------+------+
+| 10.200.3.1 | None        | None     | nova |
++------------+-------------+----------+------+
+$ nova floating-ip-create
++------------+-------------+----------+------+
+|     Ip     | Instance Id | Fixed Ip | Pool |
++------------+-------------+----------+------+
+| 10.200.3.2 | None        | None     | nova |
++------------+-------------+----------+------+
+</code></pre>
+
+<p>할당받은 ip를 instance에 설정한다.</p>
+
+<pre><code>$ nova add-floating-ip 6618a76e-a1d3-4912-a71f-42dc3daf893b 10.200.3.2
+$ nova-manage floating list
+c99bd5af477d403e9421f6924836412a        10.200.3.1      None    nova    eth0
+c99bd5af477d403e9421f6924836412a        10.200.3.2      6618a76e-a1d3-4912-a71f-42dc3daf893b    nova    eth0
+None    10.200.3.3      None    nova    eth0
+None    10.200.3.4      None    nova    eth0
+.....
+</code></pre>
+
+<ul>
+<li>10.200.3.1은 할당 받았지만, instance에 연결되지 않았다.</li>
+<li>10.200.3.2은 할당 받아서 6618a76e-a1d3-4912-a71f-42dc3daf893b에 연결되었다.</li>
+</ul>
+
+
+<p>nova-network 노드에서 iptables를 확인해보면 아래와 같이 NAT이 설정된 것을 확인할 수 있다.</p>
+
+<pre><code>$ iptables -L -t nat
+....
+
+Chain nova-network-OUTPUT (1 references)
+target     prot opt source               destination
+DNAT       all  --  anywhere             10.200.3.2           to:10.200.2.5
+
+....
+
+Chain nova-network-PREROUTING (1 references)
+target     prot opt source               destination
+DNAT       tcp  --  anywhere             169.254.169.254      tcp dpt:http to:10.200.1.9:8775
+DNAT       all  --  anywhere             10.200.3.2           to:10.200.2.5
+
+.....
+
+Chain nova-network-float-snat (1 references)
+target     prot opt source               destination
+SNAT       all  --  10.200.2.5           anywhere             to:10.200.3.2
+
+....
+</code></pre>
+
+<p><a href="http://wiki.woosum.net/nova#floating_ip">http://wiki.woosum.net/nova#floating_ip</a></p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -543,59 +646,6 @@ E: Sub-process /usr/bin/dpkg returned an error code (1)`
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/archives/835">CentOS Bootstraping in Ubuntu</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2012-01-20T00:00:00+09:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>20</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><pre><code>$ apt-get install yum rpm python-m2crypto
-$ mkdir -p /tmp/centos/var/lib/rpm
-$ rpm -root /tmp/centos -initdb
-</code></pre>
-
-<p>$HOME/.rpmdb 가 만들어지는데 그거는 마지막 삭제한다.</p>
-
-<p>rpmfind.net에서 원하는 버전의 rpm 찾아서 다운로드</p>
-
-<pre><code>$ wget ftp://195.220.108.108/linux/centos/5.7/os/x86_64/CentOS/centos-release-5-7.el5.centos.x86_64.rpm
-$ rpm -ivh -force-debian -nodeps -root /tmp/centos centos-release-5-7.el5.centos.x86_64.rpm
-$ ln -s /tmp/centos/etc/pki /etc/pki
-$ yum -installroot /tmp/centos install yum
-$ mount -t proc foo /tmp/centos/proc
-$ mount -t sysfs foo /tmp/centos/sys
-
-$ chroot /tmp/centos /bin/bash -login
-$ rm -rf /home/choe/.rpmdb # 위에서 initdb한것 지우기
-$ rpm -initdb
-$ echo nameserver 168.126.63.1 &gt; /etc/resolv.conf
-$ yum install yum
-$ yum install vim-minimal less
-</code></pre>
-
-<p>참고: <a href="http://www.lucas-nussbaum.net/blog/?p=385">http://www.lucas-nussbaum.net/blog/?p=385</a></p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/12">&larr; Older</a>
@@ -613,6 +663,10 @@ $ yum install vim-minimal less
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/03/30/visualize-iptable-rules/">Security Group의 Rule이 어떤 순서로 적용되는지 보기</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/03/25/keystone-bootstrap/">Keystone Bootstrap</a>
       </li>
     
@@ -626,10 +680,6 @@ $ yum install vim-minimal less
     
       <li class="post">
         <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
-      </li>
-    
-      <li class="post">
-        <a href="/archives/1550">클라우드 네트워킹과 SDN 그리고 OpenStack</a>
       </li>
     
   </ul>

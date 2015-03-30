@@ -9,19 +9,7 @@
   <meta name="author" content="Choe, Cheng-Dae">
 
   
-  <meta name="description" content="Object+Pascal+Style+Guide_kr_20100112.pdf. 그리고 begin 문은  항상 새로운 줄에서 시작합니다. 1
-2
-3
-4
-5
-6
-7
-8
-if IsTrueValue then
-begin DoSomething;
-end
-else
-begin &hellip;">
+  <meta name="description" content="델파이의 라이센스 정책에 새로운 라이센스 타입이 추가되었다는군요. 이름 재밌네요 TagCloud 라이센스. 뭐. 대략 읽어본 봐로는 하나의 라이센스를 가지면 Delphi 2007, Delphi 2010을 모두 설치할 수 있다고 합니다. 물론 일반 라이센스보다 25% &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -89,6 +77,45 @@ begin &hellip;">
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/301">Delphi의 새로운 라이센스 정책</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-07-16T00:00:00+09:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>16</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>델파이의 라이센스 정책에 <a href="http://blog.marcocantu.com/blog/delphi_toolcloud_many_versions.html">새로운 라이센스 타입이 추가</a>되었다는군요. 이름 재밌네요 TagCloud 라이센스. 뭐. 대략 읽어본 봐로는 하나의 라이센스를 가지면 Delphi 2007, Delphi 2010을 모두 설치할 수 있다고 합니다. 물론 일반 라이센스보다 25% 비싸답니다.</p>
+
+<p>이거 참 반가운 일입니다.</p>
+
+<p>새로운 버전의 기능을 쓰고싶은데, 라이센스 부담으로 설치못하고, 지금 것도 잘 되잖아라는 것에 반박할 거리 찾아내고.</p>
+
+<p>새로운 버전으로 마이그레이션 하고 싶은데, 트라이얼 버전에 제한된 시간으론 완벽한 테스트가 불가능하고,</p>
+
+<p>이러한 문제점을 일거에 해결할 수 있겠군요. 그런데.. 다른 새로운 버전이 나왔을 경우도 적용되는지에 대해선 언급이 없어 아쉽네요.</p>
+
+<p>덧) 제가 잘못 알고 있었던 것도 있었군요. 자세한 것은 임프님 댓글로 <a href="http://www.borlandforum.com/impboard/impboard.dll?action=read&amp;db=free&amp;no=18437">http://www.borlandforum.com/impboard/impboard.dll?action=read&amp;db=free&amp;no=18437</a></p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -434,109 +461,6 @@ end;
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/archives/191">TPopupMenu의 기본 메뉴 실행하기</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2010-07-08T00:00:00+09:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><img class="right" src="/images/popup_default_item-177x300.png"></p>
-
-<p>윈도우 탐색기의 팝업 메뉴를 보면 오른쪽 그림처럼 Open 메뉴 아이템은 굵은 폰트로 표시됩니다. 이건 해당 아이템을 더블클릭 또는 엔터키를 누르면 해당 메뉴를 실행하겠다는 Windows의 표현입니다.</p>
-
-<p>당연히 TPopupMenu에서도 지원하지요. TMenuItem.Default 프러퍼티가 있으면 수행하면 됩니다.</p>
-
-<p>그런데 이 기능을 구현하려면 여간 귀찮치요.</p>
-
-<ol>
-<li>키보드 메시지 처리해서 VK_RETURN 메시지 처리하고</li>
-<li>더블클릭했을때도 체크하고</li>
-<li>또한 해당 컨트럴에 연결된 팝업 메뉴도 확인해서 기본 메뉴가 있는지 없는지 확인하고..</li>
-<li>있으면 이벤트 실행하고..</li>
-</ol>
-
-
-<p>컨트럴에 연결된 팝업 메뉴의 기본 액션을 수행하는 것만 보자면..</p>
-
-<pre><code>function TwsControlHelper.ExecuteDefaultPopupAction: Boolean;
-// 팝업 메뉴의 디폴트로 설정된 메뉴 아이템에 설정된 이벤트를 실행한다
-var
-  Item, DefaultItem: TMenuItem;
-begin
-  Result := False;
-  if not Assigned(PopupMenu) then Exit;
-
-  DefaultItem := nil;
-  for Item in PopupMenu.Items do
-    if Item.Default then
-    begin
-      DefaultItem := Item;
-      Break;
-    end;
-
-  if Assigned(DefaultItem) then
-  begin
-    if Assigned(DefaultItem.Action) then
-      Result := DefaultItem.Action.Execute
-    else if Assigned(DefaultItem.OnClick) then
-    begin
-      Result := True;
-      DefaultItem.OnClick(DefaultItem);
-    end;
-  end
-end;
-</code></pre>
-
-<p>TControl의 Helper로 작성했이니 어디서든 저렇게 쓰면 됩니다. 이것을 키보드나 마우스 이벤트 핸들러에 적용해보면..</p>
-
-<pre><code>procedure TwsListView.DblClick;
-begin
-  // 더블클릭에 아무런 이벤트도 연결되어 있지않으면 기본 팝업 액션을 수행
-  if not Assigned(OnDblClick) and Assigned(PopupMenu) then
-    ExecuteDefaultPopupAction else
-    inherited;
-end;
-
-procedure TwsListView.KeyUp(var Key: Word; Shift: TShiftState);
-begin
-  case Key of
-    VK_RETURN:
-      if not FCaptionEditing then
-      begin
-        if not ExecuteDefaultPopupAction then
-          inherited;
-      end else
-        inherited;
-    else inherited;
-  end;
-end;
-</code></pre>
-
-<p>이렇게 됩니다.</p>
-
-<p>TwsListView에 연결된 팝업메뉴에 기본 메뉴가 있으면, 이제 리스트 뷰에서 Enter를 누르거나 아이템을 더블클릭하면 해당 메뉴 이벤트가 자동으로 수행됩니다.</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/23">&larr; Older</a>
@@ -554,6 +478,10 @@ end;
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/03/30/visualize-iptable-rules/">Security Group의 Rule이 어떤 순서로 적용되는지 보기</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/03/25/keystone-bootstrap/">Keystone Bootstrap</a>
       </li>
     
@@ -567,10 +495,6 @@ end;
     
       <li class="post">
         <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
-      </li>
-    
-      <li class="post">
-        <a href="/archives/1550">클라우드 네트워킹과 SDN 그리고 OpenStack</a>
       </li>
     
   </ul>

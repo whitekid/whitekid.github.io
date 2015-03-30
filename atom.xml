@@ -4,7 +4,7 @@
   <title><![CDATA[Your wish is my command]]></title>
   <link href="http://whitekid.github.io/atom.xml" rel="self"/>
   <link href="http://whitekid.github.io/"/>
-  <updated>2015-03-27T01:56:30+09:00</updated>
+  <updated>2015-03-30T16:59:56+09:00</updated>
   <id>http://whitekid.github.io/</id>
   <author>
     <name><![CDATA[Choe, Cheng-Dae]]></name>
@@ -12,6 +12,57 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Security Group의 Rule이 어떤 순서로 적용되는지 보기]]></title>
+    <link href="http://whitekid.github.io/blog/2015/03/30/visualize-iptable-rules/"/>
+    <updated>2015-03-30T16:56:41+09:00</updated>
+    <id>http://whitekid.github.io/blog/2015/03/30/visualize-iptable-rules</id>
+    <content type="html"><![CDATA[<p>iptables의 chain이 적용되는 순서를 쉽게 보고싶다면 <a href="http://atoato88.hatenablog.com/entry/2014/01/25/133852">http://atoato88.hatenablog.com/entry/2014/01/25/133852</a> 를 참조~</p>
+
+<pre><code>                                  +--------------------------------+
+                                  |                                v
++-------------------------+     +--------------------------+     +------------------------------+     +------------------------------+     +------------------------------+
+|         FORWARD         | --&gt; | neutron-openvswi-FORWARD | --&gt; |  neutron-openvswi-sg-chain   | --&gt; | neutron-openvswi-i286a46e9-d | --&gt; | neutron-openvswi-sg-fallback |
++-------------------------+     +--------------------------+     +------------------------------+     +------------------------------+     +------------------------------+
+  |                                                                                                                                          ^
+  +-------------------------------+                                                                                                          |
+                                  v                                                                                                          |
++-------------------------+     +--------------------------+     +------------------------------+                                            |
+|         OUTPUT          | --&gt; |    neutron-filter-top    | --&gt; |    neutron-openvswi-local    |                                            |
++-------------------------+     +--------------------------+     +------------------------------+                                            |
+  |                                                                                                                                          |
+  |                                                                                                                                          |
+  v                                                                                                                                          |
++-------------------------+                                                                                                                  |
+| neutron-openvswi-OUTPUT |                                                                                                                  |
++-------------------------+                                                                                                                  |
++-------------------------+     +--------------------------+     +------------------------------+                                            |
+|          INPUT          | --&gt; |  neutron-openvswi-INPUT  | --&gt; | neutron-openvswi-o286a46e9-d | -------------------------------------------+
++-------------------------+     +--------------------------+     +------------------------------+
+                                                                   |
+                                                                   |
+                                                                   v
++-------------------------+                                      +------------------------------+
+|    nova-api-FORWARD     |                                      | neutron-openvswi-s286a46e9-d |
++-------------------------+                                      +------------------------------+
++-------------------------+
+|     nova-api-INPUT      |
++-------------------------+
++-------------------------+
+|     nova-api-OUTPUT     |
++-------------------------+
++-------------------------+
+|     nova-api-local      |
++-------------------------+
++-------------------------+
+|     nova-filter-top     |
++-------------------------+
+</code></pre>
+
+<p>thanks rick</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Keystone Bootstrap]]></title>
@@ -885,23 +936,6 @@ $ quantum lb-vip-list
 
 <pre><code>$ quantum lb-vip-create -name test-vip-https -protocol-port 443 -protocol TCP -subnet-id=$NET_ID test -address=10.10.100.5
 Another Vip already exists for pool 044208a8-9e29-4fee-b41b-9b58567f3874
-</code></pre>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Kvm: Linux Bridge 대신 Openvswitch 사용하기]]></title>
-    <link href="http://whitekid.github.io/archives/1182"/>
-    <updated>2013-12-11T00:00:00+09:00</updated>
-    <id>http://whitekid.github.io/archives/kvm-linux-bridge-%eb%8c%80%ec%8b%a0-openvswitch-%ec%82%ac%ec%9a%a9%ed%95%98%ea%b8%b0</id>
-    <content type="html"><![CDATA[<p>/etc/default/openvswitch-switch</p>
-
-<pre><code>BRCOMPAT=yes
-</code></pre>
-
-<p>bridge 호환 모듈, 데몬</p>
-
-<pre><code>$ apt-get install openvswitch-brcompat
 </code></pre>
 ]]></content>
   </entry>
