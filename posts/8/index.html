@@ -9,8 +9,7 @@
   <meta name="author" content="Choe, Cheng-Dae">
 
   
-  <meta name="description" content="bash에서 child process를 돌릴 필요가 생겨서 잠깐 테스트 삼아 작성해본 background로 프로세스 돌리고, 죽이기 스크립트 #!/bin/bash
-set -m function sig_int(){ echo "sig_int" kill `jobs -p &hellip;">
+  <meta name="description" content="openstack에서 가상머신을 생성하기는 했는데, nova에서는 생성이 되었다고 리포트되지만 Quantum 네트워크 문제로 가상머신이 연결되지 않은 경우가 있다. 이러한 경우 몇가지 체크할 포인트를 정리해본다. 물론 여기는 모두 folsom에서 OpenVSwitch &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -78,6 +77,291 @@ set -m function sig_int(){ echo "sig_int" kill `jobs -p &hellip;">
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1121">OpenStack: 가상머신의 네트워크가 안될 때 Quantum의 체크 사항들</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-11-23T00:00:00+09:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>23</span><span class='date-suffix'>rd</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>openstack에서 가상머신을 생성하기는 했는데, nova에서는 생성이 되었다고 리포트되지만 Quantum 네트워크 문제로 가상머신이 연결되지 않은 경우가 있다. 이러한 경우 몇가지 체크할 포인트를 정리해본다. 물론 여기는 모두 folsom에서 OpenVSwitch + GRE Tunneling을 사용할 경우를 가정한다.</p>
+
+<h2>증상들</h2>
+
+<p>quantum의 설정 문제라면 보통 아래의 증상이 나타난다.</p>
+
+<ul>
+<li>nova list를 보면 가상머신에 ip는 할당이 되어 있지만, ping이 가지 않는다.</li>
+<li>ping은 가는데 ssh 접속이 안된다.</li>
+<li>vnc로 접속하면 접속은 된다.</li>
+</ul>
+
+
+<p>nova list에서 가상머신의 ip address가 할당이 되지 않고 생성되는 문제가 있는데, 이는 대부분 quantum의 문제가 아니고 다른 문제였다. 이 경우는 nova-compute의 로그를 확인하면 된다.</p>
+
+<h2>physical network 확인</h2>
+
+<h3>integration bridge가 설정 되어 있는지 확인</h3>
+
+<p>모든 l3-agent, dhcp-agent, ovs-plugin-agent가 동작하는 곳에 br-int bridge가 있는지 확인한다. quantum ovs plugin이 동작하기 위해서는 반드시 br-int bridge가 필요하다. agent가 자동으로 만들어 줄 만 한데 안만들어 주고 있다.(반면에 gre tunnel이 사용하는 br-tun은 알아서 만든다.)</p>
+
+<p>이 경우는 quantum 로그 파일에 br-int bridge가 없다는 에러를 내기 때문에 찾아내기 아주 쉽다.</p>
+
+<h3>external bridge 확인</h3>
+
+<p>l3-agent가 동작하고 있는 곳에 br-ex bridge가 있는지 확인한다. 그리고 br-ex bridge에는 외부와 연결된 interface가 추가되어 있는지 확인한다.</p>
+
+<p>테스트 환경에서의 bridge를 확인하면 아래와 같다. (qg-*는 tenant network의 gateway port다.)</p>
+
+<pre><code>Bridge br-ex
+  Port "qg-5376a58a-a7"
+    Interface "qg-5376a58a-a7"
+      type: internal
+  Port "qg-8be78718-4b"
+    Interface "qg-8be78718-4b"
+      type: internal
+  Port "eth2"
+    Interface "eth2"
+  Port br-ex
+    Interface br-ex
+      type: internal
+</code></pre>
+
+<p>그리고 여기에 연결된 eth2(external nic)에는 ip address가 설정하지 않는다.(물리적 연결을 확인하기 위해서 ip를 추가하고 테스트하기는 한다.)</p>
+
+<h3>datapath-dkms</h3>
+
+<p>openvswitch는 dynamic kernel module support를 사용한다. openvswitch-switch user space daemon과 커널 모듈이 동시에 사용되는 것이다. 의존성에 의해서 자동으로 설치되기는 하지만, 어떠한 경우에는 커널 모듈을 설치하지 않는 경우도 있기 때문에 한 번 쯤은 확인하는 것이 좋다.</p>
+
+<pre><code>root@net-l3:~# dpkg -l | grep datapath-dkms
+ii openvswitch-datapath-dkms 1.4.0-1ubuntu1.3 Open vSwitch datapath module source - DKMS version
+root@net-l3:~# dkms status
+openvswitch, 1.4.0, 3.2.0-33-generic, x86_64: installed
+</code></pre>
+
+<h2>quantum-plugin-openvswitch-agent 동작 확인</h2>
+
+<p>nova-compute, quantum-l3-agent, quantum-dhcp-agent가 동작하는 노드에서는 quantum-plugin-openvswitch-agent가 동작하면서 지속적으로 quantum 서비스를 polling하면서 openvswitch의 설정들을 잡는다. database/ rabbitmq connection이나 keystone 설정들의 문제는 로그파일을 보면 바로 나오니 문제를 파악하기 쉽다. 하지만 gre tunneling을 맺는 것을 명시적으로 오류가 나지 않으므로 이 부분을 확인해야한다.</p>
+
+<p>아래는 테스트 환경에서 gre tunneling 확인한 모습이다. remote_ip=&ldquo;10.130.1.101&rdquo; 처럼 보이는 부분이 있어야하며, 기타 여러 다른 문제로 인해서 여기에 상대방의 ip가 정상적으로 나오지 않는 경우를 많이 경험했다.</p>
+
+<pre><code>root@net-dhcp:~# ovs-vsctl show
+40a579fe-a5ae-4f63-b6ca-6967280a9893
+    Bridge br-tun
+        Port "gre-1"
+            Interface "gre-1"
+                type: gre
+                options: {in_key=flow, out_key=flow, remote_ip="10.130.1.101"}
+        Port patch-int
+            Interface patch-int
+                type: patch
+                options: {peer=patch-tun}
+        Port br-tun
+            Interface br-tun
+                type: internal
+        Port "gre-4"
+            Interface "gre-4"
+                type: gre
+                options: {in_key=flow, out_key=flow, remote_ip="10.130.1.11"}
+        Port "gre-3"
+            Interface "gre-3"
+                type: gre
+                options: {in_key=flow, out_key=flow, remote_ip="10.130.1.10"}
+    Bridge br-int
+        Port patch-tun
+            Interface patch-tun
+                type: patch
+                options: {peer=patch-int}
+        Port br-int
+            Interface br-int
+                type: internal
+        Port "tap9dd6bf73-9a"
+            tag: 2
+            Interface "tap9dd6bf73-9a"
+                type: internal
+        Port "tap063f59a8-7b"
+            tag: 1
+            Interface "tap063f59a8-7b"
+                type: internal
+    ovs_version: "1.4.0+build0"
+</code></pre>
+
+<p>이런 문제가 있는 경우는 remote_ip가 나오지 않는 호스트의 ovs_quantum_plugin.ini의 local_ip 설정이 있는지 확인하고, 정확하게 gre tunneling으로 사용할 ip가 명시되어 있다면 단순히 quantum-plugin-openvswitch-agent 서비스를 재시작하면 대부분 해결 된다.</p>
+
+<h3>dhcp namespace에서 ping이 되는지</h3>
+
+<p>dhcp agent가 동작하는 곳에는 dhcp namespace가 생기고 여기에는 해당 네트워크에 동작하는 dhcp 서버가 동작하게 된다. 일만적으로 172.16.1.2처럼 2번의 ip를 가지게 되고 가상머신은 3번 아이피부터 시작한다. 여기는 외부 네트워크 연결과는 상관없이 내부 네트워크만 동작하면 되므로 우선 여기부터 확인한다.</p>
+
+<pre><code>root@net-dhcp:~# ip netns
+qdhcp-9cbd5dd0-928a-4808-ae34-4cc2563fa619
+qdhcp-55db86bf-7eee-4fac-a928-844218e88a11
+root@net-dhcp:~# ip netns exec qdhcp-9cbd5dd0-928a-4808-ae34-4cc2563fa619 ip addr
+8: tap9dd6bf73-9a: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue state UNKNOWN
+    link/ether fa:16:3e:eb:c1:b3 brd ff:ff:ff:ff:ff:ff
+    inet 172.16.2.2/24 brd 172.16.2.255 scope global tap9dd6bf73-9a
+    inet6 fe80::f816:3eff:feeb:c1b3/64 scope link
+       valid_lft forever preferred_lft forever
+9: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 16436 qdisc noqueue state UNKNOWN
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+root@net-dhcp:~# ip netns exec qdhcp-9cbd5dd0-928a-4808-ae34-4cc2563fa619 ping -c 3 172.16.2.5
+PING 172.16.2.5 (172.16.2.5) 56(84) bytes of data.
+64 bytes from 172.16.2.5: icmp_req=1 ttl=64 time=8.82 ms
+64 bytes from 172.16.2.5: icmp_req=2 ttl=64 time=3.98 ms
+64 bytes from 172.16.2.5: icmp_req=3 ttl=64 time=2.17 ms
+
+--- 172.16.2.5 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2003ms
+rtt min/avg/max/mdev = 2.179/4.996/8.823/2.804 ms
+</code></pre>
+
+<p>가상 머신의 ip로 ping이 간다면 우선 내부 네트워크는 정상적으로 작동한다는 말이다. 더불어 gre tunnel도 정상적으로 잘 된다는 이야기이다.</p>
+
+<h3>l3 namespace에서 네트워크 확인</h3>
+
+<p>l3 namespace는 해당 네트워크의 gateway가 위치(172.16.1.1)하는 곳이다. 당연히 여기서 네트워크가 문제없이 잘 되어야 외부로 나가는 길이 열리는 것이다.</p>
+
+<p>l3 namespace에서 다음 사항을 확인해본다.</p>
+
+<ul>
+<li>instance로의 ping</li>
+<li>default gateway</li>
+</ul>
+
+
+<p>..</p>
+
+<pre><code>root@net-l3:~# ip netns
+qrouter-2c901c4d-eeb3-43b0-a84a-30da10fa74d7
+qrouter-5fce397a-4e9d-4a42-8139-f7748a0f69b6
+root@net-l3:~# ip netns exec qrouter-5fce397a-4e9d-4a42-8139-f7748a0f69b6 ip addr
+8: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 16436 qdisc noqueue state UNKNOWN
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+9: qr-7b757ca9-3f: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue state UNKNOWN
+    link/ether fa:16:3e:23:36:5b brd ff:ff:ff:ff:ff:ff
+    inet 172.16.1.1/24 brd 172.16.1.255 scope global qr-7b757ca9-3f
+    inet6 fe80::f816:3eff:fe23:365b/64 scope link
+       valid_lft forever preferred_lft forever
+10: qg-8be78718-4b: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue state UNKNOWN
+    link/ether fa:16:3e:b7:bc:06 brd ff:ff:ff:ff:ff:ff
+    inet 10.100.1.130/25 brd 10.100.1.255 scope global qg-8be78718-4b
+    inet 10.100.1.131/32 brd 10.100.1.131 scope global qg-8be78718-4b
+    inet6 fe80::f816:3eff:feb7:bc06/64 scope link
+       valid_lft forever preferred_lft forever
+root@net-l3:~# ip netns exec qrouter-5fce397a-4e9d-4a42-8139-f7748a0f69b6 ping -c 3 172.16.1.3
+PING 172.16.1.3 (172.16.1.3) 56(84) bytes of data.
+64 bytes from 172.16.1.3: icmp_req=1 ttl=64 time=10.4 ms
+64 bytes from 172.16.1.3: icmp_req=2 ttl=64 time=0.563 ms
+64 bytes from 172.16.1.3: icmp_req=3 ttl=64 time=0.541 ms
+
+--- 172.16.1.3 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2000ms
+rtt min/avg/max/mdev = 0.541/3.851/10.450/4.666 ms
+root@net-l3:~# ip netns exec qrouter-5fce397a-4e9d-4a42-8139-f7748a0f69b6 route
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+default         10.100.1.129    0.0.0.0         UG    0      0        0 qg-8be78718-4b
+10.100.1.128    *               255.255.255.128 U     0      0        0 qg-8be78718-4b
+172.16.1.0      *               255.255.255.0   U     0      0        0 qr-7b757ca9-3f
+root@net-l3:~# ip netns exec qrouter-5fce397a-4e9d-4a42-8139-f7748a0f69b6 ping -c 3 10.100.1.129
+PING 10.100.1.129 (10.100.1.129) 56(84) bytes of data.
+64 bytes from 10.100.1.129: icmp_req=1 ttl=64 time=22.1 ms
+64 bytes from 10.100.1.129: icmp_req=2 ttl=64 time=0.423 ms
+64 bytes from 10.100.1.129: icmp_req=3 ttl=64 time=0.339 ms
+
+--- 10.100.1.129 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2000ms
+rtt min/avg/max/mdev = 0.339/7.622/22.105/10.241 ms
+</code></pre>
+
+<p>여기서 namespace의 gateway는 quantum을 이용해서 네트워크를 생성할때 만들어준 네트워크에서 알아서 잡는 것이다. 따라서 해당 주소는 미리 있어야한다. 위에서는 external network의 subnet을 10.100.1.128/25로 주었기 때문에 해당 네트워크의 첫번째 아이피인 10.100.1.129로 gateway가 자동으로 잡혔다.</p>
+
+<p>또한 10.100.1.130은 해당 네트워크의 nat로 외부 접속할 대표 아이피이고 10.100.1.131은 floatingip로 설정된 것이다.</p>
+
+<h3>metadata</h3>
+
+<p>어쨌든 가상 머신으로 ping까지 잘 가지만 ssh로 로그인할 수 없는 경우가 있다. 이런 경우는 대부분 가상머신이 metadata를 가져오지 못해서 생기는 문제로 가상머신의 로그나 vnc로 접근해서 확인하면 확인할 수 있다.</p>
+
+<p>ubuntu 가상 머신의 경우는 아래와 같은 메시지가 남는다.</p>
+
+<pre><code>root@c-01-01:~# tail /var/lib/nova/instances/instance-00000003/console.log
+cloud-init start-local running: Thu, 22 Nov 2012 15:07:50 +0000. up 3.37 seconds
+no instance data found in start-local
+ci-info: lo    : 1 127.0.0.1       255.0.0.0       .
+ci-info: eth0  : 1 172.16.2.4      255.255.255.0   fa:16:3e:78:fa:03^M
+ci-info: route-0: 0.0.0.0         172.16.2.1      0.0.0.0         eth0   UG
+ci-info: route-1: 172.16.2.0      0.0.0.0         255.255.255.0   eth0   U
+cloud-init start running: Thu, 22 Nov 2012 15:07:54 +0000. up 7.01 seconds
+2012-11-22 15:08:48,306 - util.py[WARNING]: 'http://169.254.169.254/2009-04-04/meta-data/instance-id' failed [51/120s]: url error [timed out]
+2012-11-22 15:09:39,360 - util.py[WARNING]: 'http://169.254.169.254/2009-04-04/meta-data/instance-id' failed [102/120s]: url error [timed out]
+2012-11-22 15:09:56,379 - util.py[WARNING]: 'http://169.254.169.254/2009-04-04/meta-data/instance-id' failed [119/120s]: url error [timed out]
+</code></pre>
+
+<p>로그를 보면 dhcp를 통해서 ip를 받아왔지만 cloud-init에서 metadata server롤 접속하지 못해서 ssh key를 받아오지 못해 ssh 인증키를 가상머신에 설치하지 못해서 이다. <a href="http://blog.woosum.net/archives/1077">이 문제에 관해서는 이전에 적었으니 참고하시면 되고</a>, 간단하게 말한다면 l3 agent namespace에서도 metadata server에 접속할 수 있어야되고, 반대로 metadata server에서도 가상 머신에 접속할 수 있어야 합니다. management / data / external / tenant network을 모두 같은 네트워크에서 구성했다면 문제가 안생기겠지만, 별도의 분리된 네트워크나 private network을 사용했다면 직접 연결되는 경로가 없기 때문에 만들어 줘야 합니다.</p>
+
+<p>간단하게 한다면 metadata api server에서 아래처럼 하면 됩니다.</p>
+
+<pre><code>root@api $ route add -net &lt;tenant subnet&gt; gw &lt;tenant default public ip&gt;;
+root@api $ route add -net 172.16.1.0/24 gw 10.100.1.130
+</code></pre>
+
+<p>참고로 metadata_ip는 external network에서 접근 가능한 ip여야 합니다. metadata server를 접근하는 곳이 l3 namespace인데 여기는 이미 external network 영역이기 때문입니다. 여기서 management나 기타 다른 영역으로 들어가는 것은 구성상 바람직 하지 않습니다.</p>
+
+<h2>기타 다른 이유들&hellip;</h2>
+
+<ul>
+<li>keystone
+
+<ul>
+<li>설정 오류</li>
+<li>quantum user의 권한 문제: quantum user는 admin role이 있어야 한다.</li>
+</ul>
+</li>
+<li>glance 이미지 설정 오류
+
+<ul>
+<li>glance의 설정이 잘못되어 있으면 가상 머신의 상태가 build에서 멈춰있습니다. nova-compute 쪽 로그를 보면 이미지를 찾을 수 없다고 나옵니다.</li>
+<li>glace 이미지 오류: glance에서 이미지를 추가할 때 뭔가 잘못하여 active가 아닌 queued 상태인 이미지가 만들어 질 수 있는데, 이 이미지로 가상머신을 만들면 역시 build 상태에서 멈춰 있습니다.</li>
+</ul>
+</li>
+<li>quantum-service startup error</li>
+<li>가끔 nova-network을 설치해놓고선 quantum service가 왜 안뜨냐고 투덜인 분이 있습니다. 녜&hellip;. quantum은 nova-network을 완전해 대체할 목적으로 만들어 졌기에 같이 공존할 수 없습니다. nova-volume과 cinder와의 관계와 같습니다.  /etc/nova/nova.conf에 enabled_apis=ec2,osapi_compute,metadata 처럼 몇몇 서비스를 내리세욧</li>
+</ul>
+
+
+<h2>&hellip;..</h2>
+
+<p>quantum은 openstack의 마지막에 있습니다. 무슨 말이냐 keystone, glance, nova-* 등 여러 openstack 요소들이 동작을 제대로 한 이후에 quantum의 동작을 확인할 수 있습니다. 네트워크가 안된다는 것은 단순 네트워크 문제로 보이지만 다른 여러 요인들이 겹쳐서 생기는 문제가 더 많습니다. 경험상 정작 quantum 자체의 문제보다는 다른쪽의 문제가 더 많았습니다.</p>
+
+<p>감이 오시나요? quantum을 하려면 다른 것도 어느 정도 대충 알아야한다는 이야기입니다. 그러지 않고서는 quantum은 문제 없어!! 라고 끝내버리는 경우가 생길 수 있는데, 이건 팀워크에서는 하면 안되는 것이죠.. 음.. 이상한..</p>
+
+<p>어쨌든 끝~</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -685,75 +969,6 @@ function find_chef_repo() {
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/archives/1056">VMWare에서 Hostonly Vmnet간의 Routing</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2012-10-29T00:00:00+09:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>29</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>VMWare를 사용하면서 뭔가 복잡한 네트워크 모델을 사용하려면 hostonly vmnet을 여러개 사용하게 됩니다. VMWare를 OpenStack 테스트 용으로 사용하고 있는 저는 현재 테스트 환경에서 hostonly vmnet을 4개 사용하고 있으며 실제 환경을 그대로 묘사하기 위해서 조만간 6~7개로 늘려서 테스트할 예정입니다.</p>
-
-<p>그런데 처음에 잘 모르고 지나갔다가 낭패를 본게 hostonly로 네트웍을 구성하면 host-pc에서 vmnet간에 routing을 지원하지 않습니다. 정리하면 아래와 같습니다.</p>
-
-<ul>
-<li>host-pc <-> vmnet: OK</li>
-<li>vmnet <-> Internet: N/A</li>
-<li>vnmet <->  vmnet : N/A</li>
-</ul>
-
-
-<p>당연히 되는지 알았는데, <a href="/archives/1010">vmnet간에 NATing이 되고 있었던 것</a>과 이로 인한 <a href="/archives/997">routering filter의 간섭</a>이었죠. 이 상황을 알아채려면 상대방의 ip까지 확인 해야하는데, 그럴 일이 거의 없다가 문제가 발생해 추척하다 발견한 것이죠.. ㅎㅎ</p>
-
-<p>어쨌든 vmnet간에 routing하는 방법은 <a href="http://www.vmware.com/support/ws5/doc/ws_net_advanced_2hostonly_routing.html">VMWare 사이트에 잘 설명</a>이 되어있습니다. 근데 여기서 방법 중에 host-pc에서 routing을 잡는 방법은 ubuntu에서 테스트하니 안됩니다. 그래서 routing을 담당하는 VM을 만들어 합니다.</p>
-
-<p>간단히 정리하면</p>
-
-<ol>
-<li>hostonly network을 가지는 2개의 vm(10.20.1.10, 10.20.2.10)을 만든다. ==> 이하 internal vm</li>
-<li>두 hostonly network을 가지는 router vm을 만든다. ==> 이하 router vm
-eth0: NAT network for external internet access
-eth1: 10.20.1.2
-eth2: 10.20.2.2</li>
-<li>여기서 .2를 가지는 것은 .1은 host-pc에 연결하고 host-pc에서 management용으로 사용할 것이므로 .2를 사용한다.</li>
-<li>router vm에서 routing이 되도록 설정한다. 간단히
-$ systctl net.ipv4.ip_foward=1</li>
-<li>router vm에 internal vm이 외부 인터넷 접근을 위해 NATing을 설정한다. 외부 인터넷 접근 필요 하다면&hellip;
-$ iptables -t nat -A POSTROUTING -j MASQUERADE -o eth0</li>
-<li>internal vm의 default gateway를 .2번으로 설정한다.</li>
-<li>internal vm에서 tracepath <ip>를 통해서 각각의 vm을 router vm을 통해서 접근하는지 확인한다.</li>
-<li>internal vm에서 tracepath google.com으로 외부 인터넷 연결 확인</li>
-<li>끝..</li>
-</ol>
-
-
-<p>참고..</p>
-
-<ul>
-<li>iptables rule 저장은 <a href="http://wiki.woosum.net/iptables#A.2BrjDQwA-">여기</a>를 참고</li>
-</ul>
-
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/9">&larr; Older</a>
@@ -771,6 +986,10 @@ $ iptables -t nat -A POSTROUTING -j MASQUERADE -o eth0</li>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/04/06/kubernetes-summary/">Kubernetes-summary</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/03/30/visualize-iptable-rules/">Security Group의 Rule이 어떤 순서로 적용되는지 보기</a>
       </li>
     
@@ -784,10 +1003,6 @@ $ iptables -t nat -A POSTROUTING -j MASQUERADE -o eth0</li>
     
       <li class="post">
         <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
-      </li>
-    
-      <li class="post">
-        <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
       </li>
     
   </ul>

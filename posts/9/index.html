@@ -9,7 +9,7 @@
   <meta name="author" content="Choe, Cheng-Dae">
 
   
-  <meta name="description" content="Mac OSX의 resolver라는 기능이 있습니다. 간단히 말해서 특정 도메인에 해당하는 DNS 쿼리를 특정 DNS 서버에 요청하는 것이지요.. 뭐 일상생활에서는 필요없겠는데, 개발용으로 내부 네임서버를 돌리고 있는 경우에 가끔 유용하게 쓸 수 있습니다. 아래처럼 &hellip;">
+  <meta name="description" content="VMWare를 사용하면서 뭔가 복잡한 네트워크 모델을 사용하려면 hostonly vmnet을 여러개 사용하게 됩니다. VMWare를 OpenStack 테스트 용으로 사용하고 있는 저는 현재 테스트 환경에서 hostonly vmnet을 4개 사용하고 있으며 실제 환경을 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -77,6 +77,75 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1056">VMWare에서 Hostonly Vmnet간의 Routing</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-10-29T00:00:00+09:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>29</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>VMWare를 사용하면서 뭔가 복잡한 네트워크 모델을 사용하려면 hostonly vmnet을 여러개 사용하게 됩니다. VMWare를 OpenStack 테스트 용으로 사용하고 있는 저는 현재 테스트 환경에서 hostonly vmnet을 4개 사용하고 있으며 실제 환경을 그대로 묘사하기 위해서 조만간 6~7개로 늘려서 테스트할 예정입니다.</p>
+
+<p>그런데 처음에 잘 모르고 지나갔다가 낭패를 본게 hostonly로 네트웍을 구성하면 host-pc에서 vmnet간에 routing을 지원하지 않습니다. 정리하면 아래와 같습니다.</p>
+
+<ul>
+<li>host-pc <-> vmnet: OK</li>
+<li>vmnet <-> Internet: N/A</li>
+<li>vnmet <->  vmnet : N/A</li>
+</ul>
+
+
+<p>당연히 되는지 알았는데, <a href="/archives/1010">vmnet간에 NATing이 되고 있었던 것</a>과 이로 인한 <a href="/archives/997">routering filter의 간섭</a>이었죠. 이 상황을 알아채려면 상대방의 ip까지 확인 해야하는데, 그럴 일이 거의 없다가 문제가 발생해 추척하다 발견한 것이죠.. ㅎㅎ</p>
+
+<p>어쨌든 vmnet간에 routing하는 방법은 <a href="http://www.vmware.com/support/ws5/doc/ws_net_advanced_2hostonly_routing.html">VMWare 사이트에 잘 설명</a>이 되어있습니다. 근데 여기서 방법 중에 host-pc에서 routing을 잡는 방법은 ubuntu에서 테스트하니 안됩니다. 그래서 routing을 담당하는 VM을 만들어 합니다.</p>
+
+<p>간단히 정리하면</p>
+
+<ol>
+<li>hostonly network을 가지는 2개의 vm(10.20.1.10, 10.20.2.10)을 만든다. ==> 이하 internal vm</li>
+<li>두 hostonly network을 가지는 router vm을 만든다. ==> 이하 router vm
+eth0: NAT network for external internet access
+eth1: 10.20.1.2
+eth2: 10.20.2.2</li>
+<li>여기서 .2를 가지는 것은 .1은 host-pc에 연결하고 host-pc에서 management용으로 사용할 것이므로 .2를 사용한다.</li>
+<li>router vm에서 routing이 되도록 설정한다. 간단히
+$ systctl net.ipv4.ip_foward=1</li>
+<li>router vm에 internal vm이 외부 인터넷 접근을 위해 NATing을 설정한다. 외부 인터넷 접근 필요 하다면&hellip;
+$ iptables -t nat -A POSTROUTING -j MASQUERADE -o eth0</li>
+<li>internal vm의 default gateway를 .2번으로 설정한다.</li>
+<li>internal vm에서 tracepath <ip>를 통해서 각각의 vm을 router vm을 통해서 접근하는지 확인한다.</li>
+<li>internal vm에서 tracepath google.com으로 외부 인터넷 연결 확인</li>
+<li>끝..</li>
+</ol>
+
+
+<p>참고..</p>
+
+<ul>
+<li>iptables rule 저장은 <a href="http://wiki.woosum.net/iptables#A.2BrjDQwA-">여기</a>를 참고</li>
+</ul>
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -589,121 +658,6 @@ sudo xargs -L1 -I% sysctl %=0
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/archives/990">Openstack + Quantum: Creating Virtual Machine</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2012-10-23T00:00:00+09:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>23</span><span class='date-suffix'>rd</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>간단하게 작성해본 OpenStack with Quantum 환경에서 tenant-private network과 external network을 만들고 해당 네트워크 상에 가상머신을 생성하는 테스트 스크립트입니다.</p>
-
-<p>테스트용이므로 실전에서는 사용할 수 없을 정도이고, 그냥 참고만 하세요</p>
-
-<pre><code>#!/bin/bash
-IMAGE=${IMAGE:-cirros-0.3.0-x86_64}
-
-if [ -z "$OS_TENANT_NAME" ];
-  echo "openstack environ variables is not set"
-  echo "please run . ~/openrc tenant_name"
-  exit
-fi
-
-TENANT_ID=$(keystone tenant-list | grep " $OS_TENANT_NAME " | awk '{print $2}')
-PRINET="${OS_TENANT_NAME}"
-EXTNET="ext_net"
-
-VM=$1
-
-#
-# create external network - only by admin
-#
-if [ "$OS_USERNAME" = 'admin' ]; then
-  EXTNET_ID=$(quantum net-list -- --tenant_id=$TENANT_ID --router:external=True | awk "/ $EXTNET / { print \$2 }")
-  if [ -z "$EXTNET_ID" ]; then
-    EXTNET_ID=$(quantum net-create $EXTNET --tenant_id=$TENANT_ID --router:external=True | grep ' id ' | awk '{print $4}')
-  fi
-
-  # create external subnet
-  EXTSUBNET_ID=$(quantum net-show $EXTNET_ID | awk "/ subnets / { print \$4 }")
-  if [ $EXTSUBNET_ID = "|" ]; then
-    EXTSUBNET_ID=$(quantum subnet-create $EXTNET_ID "10.100.1.0/24" --tenant_id=$TENANT_ID --name=${EXTNET}_subnet --enable_dhcp=False | awk '/ id / {print $4}')
-  fi
-else
-  EXTNET_ID=$(quantum net-list -- --router:external=True | awk "/ $EXTNET / { print \$2 }")
-fi
-
-#
-# tenant internal network
-#
-
-# create private network
-NET_ID=$(quantum net-list -- --tenant_id=$TENANT_ID --name=$PRINET | awk "/ $PRINET / { print \$2 }")
-if [ -z "$NET_ID" ]; then
-  NET_ID=$(quantum net-create $PRINET --tenant_id=$TENANT_ID | grep ' id ' | awk '{print $4}')
-fi
-echo "NET=$NET_ID"
-
-# create private subnet
-SUBNET_ID=$(quantum net-show $NET_ID | awk "/ subnets / { print \$4 }")
-if [ $SUBNET_ID = "|" ]; then
-  SUBNET_ID=$(quantum subnet-create $NET_ID "172.16.1.0/24" \
-        --tenant_id=$TENANT_ID --name=${PRINET}_subnet \
-        --dns_nameservers list=true 168.126.63.1 8.8.8.8 | \
-        awk '/ id / {print $4}')
-fi
-echo "SUBNET=$SUBNET_ID"
-
-# now internal network is working
-# and connect to external network
-
-# create router for connect to external network
-ROUTER_NAME="router_${OS_USERNAME}_ext"
-ROUTER_ID=$(quantum router-list -- --tenant_id=$TENANT_ID --name=$ROUTER_NAME | head -n -1 | tail -n +4 | awk '{print $2}')
-if [ -z "$ROUTER_ID" ]; then
-  ROUTER_ID=$(quantum router-create --tenant_id=$TENANT_ID $ROUTER_NAME | awk '/ id /{print $4}')
-fi
-echo "ROUTER=$ROUTER_ID"
-
-quantum router-interface-add $ROUTER_ID $SUBNET_ID
-quantum router-gateway-set $ROUTER_ID $EXTNET_ID
-
-#
-# boot instance
-#
-if [ ! -z "$VM" ]; then
-  IMAGE_ID=$(nova image-list | grep " $IMAGE " | head -n 1 | awk '{print $2}')
-  echo "IMAGE=$IMAGE_ID"
-
-  VM_ID=$(nova boot --image=$IMAGE_ID --flavor=1 --nic net-id=$NET_ID $VM | awk '/ id /{print $4}')
-  echo "VM=$VM_ID"
-
-  nova show $VM_ID
-fi
-</code></pre>
-
-<p>이 스크립트는 <a href="https://github.com/whitekid/openstack-chef/">https://github.com/whitekid/openstack-chef/</a> 의 일부입니다.~~</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/10">&larr; Older</a>
@@ -721,6 +675,10 @@ fi
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/04/06/kubernetes-summary/">Kubernetes-summary</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/03/30/visualize-iptable-rules/">Security Group의 Rule이 어떤 순서로 적용되는지 보기</a>
       </li>
     
@@ -734,10 +692,6 @@ fi
     
       <li class="post">
         <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
-      </li>
-    
-      <li class="post">
-        <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
       </li>
     
   </ul>

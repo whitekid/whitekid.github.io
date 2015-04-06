@@ -9,8 +9,10 @@
   <meta name="author" content="Choe, Cheng-Dae">
 
   
-  <meta name="description" content="moinmoin으로 위키를 유지하는데, 스팸이 너무 많이 들어온다. 그렇다고 이를 다른 위키로 바꾸는 것도 귀찮고, 그냥 스팸으로 쌓인 패이지, 유저를 정기적으로 삭제하기로 했다. ㅠㅠ
-">
+  <meta name="description" content="$ cat get_user_from_ip.sh
+#!/bin/bash
+ip=$1 port_id=$(quantum port-list | grep $ip | awk '{print $2}')
+device_id=$(quantum port-show $port_id | awk &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -78,6 +80,45 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1410">어떤 Vm을 누가 만들었는지 찾기 귀찮아서&#8230;</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2013-10-13T00:00:00+09:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>13</span><span class='date-suffix'>th</span>, <span class='date-year'>2013</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><pre><code>$ cat get_user_from_ip.sh
+#!/bin/bash
+ip=$1
+
+port_id=$(quantum port-list | grep $ip | awk '{print $2}')
+device_id=$(quantum port-show $port_id | awk '/device_id/{print $4}')
+user_id=$(nova show $device_id | awk '/user_id/{print $4}')
+keystone user-get $user_id
+
+$ ./get_user_from_ip.sh x.x.x.x
+</code></pre>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1350,80 +1391,6 @@ compute02
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/archives/1320">Chef: Definition과 Notifies</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2013-06-19T00:00:00+09:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>19</span><span class='date-suffix'>th</span>, <span class='date-year'>2013</span></span> <span class='time'>12:00 am</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><a href="http://docs.opscode.com/essentials_cookbook_definitions.html">Chef Definition</a>은 아주 간단하게 Resource를 만들 수 있습니다. 아래 코드를 보면 간단하게 ~/.ssh/authorized_keys를 설정하는 Resource를 만들 수 있지요</p>
-
-<pre><code>define :authorized_keys_for, :keys =&gt; nil, :group =&gt; nil, :home =&gt; nil do
-  user = params[:name]
-  group = params[:group] || user
-  home = params[:home] || "/home/#{user}"
-  keys = params[:keys].kind_of?(String) ? [params[:keys]] : params[:keys]
-
-  if not keys.nil? and not keys.empty?
-    directory "#{home}/.ssh" do
-      owner user
-      group group
-      mode 0700
-      action :create
-      only_if "test -d #{home}"
-    end
-
-    file "#{home}/.ssh/authorized_keys" do
-       owner user
-       group group
-       content keys.map{ |x| x.strip }.join("\n")
-    end
-  end
-end
-</code></pre>
-
-<p>뭐.. 간단한 일이면 이런 거 사용하면 됩니다. 저도 별 무리 없이 사용하고 있다가.. 여기서 notifies를 걸여줘야할 것이 생겼습니다. authorized_keys를 설정한 이후에 뭔가를 하려는 것이지요. 그래서 뭐 그냥 단순하게.. 아래처럼 했습니다&hellip;</p>
-
-<pre><code>authorized_keys_for charlie do
-  keys ''
-  notifies :create "ruby_bloc[foo]"
-end
-
-ruby_block "foo" do
-  block do
-    # do something with ruby
-  end
-  action :nothing
-end
-</code></pre>
-
-<p>예.. 예상하시는데로.. 아무런 문제 없이 잘 될거라고 생각했지만, 역시나 안되었습니다(그러니까 이 글을 적고 있겠지요). 뭘까 뭘까? 하면서 다시 위 링크에 있는 문서를 다시 봤습니다.</p>
-
-<blockquote><p>A definition is not a resource or a lightweight resource</p></blockquote>
-
-<p>녜.. definition은 resource가 아닙니다. notifies나 subscribes는 resource에만 동작합니다. 그러니 아무리해도 안되지요&hellip; definition은 진짜로 C언어의 #define 처럼 동작하는 녀석인가 봅니다. ㅎㅎ</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/5">&larr; Older</a>
@@ -1441,6 +1408,10 @@ end
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/04/06/kubernetes-summary/">Kubernetes-summary</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/03/30/visualize-iptable-rules/">Security Group의 Rule이 어떤 순서로 적용되는지 보기</a>
       </li>
     
@@ -1454,10 +1425,6 @@ end
     
       <li class="post">
         <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
-      </li>
-    
-      <li class="post">
-        <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
       </li>
     
   </ul>

@@ -9,7 +9,7 @@
   <meta name="author" content="Choe, Cheng-Dae">
 
   
-  <meta name="description" content="윈도우 탐색기의 팝업 메뉴를 보면 오른쪽 그림처럼 Open 메뉴 아이템은 굵은 폰트로 표시됩니다. 이건 해당 아이템을 더블클릭 또는 엔터키를 누르면 해당 메뉴를 실행하겠다는 Windows의 표현입니다. 당연히 TPopupMenu에서도 지원하지요. TMenuItem. &hellip;">
+  <meta name="description" content="개인적으로 사용하고 있던 wordpress-themes ports를 저는 이미 send-pr했었고 아직 approved가 안된 것으로 알고 있었습니다. 그런데 너무 오래걸린다 하고 혹시나하고 살펴보니 send-pr을 하지 않았더군요. 큭.. 이런 건망증인지.. 방금 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -77,6 +77,37 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/215">Www/wordpress-themes Ports</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-07-09T00:00:00+09:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>9</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>개인적으로 사용하고 있던<a href="/wordpress_themes/"> wordpress-themes ports</a>를 저는 이미 send-pr했었고 아직 approved가 안된 것으로 알고 있었습니다. 그런데 너무 오래걸린다 하고 혹시나하고 살펴보니 send-pr을 하지 않았더군요. 큭.. 이런 건망증인지..</p>
+
+<p>방금 send-pr 했음</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -511,79 +542,6 @@ end;
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/archives/142">ListView의 SubItem에 ProgressBar 그리기</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2010-06-22T00:00:00+09:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>22</span><span class='date-suffix'>nd</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>TListView에 ProgressBar를 표현하는 것을 간단하게 생각하면 TProgressBar를 생성하고 SubItem위치에 표시하면 됩니다. 그리고 컬럼이 사이즈가 조절될 때 (HeaderTracking) 적당하게 위치 조절해주면 됩니다. 간단하게 심플하게 생각하면 그렇지요.</p>
-
-<p>근데 그냥 OnDrawSubItem 이벤트에서 Themes을 이용해서 그려주면 어떨까? 하고 해 봤는데, 생각보다 간단합니다.</p>
-
-<pre><code>procedure TThemeForm.ListView1CustomDrawSubItem(Sender: TCustomListView;
-  Item: TListItem; SubItem: Integer; State: TCustomDrawState;
-  var DefaultDraw: Boolean);
-var
-  Element: TThemedElementDetails;
-  R: TRect;
-  Progress: 1..100;
-begin
-  if ((Sender as TListView).ViewStyle = vsReport) and (SubItem = 3) then
-  begin
-    R := Item.SubItemRect(SubItem, drBounds);
-    Inc(R.Left);
-    if Sender.GridLines then Dec(R.Bottom);
-
-    Element := ThemeServices.GetElementDetails(tpBar);
-    ThemeServices.DrawElement(Sender.Canvas.Handle, Element, R);
-
-    Element := ThemeServices.GetElementDetails(tpChunk);
-    InflateRect(R, -4, -3);
-    Progress := 30;
-    R.Right := R.Left + MulDiv(Progress, R.Right - R.Left, 100);
-    ThemeServices.DrawElement(Sender.Canvas.Handle, Element, R);
-
-    DefaultDraw := False;
-  end;
-end;
-</code></pre>
-
-<p>SubItemRect 함수는 다음과 같습니다.</p>
-
-<pre><code>function TListItemHelper.SubItemRect(SubItemIndex: Integer; Code: TDisplayCode): TRect;
-const
-  Codes: array[TDisplayCode] of Longint = (LVIR_BOUNDS, LVIR_ICON, LVIR_LABEL, LVIR_SELECTBOUNDS);
-begin
-  ListView_GetSubItemRect(ListView.Handle, Index, SubItemIndex, Codes[Code], @Result);
-end;
-</code></pre>
-
-<p>자 잘나옵니까?</p>
-
-<p><img src="/images/ListViewSubItemProgressBar-300x127.png"></p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/24">&larr; Older</a>
@@ -601,6 +559,10 @@ end;
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/04/06/kubernetes-summary/">Kubernetes-summary</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/03/30/visualize-iptable-rules/">Security Group의 Rule이 어떤 순서로 적용되는지 보기</a>
       </li>
     
@@ -614,10 +576,6 @@ end;
     
       <li class="post">
         <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
-      </li>
-    
-      <li class="post">
-        <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
       </li>
     
   </ul>

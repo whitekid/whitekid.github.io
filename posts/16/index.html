@@ -9,7 +9,7 @@
   <meta name="author" content="Choe, Cheng-Dae">
 
   
-  <meta name="description" content="Ubuntu를 테스트탑으로 사용하면서 참.. 어색한 것이 많다. 그중에 하나가 설치할 package를 찾는 것인데.. FreeBSD는 make search 하면 되는데.. 뭘까 한참 찼았다. 간단하다. # apt-cache search package-name ">
+  <meta name="description" content="class에서는 static 변수가 지원됩니다. 그런데 함수에서 가끔 static이 필요할 때가 있습니다. static을 사용하지 않는다면, global을 써야하는데, global을 사용한다는 것은 항상 꺼려지는 것이기에 static이 권장되죠. 하지만 python은 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -77,6 +77,49 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/656">Python 함수에서 Static 변수처럼 사용하기&#8230;</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2011-02-19T00:00:00+09:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>19</span><span class='date-suffix'>th</span>, <span class='date-year'>2011</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>class에서는 static 변수가 지원됩니다. 그런데 함수에서 가끔 static이 필요할 때가 있습니다.</p>
+
+<p>static을 사용하지 않는다면, global을 써야하는데, global을 사용한다는 것은 항상 꺼려지는 것이기에 static이 권장되죠. 하지만 python은 함수에 static을 지원하지 않고, 비슷하게 이를 흉내낼 수 있습니다.</p>
+
+<p>_static을 잘 보시면 됩니다. 자세한 내용은 생략 ㅋㅋ</p>
+
+<pre><code>def get_connection(_static = {}):
+    if 'conn' not in _static:
+        conn = MySQLdb.connect(host=DB_HOST, user=DB_USER, passwd=DB_PASS, db=DB_NAME, use_unicode=True, charset='utf8')
+        _static['conn'] = conn
+    return _static['conn']
+
+def get_cursor():
+    return get_connection().cursor()
+</code></pre>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -422,43 +465,6 @@ $ mount 192.168.0.14:/Users/whitekid/Documents/nfs /mnt
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/archives/609">Snow Leopard에서 Safari가 죽어버릴 때..</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2010-11-17T00:00:00+09:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>17</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>하여간 우여곡절 끝에 Snow Leopard로 업데이트 했습니다. 기분 좋게 여기저기 Safari로 웹 서핑을 즐기는데, 사파리가 죽어버리는 현상이 자주 발생합니다.</p>
-
-<p>대략 보니 자바스크립트가 많이 돌아가는 곳에서 그럽니다. 이거 참..~ gmail, sf.net&hellip; 등등 자주가는 곳에서 이러니 정말 답답합니다. 역시나 구글링 했더니 답을 알려주시는군요.</p>
-
-<p><a href="http://forums.macrumors.com/showthread.php?t=790540">http://forums.macrumors.com/showthread.php?t=790540</a> 를 보면 사파리를 32비트 모드로 설정하면 없어진다고 하네요.</p>
-
-<p>32비트 모드로 설정하니 아주 나이스하게 문제없이 돌아갑니다. 그리고 Snow Leopard Cache Cleaner를 사용하면 이 현상이 없어진다고 하네요. 이건 한번 시도해봐야겠습니다.</p>
-
-<p>ps. 32비트 모드가 훨씬 동작이 부드럽군요.</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/17">&larr; Older</a>
@@ -476,6 +482,10 @@ $ mount 192.168.0.14:/Users/whitekid/Documents/nfs /mnt
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/04/06/kubernetes-summary/">Kubernetes-summary</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/03/30/visualize-iptable-rules/">Security Group의 Rule이 어떤 순서로 적용되는지 보기</a>
       </li>
     
@@ -489,10 +499,6 @@ $ mount 192.168.0.14:/Users/whitekid/Documents/nfs /mnt
     
       <li class="post">
         <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
-      </li>
-    
-      <li class="post">
-        <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
       </li>
     
   </ul>

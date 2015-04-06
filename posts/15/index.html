@@ -9,7 +9,7 @@
   <meta name="author" content="Choe, Cheng-Dae">
 
   
-  <meta name="description" content="음.. 제목이 이상하긴 한데&hellip; django의 authentication을 사용하면 request.user에 django.contrib.auth.models.User 객체가 생긴다. 그런데 말이다 처음부터 django를 사용할 경우는 이거 쓰면 되는데, &hellip;">
+  <meta name="description" content="http://www.makotemplates.org/docs/filtering.html#expression-filtering u : URL escaping, provided by urllib.quote_plus(string.encode(&lsquo;utf-8& &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -77,6 +77,55 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/696">Mako Expression Filtering, Decorator</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2011-04-02T00:00:00+09:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>2</span><span class='date-suffix'>nd</span>, <span class='date-year'>2011</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2><a href="http://www.makotemplates.org/docs/filtering.html#expression-filtering">http://www.makotemplates.org/docs/filtering.html#expression-filtering</a></h2>
+
+<ul>
+<li>u : URL escaping, provided by urllib.quote_plus(string.encode(&lsquo;utf-8&rsquo;))</li>
+<li>h : HTML escaping, provided by markupsafe.escape(string) (new as of 0.3.4 - prior versions use cgi.escape(string, True))</li>
+<li>x : XML escaping</li>
+<li>trim : whitespace trimming, provided by string.strip()</li>
+<li>entity : produces HTML entity references for applicable strings, derived from htmlentitydefs</li>
+<li>unicode (str on Python 3): produces a Python unicode string (this function is applied by default).</li>
+<li>decode.<some encoding> : decode input into a Python unicode with the specified encoding</li>
+<li>n : disable all default filtering; only filters specified in the local expression tag will be applied.</li>
+</ul>
+
+
+<p>필터는 그냥 스트링 인자를 하나 받는 함수이므로 작성하기도 편하다.</p>
+
+<p>그런데 아쉽게도 필더에 파라미터가 들어가지 않는구나..</p>
+
+<h2><a href="http://www.makotemplates.org/docs/filtering.html#decorating">http://www.makotemplates.org/docs/filtering.html#decorating</a></h2>
+
+<p>mako의 함수에 python의 decorator처럼 사용할 수 있다. 멋진데?</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -478,49 +527,6 @@ $ service start ajaxterm
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/archives/656">Python 함수에서 Static 변수처럼 사용하기&#8230;</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2011-02-19T00:00:00+09:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>19</span><span class='date-suffix'>th</span>, <span class='date-year'>2011</span></span> <span class='time'>12:00 am</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>class에서는 static 변수가 지원됩니다. 그런데 함수에서 가끔 static이 필요할 때가 있습니다.</p>
-
-<p>static을 사용하지 않는다면, global을 써야하는데, global을 사용한다는 것은 항상 꺼려지는 것이기에 static이 권장되죠. 하지만 python은 함수에 static을 지원하지 않고, 비슷하게 이를 흉내낼 수 있습니다.</p>
-
-<p>_static을 잘 보시면 됩니다. 자세한 내용은 생략 ㅋㅋ</p>
-
-<pre><code>def get_connection(_static = {}):
-    if 'conn' not in _static:
-        conn = MySQLdb.connect(host=DB_HOST, user=DB_USER, passwd=DB_PASS, db=DB_NAME, use_unicode=True, charset='utf8')
-        _static['conn'] = conn
-    return _static['conn']
-
-def get_cursor():
-    return get_connection().cursor()
-</code></pre>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/16">&larr; Older</a>
@@ -538,6 +544,10 @@ def get_cursor():
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/04/06/kubernetes-summary/">Kubernetes-summary</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/03/30/visualize-iptable-rules/">Security Group의 Rule이 어떤 순서로 적용되는지 보기</a>
       </li>
     
@@ -551,10 +561,6 @@ def get_cursor():
     
       <li class="post">
         <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
-      </li>
-    
-      <li class="post">
-        <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
       </li>
     
   </ul>

@@ -9,9 +9,9 @@
   <meta name="author" content="Choe, Cheng-Dae">
 
   
-  <meta name="description" content="$ apt-get install yum rpm python-m2crypto
-$ mkdir -p /tmp/centos/var/lib/rpm
-$ rpm -root /tmp/centos -initdb $HOME/.rpmdb 가 만들어지는데 그거는 마지막 삭제한다. &hellip;">
+  <meta name="description" content="munin 대신 ganglia를 검토해보려고 ganglia를 설치하려는데 아래 메시지를 내뿜으며 설치가 제대로 안된다. Adding group: ganglia.
+Adding system user: ganglia.
+useradd: group ganglia exists &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -79,6 +79,54 @@ $ rpm -root /tmp/centos -initdb $HOME/.rpmdb 가 만들어지는데 그거는 �
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/840">Ubuntu 11.10에 Ganglia가 설치 실패한다.</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-01-30T00:00:00+09:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>30</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>munin 대신 ganglia를 검토해보려고 ganglia를 설치하려는데 아래 메시지를 내뿜으며 설치가 제대로 안된다.</p>
+
+<pre><code>Adding group: ganglia.
+Adding system user: ganglia.
+useradd: group ganglia exists - if you want to add this user to that group, use -g.
+dpkg: error processing gmetad (--configure):
+ subprocess installed post-installation script returned error exit status 9
+Processing triggers for libc-bin ...
+ldconfig deferred processing now taking place
+Errors were encountered while processing:
+ gmetad
+E: Sub-process /usr/bin/dpkg returned an error code (1)`
+</code></pre>
+
+<p><a href="https://bugs.launchpad.net/ubuntu/+source/ganglia/+bug/854866/comments/20">https://bugs.launchpad.net/ubuntu/+source/ganglia/+bug/854866/comments/20</a> 에 있는데로 하고 다시 설치하면 된다.</p>
+
+<pre><code>sudo useradd ganglia -g ganglia
+</code></pre>
+
+<p>음.. 우분투 실망일세~~</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -500,47 +548,6 @@ listening on eth0, link-type EN10MB (Ethernet), capture size 65535 bytes
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/archives/798">Screen 상태표시줄에 세션 이름 표시하기</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2011-12-16T00:00:00+09:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>16</span><span class='date-suffix'>th</span>, <span class='date-year'>2011</span></span> <span class='time'>12:00 am</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>screen을 여러 세션을 쓰다보면 현재 어떤 세션에 있는지 헷갈린다. 지금만 봐도 세션을 열어놓은게 5개정도이고, 거기서 한 4~5개씩 윈도우를 열어넣고 있으니&hellip;</p>
-
-<p>그래서 세션 이름을 상태줄에다 표시하는 방법을 찾아봤다.</p>
-
-<p>screen이 실행하면 $STY 환경변수에 세션이름을 가지고 있는데, 이걸 표시하면 된다. 그런데 이걸 screenrc에 넣으면 표시가 안된다. 그래서 screen -X로 스크린에 명령을 직접 내리는 방식으로 변경했다.</p>
-
-<pre><code>if [ "$STY" != " ]; then
-    _STY=`echo $STY | sed 's/^[0-9]*\.//'`
-    screen -X hardstatus alwayslastline "$_STY] %-Lw%{= BW}%50&gt;%n%f* %t%{-}%+Lw%&lt;"
-fi
-</code></pre>
-
-<p>훨씬 쾌적한 screen life!</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/13">&larr; Older</a>
@@ -558,6 +565,10 @@ fi
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/04/06/kubernetes-summary/">Kubernetes-summary</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/03/30/visualize-iptable-rules/">Security Group의 Rule이 어떤 순서로 적용되는지 보기</a>
       </li>
     
@@ -571,10 +582,6 @@ fi
     
       <li class="post">
         <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
-      </li>
-    
-      <li class="post">
-        <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
       </li>
     
   </ul>

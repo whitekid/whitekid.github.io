@@ -9,7 +9,7 @@
   <meta name="author" content="Choe, Cheng-Dae">
 
   
-  <meta name="description" content="http://stackoverflow.com/questions/3049652/how-do-i-programmatically-set-a-file-tag 를 보고 간단히 검색해봤다. Explorer column handler shell extension in C# &hellip;">
+  <meta name="description" content="TListView에 ProgressBar를 표현하는 것을 간단하게 생각하면 TProgressBar를 생성하고 SubItem위치에 표시하면 됩니다. 그리고 컬럼이 사이즈가 조절될 때 (HeaderTracking) 적당하게 위치 조절해주면 됩니다. 간단하게 심플하게 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -77,6 +77,79 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/142">ListView의 SubItem에 ProgressBar 그리기</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-06-22T00:00:00+09:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>22</span><span class='date-suffix'>nd</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>TListView에 ProgressBar를 표현하는 것을 간단하게 생각하면 TProgressBar를 생성하고 SubItem위치에 표시하면 됩니다. 그리고 컬럼이 사이즈가 조절될 때 (HeaderTracking) 적당하게 위치 조절해주면 됩니다. 간단하게 심플하게 생각하면 그렇지요.</p>
+
+<p>근데 그냥 OnDrawSubItem 이벤트에서 Themes을 이용해서 그려주면 어떨까? 하고 해 봤는데, 생각보다 간단합니다.</p>
+
+<pre><code>procedure TThemeForm.ListView1CustomDrawSubItem(Sender: TCustomListView;
+  Item: TListItem; SubItem: Integer; State: TCustomDrawState;
+  var DefaultDraw: Boolean);
+var
+  Element: TThemedElementDetails;
+  R: TRect;
+  Progress: 1..100;
+begin
+  if ((Sender as TListView).ViewStyle = vsReport) and (SubItem = 3) then
+  begin
+    R := Item.SubItemRect(SubItem, drBounds);
+    Inc(R.Left);
+    if Sender.GridLines then Dec(R.Bottom);
+
+    Element := ThemeServices.GetElementDetails(tpBar);
+    ThemeServices.DrawElement(Sender.Canvas.Handle, Element, R);
+
+    Element := ThemeServices.GetElementDetails(tpChunk);
+    InflateRect(R, -4, -3);
+    Progress := 30;
+    R.Right := R.Left + MulDiv(Progress, R.Right - R.Left, 100);
+    ThemeServices.DrawElement(Sender.Canvas.Handle, Element, R);
+
+    DefaultDraw := False;
+  end;
+end;
+</code></pre>
+
+<p>SubItemRect 함수는 다음과 같습니다.</p>
+
+<pre><code>function TListItemHelper.SubItemRect(SubItemIndex: Integer; Code: TDisplayCode): TRect;
+const
+  Codes: array[TDisplayCode] of Longint = (LVIR_BOUNDS, LVIR_ICON, LVIR_LABEL, LVIR_SELECTBOUNDS);
+begin
+  ListView_GetSubItemRect(ListView.Handle, Index, SubItemIndex, Codes[Code], @Result);
+end;
+</code></pre>
+
+<p>자 잘나옵니까?</p>
+
+<p><img src="/images/ListViewSubItemProgressBar-300x127.png"></p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -494,37 +567,6 @@ pgsql_bugs_conn.commit()
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/archives/97">저도 이런 평균의 의미가 놀랍지요.</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2010-05-04T00:00:00+09:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>4</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><a href="http://minjang.egloos.com/2596017">이미지/ 소리를 합성하는 평균</a>은 정말로 정말로 저에게도 놀랍습니다.</p>
-
-<p>그냥 그렇구나 받아들이면 쉽지만, 그렇게 쉽게 받아들여지지가 않습니다. 이놈의 못된 성격이 왜 그런지 알아야되는지라..</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/25">&larr; Older</a>
@@ -542,6 +584,10 @@ pgsql_bugs_conn.commit()
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/04/06/kubernetes-summary/">Kubernetes-summary</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/03/30/visualize-iptable-rules/">Security Group의 Rule이 어떤 순서로 적용되는지 보기</a>
       </li>
     
@@ -555,10 +601,6 @@ pgsql_bugs_conn.commit()
     
       <li class="post">
         <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
-      </li>
-    
-      <li class="post">
-        <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
       </li>
     
   </ul>

@@ -9,7 +9,7 @@
   <meta name="author" content="Choe, Cheng-Dae">
 
   
-  <meta name="description" content="FreeBSD의 ports에 들어있는 rails는 3.0.10입니다. 뭐 예내들이 조금 늦는가 했습니다. 근데 대기중인 pr에도 rails 3.1.0으로 업데이트하는 pr이 없습니다. 이미 rails guide는 3.1.0으로 가있는데.. 안되는 것도 있고& &hellip;">
+  <meta name="description" content="기록은 기억보다 오래 기억된다는 측면에서 ssh -f -L 3307:dbdev.woosum.net:4444 whitekid@woosum.net sleep 864000 이렇게 하면 ssh로 woosum.net으로 접속하고 다시 여기서 dbdev.woosum.net: &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -77,6 +77,52 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/754">Ssh Tunneling</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2011-10-06T00:00:00+09:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>6</span><span class='date-suffix'>th</span>, <span class='date-year'>2011</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>기록은 기억보다 오래 기억된다는 측면에서</p>
+
+<pre><code>ssh -f -L 3307:dbdev.woosum.net:4444 whitekid@woosum.net sleep 864000
+</code></pre>
+
+<p>이렇게 하면 ssh로 woosum.net으로 접속하고 다시 여기서 dbdev.woosum.net:4444로 접속하여 tunneling을 127.0.0.1의 3307 포트에 만든다.</p>
+
+<ul>
+<li>-f : background 작업으로</li>
+<li>-L 3307 : 로컬에서 listen할 포트</li>
+<li>dbdev.woosum.net : 접속할 호스트</li>
+<li>4444 : ssh-host에서 ssh로 접속해서 다시 접속할 호스트</li>
+<li><a href="&#x6d;&#x61;&#x69;&#108;&#x74;&#x6f;&#58;&#x77;&#x68;&#105;&#x74;&#x65;&#x6b;&#x69;&#x64;&#x40;&#119;&#x6f;&#111;&#x73;&#117;&#109;&#x2e;&#110;&#x65;&#116;">&#x77;&#x68;&#x69;&#116;&#101;&#107;&#x69;&#x64;&#64;&#119;&#111;&#x6f;&#115;&#117;&#x6d;&#x2e;&#x6e;&#101;&#116;</a> : ssh로 접속할 정보</li>
+<li>sleep 864000 : 접속해서 하루동안 sleep 실행, -f 옵션이 있으므로 연결하고 바로 command prompt로 떨어진다.</li>
+</ul>
+
+
+<p>주의: 연결할 때 localhost 말고 127.0.0.1로 접속할 것.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -601,55 +647,6 @@ my_raise_function_2()
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/archives/696">Mako Expression Filtering, Decorator</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2011-04-02T00:00:00+09:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>2</span><span class='date-suffix'>nd</span>, <span class='date-year'>2011</span></span> <span class='time'>12:00 am</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h2><a href="http://www.makotemplates.org/docs/filtering.html#expression-filtering">http://www.makotemplates.org/docs/filtering.html#expression-filtering</a></h2>
-
-<ul>
-<li>u : URL escaping, provided by urllib.quote_plus(string.encode(&lsquo;utf-8&rsquo;))</li>
-<li>h : HTML escaping, provided by markupsafe.escape(string) (new as of 0.3.4 - prior versions use cgi.escape(string, True))</li>
-<li>x : XML escaping</li>
-<li>trim : whitespace trimming, provided by string.strip()</li>
-<li>entity : produces HTML entity references for applicable strings, derived from htmlentitydefs</li>
-<li>unicode (str on Python 3): produces a Python unicode string (this function is applied by default).</li>
-<li>decode.<some encoding> : decode input into a Python unicode with the specified encoding</li>
-<li>n : disable all default filtering; only filters specified in the local expression tag will be applied.</li>
-</ul>
-
-
-<p>필터는 그냥 스트링 인자를 하나 받는 함수이므로 작성하기도 편하다.</p>
-
-<p>그런데 아쉽게도 필더에 파라미터가 들어가지 않는구나..</p>
-
-<h2><a href="http://www.makotemplates.org/docs/filtering.html#decorating">http://www.makotemplates.org/docs/filtering.html#decorating</a></h2>
-
-<p>mako의 함수에 python의 decorator처럼 사용할 수 있다. 멋진데?</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/15">&larr; Older</a>
@@ -667,6 +664,10 @@ my_raise_function_2()
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/04/06/kubernetes-summary/">Kubernetes-summary</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/03/30/visualize-iptable-rules/">Security Group의 Rule이 어떤 순서로 적용되는지 보기</a>
       </li>
     
@@ -680,10 +681,6 @@ my_raise_function_2()
     
       <li class="post">
         <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
-      </li>
-    
-      <li class="post">
-        <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
       </li>
     
   </ul>

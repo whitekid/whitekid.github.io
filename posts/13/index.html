@@ -9,8 +9,7 @@
   <meta name="author" content="Choe, Cheng-Dae">
 
   
-  <meta name="description" content="요즘 Xen을 가지고 놀고 있습니다. 아직 공부하는 중이라 커널 컴파일을 자주하게 되는데 이럴때 정말로 귀찮은게 커널의 옵션들을 일일이 맞춰주는 겁니다. 정말로 귀찮습니다. 그래서 걍 스크립트질로 처리해버렸네요~~ #!/bin/sh
-# Xen 관련 설정들: http &hellip;">
+  <meta name="description" content="screen을 여러 세션을 쓰다보면 현재 어떤 세션에 있는지 헷갈린다. 지금만 봐도 세션을 열어놓은게 5개정도이고, 거기서 한 4~5개씩 윈도우를 열어넣고 있으니&hellip; 그래서 세션 이름을 상태줄에다 표시하는 방법을 찾아봤다. screen이 실행하면 $STY &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -78,6 +77,47 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/798">Screen 상태표시줄에 세션 이름 표시하기</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2011-12-16T00:00:00+09:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>16</span><span class='date-suffix'>th</span>, <span class='date-year'>2011</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>screen을 여러 세션을 쓰다보면 현재 어떤 세션에 있는지 헷갈린다. 지금만 봐도 세션을 열어놓은게 5개정도이고, 거기서 한 4~5개씩 윈도우를 열어넣고 있으니&hellip;</p>
+
+<p>그래서 세션 이름을 상태줄에다 표시하는 방법을 찾아봤다.</p>
+
+<p>screen이 실행하면 $STY 환경변수에 세션이름을 가지고 있는데, 이걸 표시하면 된다. 그런데 이걸 screenrc에 넣으면 표시가 안된다. 그래서 screen -X로 스크린에 명령을 직접 내리는 방식으로 변경했다.</p>
+
+<pre><code>if [ "$STY" != " ]; then
+    _STY=`echo $STY | sed 's/^[0-9]*\.//'`
+    screen -X hardstatus alwayslastline "$_STY] %-Lw%{= BW}%50&gt;%n%f* %t%{-}%+Lw%&lt;"
+fi
+</code></pre>
+
+<p>훨씬 쾌적한 screen life!</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -554,52 +594,6 @@ The physical package has 12 of 8 possible cores implemented.
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/archives/754">Ssh Tunneling</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2011-10-06T00:00:00+09:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>6</span><span class='date-suffix'>th</span>, <span class='date-year'>2011</span></span> <span class='time'>12:00 am</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>기록은 기억보다 오래 기억된다는 측면에서</p>
-
-<pre><code>ssh -f -L 3307:dbdev.woosum.net:4444 whitekid@woosum.net sleep 864000
-</code></pre>
-
-<p>이렇게 하면 ssh로 woosum.net으로 접속하고 다시 여기서 dbdev.woosum.net:4444로 접속하여 tunneling을 127.0.0.1의 3307 포트에 만든다.</p>
-
-<ul>
-<li>-f : background 작업으로</li>
-<li>-L 3307 : 로컬에서 listen할 포트</li>
-<li>dbdev.woosum.net : 접속할 호스트</li>
-<li>4444 : ssh-host에서 ssh로 접속해서 다시 접속할 호스트</li>
-<li><a href="&#x6d;&#x61;&#105;&#108;&#x74;&#x6f;&#x3a;&#x77;&#x68;&#x69;&#x74;&#x65;&#x6b;&#x69;&#100;&#x40;&#119;&#111;&#x6f;&#115;&#x75;&#109;&#46;&#110;&#x65;&#x74;">&#119;&#104;&#x69;&#116;&#x65;&#107;&#x69;&#x64;&#x40;&#x77;&#x6f;&#111;&#115;&#117;&#109;&#x2e;&#x6e;&#x65;&#116;</a> : ssh로 접속할 정보</li>
-<li>sleep 864000 : 접속해서 하루동안 sleep 실행, -f 옵션이 있으므로 연결하고 바로 command prompt로 떨어진다.</li>
-</ul>
-
-
-<p>주의: 연결할 때 localhost 말고 127.0.0.1로 접속할 것.</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/14">&larr; Older</a>
@@ -617,6 +611,10 @@ The physical package has 12 of 8 possible cores implemented.
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/04/06/kubernetes-summary/">Kubernetes-summary</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/03/30/visualize-iptable-rules/">Security Group의 Rule이 어떤 순서로 적용되는지 보기</a>
       </li>
     
@@ -630,10 +628,6 @@ The physical package has 12 of 8 possible cores implemented.
     
       <li class="post">
         <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
-      </li>
-    
-      <li class="post">
-        <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
       </li>
     
   </ul>

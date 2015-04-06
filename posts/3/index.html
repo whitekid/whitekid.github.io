@@ -9,7 +9,8 @@
   <meta name="author" content="Choe, Cheng-Dae">
 
   
-  <meta name="description" content="/etc/default/openvswitch-switch BRCOMPAT=yes bridge 호환 모듈, 데몬 $ apt-get install openvswitch-brcompat ">
+  <meta name="description" content="create pool $ NET_ID=e5768970-4e96-467d-9be1-e0e0b789f025
+$ quantum lb-pool-create --name test --lb-method \ ROUND_ROBIN --protocol TCP --subnet-id=$ &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -77,6 +78,66 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1417">Quantum Lbaas</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2013-12-11T00:00:00+09:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2013</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>create pool</p>
+
+<pre><code>$ NET_ID=e5768970-4e96-467d-9be1-e0e0b789f025
+$ quantum lb-pool-create --name test --lb-method \
+  ROUND_ROBIN --protocol TCP --subnet-id=$NET_ID
+
+quantum lb-pool-list
++--------------------------------------+------+-------------+----------+----------------+----------------+
+| id                                   | name | lb_method   | protocol | admin_state_up | status         |
++--------------------------------------+------+-------------+----------+----------------+----------------+
+| 044208a8-9e29-4fee-b41b-9b58567f3874 | test | ROUND_ROBIN | TCP      | True           | PENDING_CREATE |
++--------------------------------------+------+-------------+----------+----------------+----------------+
+</code></pre>
+
+<p>create vip</p>
+
+<pre><code>$ quantum lb-vip-create --name test-vip1 --protocol-port 80 --protocol TCP --subnet-id=$NET_ID test
+$ quantum lb-vip-list
++--------------------------------------+-----------+-------------+----------+----------------+--------+
+| id                                   | name      | address     | protocol | admin_state_up | status |
++--------------------------------------+-----------+-------------+----------+----------------+--------+
+| 515fa2c5-a135-4b59-b247-803e844383f1 | test-vip1 | 10.10.100.5 | TCP      | True           | ACTIVE |
++--------------------------------------+-----------+-------------+----------+----------------+--------+
+</code></pre>
+
+<p>여기서 pool도 status가 ACTIVE로 바뀌고.. lbaas가 동작하는 노드에 qlbaas- 로 ip namespace가 생긴다.</p>
+
+<p>생성된 vip에&hellip; 다른 port로 만들면 오류가 발생</p>
+
+<pre><code>$ quantum lb-vip-create -name test-vip-https -protocol-port 443 -protocol TCP -subnet-id=$NET_ID test -address=10.10.100.5
+Another Vip already exists for pool 044208a8-9e29-4fee-b41b-9b58567f3874
+</code></pre>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -747,45 +808,6 @@ $ nova show charlie-web | grep security
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/archives/1410">어떤 Vm을 누가 만들었는지 찾기 귀찮아서&#8230;</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2013-10-13T00:00:00+09:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>13</span><span class='date-suffix'>th</span>, <span class='date-year'>2013</span></span> <span class='time'>12:00 am</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><pre><code>$ cat get_user_from_ip.sh
-#!/bin/bash
-ip=$1
-
-port_id=$(quantum port-list | grep $ip | awk '{print $2}')
-device_id=$(quantum port-show $port_id | awk '/device_id/{print $4}')
-user_id=$(nova show $device_id | awk '/user_id/{print $4}')
-keystone user-get $user_id
-
-$ ./get_user_from_ip.sh x.x.x.x
-</code></pre>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/4">&larr; Older</a>
@@ -803,6 +825,10 @@ $ ./get_user_from_ip.sh x.x.x.x
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/04/06/kubernetes-summary/">Kubernetes-summary</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/03/30/visualize-iptable-rules/">Security Group의 Rule이 어떤 순서로 적용되는지 보기</a>
       </li>
     
@@ -816,10 +842,6 @@ $ ./get_user_from_ip.sh x.x.x.x
     
       <li class="post">
         <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
-      </li>
-    
-      <li class="post">
-        <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
       </li>
     
   </ul>

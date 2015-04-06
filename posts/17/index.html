@@ -9,7 +9,7 @@
   <meta name="author" content="Choe, Cheng-Dae">
 
   
-  <meta name="description" content=" 여기를 참고하여 VMWare에 Snow Leopard를 설치하고, iOS SDK 설치하는 중&hellip;. 아공.. 정말로 오래걸린다&hellip; 엇.. 글을 쓰는 도중에 설치가 완료되었다!!! ㅋㅋ ">
+  <meta name="description" content="하여간 우여곡절 끝에 Snow Leopard로 업데이트 했습니다. 기분 좋게 여기저기 Safari로 웹 서핑을 즐기는데, 사파리가 죽어버리는 현상이 자주 발생합니다. 대략 보니 자바스크립트가 많이 돌아가는 곳에서 그럽니다. 이거 참..~ gmail, sf.net& &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -77,6 +77,43 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/609">Snow Leopard에서 Safari가 죽어버릴 때..</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-11-17T00:00:00+09:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>17</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>하여간 우여곡절 끝에 Snow Leopard로 업데이트 했습니다. 기분 좋게 여기저기 Safari로 웹 서핑을 즐기는데, 사파리가 죽어버리는 현상이 자주 발생합니다.</p>
+
+<p>대략 보니 자바스크립트가 많이 돌아가는 곳에서 그럽니다. 이거 참..~ gmail, sf.net&hellip; 등등 자주가는 곳에서 이러니 정말 답답합니다. 역시나 구글링 했더니 답을 알려주시는군요.</p>
+
+<p><a href="http://forums.macrumors.com/showthread.php?t=790540">http://forums.macrumors.com/showthread.php?t=790540</a> 를 보면 사파리를 32비트 모드로 설정하면 없어진다고 하네요.</p>
+
+<p>32비트 모드로 설정하니 아주 나이스하게 문제없이 돌아갑니다. 그리고 Snow Leopard Cache Cleaner를 사용하면 이 현상이 없어진다고 하네요. 이건 한번 시도해봐야겠습니다.</p>
+
+<p>ps. 32비트 모드가 훨씬 동작이 부드럽군요.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -648,38 +685,6 @@ Name: {commonstartup}\시간 동기화; Filename: {app}\TimeSync.exe; IconFilena
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/archives/538">WordPress에 7z으로 압축한 파일 올리기..</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2010-11-01T00:00:00+09:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>1</span><span class='date-suffix'>st</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><a href="http://netweblogic.com/other/adding-removing-allowed-filetypes-wordpress-media-library/">http://netweblogic.com/other/adding-removing-allowed-filetypes-wordpress-media-library/</a> 를 보시라. 이런 저런 복잡한 말들이 있는 것 같은데. 그냥 wp-includes/functions.php 파일을 열어서 get_allowed_mime_types 에 적당히 추가해주면 된다. 현재 이를 관리할 수 있는 Plugin은 없는 듯 하다.</p>
-
-<pre><code>'7z|7zip' =&gt; 'application/7zip',
-</code></pre>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/18">&larr; Older</a>
@@ -697,6 +702,10 @@ Name: {commonstartup}\시간 동기화; Filename: {app}\TimeSync.exe; IconFilena
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/04/06/kubernetes-summary/">Kubernetes-summary</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/03/30/visualize-iptable-rules/">Security Group의 Rule이 어떤 순서로 적용되는지 보기</a>
       </li>
     
@@ -710,10 +719,6 @@ Name: {commonstartup}\시간 동기화; Filename: {app}\TimeSync.exe; IconFilena
     
       <li class="post">
         <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
-      </li>
-    
-      <li class="post">
-        <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
       </li>
     
   </ul>

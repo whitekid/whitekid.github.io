@@ -9,7 +9,7 @@
   <meta name="author" content="Choe, Cheng-Dae">
 
   
-  <meta name="description" content="지난 일주일간 회사 워크삽으로 자리를 비웠다. 그 동안 단 한번도 노트북을 켜지 않았으니, 이거 참 대대한 일인 듯 하다. 작년 휴가에도 중간에 콜 받아서 노트북 켠 경험이 있는데 말이다&hellip; 각설하고.. 어쨌든 오늘 출근해서, 그래 내가 뭘 하고 있었던 &hellip;">
+  <meta name="description" content="Chef Definition은 아주 간단하게 Resource를 만들 수 있습니다. 아래 코드를 보면 간단하게 ~/.ssh/authorized_keys를 설정하는 Resource를 만들 수 있지요 define :authorized_keys_for, :keys =&gt &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -77,6 +77,80 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1320">Chef: Definition과 Notifies</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2013-06-19T00:00:00+09:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>19</span><span class='date-suffix'>th</span>, <span class='date-year'>2013</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><a href="http://docs.opscode.com/essentials_cookbook_definitions.html">Chef Definition</a>은 아주 간단하게 Resource를 만들 수 있습니다. 아래 코드를 보면 간단하게 ~/.ssh/authorized_keys를 설정하는 Resource를 만들 수 있지요</p>
+
+<pre><code>define :authorized_keys_for, :keys =&gt; nil, :group =&gt; nil, :home =&gt; nil do
+  user = params[:name]
+  group = params[:group] || user
+  home = params[:home] || "/home/#{user}"
+  keys = params[:keys].kind_of?(String) ? [params[:keys]] : params[:keys]
+
+  if not keys.nil? and not keys.empty?
+    directory "#{home}/.ssh" do
+      owner user
+      group group
+      mode 0700
+      action :create
+      only_if "test -d #{home}"
+    end
+
+    file "#{home}/.ssh/authorized_keys" do
+       owner user
+       group group
+       content keys.map{ |x| x.strip }.join("\n")
+    end
+  end
+end
+</code></pre>
+
+<p>뭐.. 간단한 일이면 이런 거 사용하면 됩니다. 저도 별 무리 없이 사용하고 있다가.. 여기서 notifies를 걸여줘야할 것이 생겼습니다. authorized_keys를 설정한 이후에 뭔가를 하려는 것이지요. 그래서 뭐 그냥 단순하게.. 아래처럼 했습니다&hellip;</p>
+
+<pre><code>authorized_keys_for charlie do
+  keys ''
+  notifies :create "ruby_bloc[foo]"
+end
+
+ruby_block "foo" do
+  block do
+    # do something with ruby
+  end
+  action :nothing
+end
+</code></pre>
+
+<p>예.. 예상하시는데로.. 아무런 문제 없이 잘 될거라고 생각했지만, 역시나 안되었습니다(그러니까 이 글을 적고 있겠지요). 뭘까 뭘까? 하면서 다시 위 링크에 있는 문서를 다시 봤습니다.</p>
+
+<blockquote><p>A definition is not a resource or a lightweight resource</p></blockquote>
+
+<p>녜.. definition은 resource가 아닙니다. notifies나 subscribes는 resource에만 동작합니다. 그러니 아무리해도 안되지요&hellip; definition은 진짜로 C언어의 #define 처럼 동작하는 녀석인가 봅니다. ㅎㅎ</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1093,55 +1167,6 @@ $ sudo ipfw add divert natd ip from any to any via en0
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/archives/1248">Git Submodule Commit</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2013-04-30T00:00:00+09:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>30</span><span class='date-suffix'>th</span>, <span class='date-year'>2013</span></span> <span class='time'>12:00 am</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>git으로 작업하면서 야심차게 submodule을 도입해봤습니다. 그런데 서브모듈에서 커밋하는 순간부터 막히기 시작하네요.</p>
-
-<p>원칙으로 한다면 submodule을 커밋 &amp; push하고 parent도 commit &amp; push 해 줘야하겠지요. 근데 submodule을 커밋하려면 해당 모듈이 있는 디렉토리로 이동해서 해야합니다.</p>
-
-<pre><code>$ cd submodule &amp;&amp; git commit -m 'this is submodule commit message' -a
-</code></pre>
-
-<p>하나라면 그런데로 할만한데.. 이게 2개 이상이면 좀 짜증이 나기 시작합니다. 그래서 간단하게 쉘 스크립트를 만들어 해봤지요.</p>
-
-<p>녭.. 이런거 해주는 비슷한 것이 있습니다. git foreach 명령이죠.</p>
-
-<pre><code>$ git submodule foreach git commit -m 'this is submodule commit message' -a
-</code></pre>
-
-<p>그런데 커밋하면 바로 에러가 납니다. 이유는 서브 모듈 중에서 변경되지 않은, 커밋될 필요가 없는 것은 위의 git commit 명령이 오류를 내면서 정지하기 때문이죠. 그래서 모두 커밋하려면 위에서 처럼 분기가 필요한데.. 이를 foreach와 묶는 것을 한 줄로 처리하기 힘들죠..</p>
-
-<p>그리고 된다고 하더리도 아마도 -m 메시지의 공백때문에 제대로 처리가 되지 않을 겁니다.</p>
-
-<p>Update: <a href="https://gist.github.com">gist</a>가 좋아보여서 거기다 스크립트 넣어봤습니다. 괜찮네요.</p>
-
-<p>Update: push하는 것도 적용해봤습니다.</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/6">&larr; Older</a>
@@ -1159,6 +1184,10 @@ $ sudo ipfw add divert natd ip from any to any via en0
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/04/06/kubernetes-summary/">Kubernetes-summary</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/03/30/visualize-iptable-rules/">Security Group의 Rule이 어떤 순서로 적용되는지 보기</a>
       </li>
     
@@ -1172,10 +1201,6 @@ $ sudo ipfw add divert natd ip from any to any via en0
     
       <li class="post">
         <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
-      </li>
-    
-      <li class="post">
-        <a href="/archives/1561">[번역] Selecting CPU, Processors and Memory for Virtualized Environments</a>
       </li>
     
   </ul>
