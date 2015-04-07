@@ -9,7 +9,7 @@
   <meta name="author" content="Choe, Cheng-Dae">
 
   
-  <meta name="description" content="class에서는 static 변수가 지원됩니다. 그런데 함수에서 가끔 static이 필요할 때가 있습니다. static을 사용하지 않는다면, global을 써야하는데, global을 사용한다는 것은 항상 꺼려지는 것이기에 static이 권장되죠. 하지만 python은 &hellip;">
+  <meta name="description" content="글쎄 오늘 네트웍이 불안하다. ssh가 계속 연결이 끊긴다. 그래 네트웍 공사중이라 이해는 하겠다만 일을 할 수가 없잖아!!! 그래서 웹에서 구현되는 터미널을 혹시나하고 뒤져보니 바로나온다. http://en.wikipedia.org/wiki/Web-based_SSH &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -77,6 +77,47 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/662">Web Terminal Ajaxterm</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2011-02-22T00:00:00+09:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>22</span><span class='date-suffix'>nd</span>, <span class='date-year'>2011</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>글쎄 오늘 네트웍이 불안하다. ssh가 계속 연결이 끊긴다. 그래 네트웍 공사중이라 이해는 하겠다만 일을 할 수가 없잖아!!!</p>
+
+<p>그래서 웹에서 구현되는 터미널을 혹시나하고 뒤져보니 바로나온다. <a href="http://en.wikipedia.org/wiki/Web-based_SSH#Open_source_examples">http://en.wikipedia.org/wiki/Web-based_SSH#Open_source_examples</a></p>
+
+<p>우분투 패키지있는 ajaxterm 설치하고 실행하니 바로 되는구나~ 멋진 세상이다.</p>
+
+<pre><code>$ apt-get install ajaxterm
+$ service start ajaxterm
+</code></pre>
+
+<p><a href="http://localhost:8022/">http://localhost:8022/</a> 로 연결하니 그냥 뜬다.. 물론 로그인해야하는것이고, 속도는 물론 느리지만 급한김에 쓸만한 놈인듯하다.</p>
+
+<p><img src="/images/ajaxterm.png"></p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -418,53 +459,6 @@ $ mount 192.168.0.14:/Users/whitekid/Documents/nfs /mnt
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/archives/619">iTunes에서 Podcast 구독 목록 백업 및 복구하기</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2010-11-24T00:00:00+09:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>24</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>iTunes의 podcast 구독목록 백업은 생각보다 간단하다. 하지만 문제는 자세히 보지 않으면 찾기가 힘들다는 것이 문제다. DVD Writer가 있다면 그냥 모두 백업하고 복구하면 간단한 이야기 일 수 있지만, 그렇게까지 하고 싶지는 않다. 그냥 구독 목록만 다른데서 복구되고, 업데이트된 것만 받으면 되니깐..</p>
-
-<p>구독목록 백업을 하려면 왼쪽 패널에서 Podcast를 선택하고 컨택스트 메뉴에서 내보내기를 선택한다.</p>
-
-<p>여기까지는 뭐 다 아는 이야기일 것고, 나도 <a href="http://www.google.co.kr/search?q=itunes+popcast+subscription+backup&amp;ie=utf-8&amp;oe=utf-8&amp;aq=t&amp;client=firefox-a&amp;rlz=1R1GGLL_ko___KR390#hl=ko&amp;newwindow=1&amp;client=firefox-a&amp;hs=erP&amp;rlz=1R1GGLL_ko___KR390&amp;&amp;sa=X&amp;ei=U27sTI-xNciycJLvsfEO&amp;ved=0CCsQvwUoAQ&amp;q=itunes+podcast+subscription+backup&amp;spell=1&amp;fp=902d01aef5c2abb7">구글링</a>을 통해서 <a href="http://www.mahalo.com/answers/what-is-the-best-way-to-backup-my-itunes-podcast-subscription-list#a3ec677833f9760d12d165685d19eaf65ac950622e2bb9eb1a8744182b3c752da">찾아보기</a> 전까지는 이렇게 했었다. 메뉴를 선택하고 그냥 백업해보면 좀 당황스럽다. 그냥 Podcast 목록이 백업된다. 내가 원한건 이게 아니었는데, 구독 목록이었는데&hellip; 그렇치 여기까지 나도 그랬었다.</p>
-
-<p>자 다시 백업파일 입력하는 대화상자에서 파일 타입을 OPML로 선택하고 저장해보자. 그리고 저장한 파일을 텍스트 편집기로 열어 확인해보자. 내가 원한건 이거다!</p>
-
-<p><img src="/images/podcast_subscription_backup.png"></p>
-
-<p>그런데 다시 이것을 복구하는 방법은?.. 열심히 메뉴나 기타를 뒤져보지만 역시 나오지 않는다. Apple이 자주 사용하는 기능들은 편하지만, 좀 특별하거나 복잡한 기능들은 꼭꼭 숨겨놓는다.</p>
-
-<p>그냥 그 백업 파일을 iTunes로 드래그하면 podcast가 아주 간단하게 추가된다. 아주 허무할 정도로&hellip;</p>
-
-<p>PS. iTunes U는 적용이 되지 않는다. 백업은 되는데 백업된 파일을 추가할 수가 없다. 이건 수동으로 해야하는 모양이다. ㅡㅡ;</p>
-
-<p>PS1. 스마트 재생목록도 목록이 아니라 설정들이 저장되면 좋겠는데, 그게 안된다. ㅡㅡ</p>
-
-<p>PS2. 스마트재생목록은 Podcast 처럼 내보낼때 XML 형식으로 하면 되는 것 같다. 가져오기는 파일 -> 보관함 -> 재생목록 가져오기를 하면 된다.</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/17">&larr; Older</a>
@@ -482,7 +476,11 @@ $ mount 192.168.0.14:/Users/whitekid/Documents/nfs /mnt
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2015/04/06/kubernetes-summary/">Kubernetes-summary</a>
+        <a href="/blog/2015/04/07/cloud-computing-2-pic/">Cloud Computing 2 Pic</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/04/06/kubernetes-summary/">Kubernetes Review</a>
       </li>
     
       <li class="post">
@@ -495,10 +493,6 @@ $ mount 192.168.0.14:/Users/whitekid/Documents/nfs /mnt
     
       <li class="post">
         <a href="/blog/2015/03/25/neutron-default-security-group/">Neutron Default Security Group</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
       </li>
     
   </ul>

@@ -9,7 +9,8 @@
   <meta name="author" content="Choe, Cheng-Dae">
 
   
-  <meta name="description" content="문제의 시작: iPhone Google Calendar Outlook iPhone에 캘린터더를 보면 구글 캘린더와 연동이 된다. 여기서부터 출발이다. 그래 이거 좋은데! 그럼 회사에서 사용하는 Outlook과도 연동은 어떻게 할까? 하고 찾아봤다. 당연히 구글에서 &hellip;">
+  <meta name="description" content="PostgreSQL 9.0이 어느새 릴리스 되었네요. 하지만 역시 눈치보다가 9.0.1이 나오면 업그레이트 하렵니다.
+">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -77,6 +78,37 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/448">PostgreSQL 9.0</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2010-09-27T00:00:00+09:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>27</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><a href="http://www.postgresql.org/docs/9.0/static/release-9-0.html">PostgreSQL 9.0이 어느새 릴리스</a> 되었네요.</p>
+
+<p>하지만 역시 눈치보다가 9.0.1이 나오면 업그레이트 하렵니다.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -526,66 +558,6 @@ END:VCALENDAR
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/archives/372">zen.spamhaus.org</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2010-08-30T00:00:00+09:00'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>30</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>12:00 am</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>이전까지 스팸 호스트 막으려고 spamlist.or.kr와 sbl.spamhaus.org를 두가지 사용하고 있었다. 그런데 점점 스팸이 늘어나고, 그 패턴을 보니 내용으로 검사하기엔 힘들다. 헤더에 특별한 내용도 없고, 제목도 항상 바뀌고, 딸랑 링크 한줄에 그 링크 주소도 계속 바뀌고, 링크 클릭하면 한곳으로 redirect되고&hellip; 역시나 대부분 러시아 산이다.</p>
-
-<p>무식하게 access, body_check에 넣으려다 다시 spamhaus의 rbl을 또 공부해봤는데&hellip; sbl뿐문 아니고 다른 것도 많다. 또 그때 했었던 서버스 말고 다른 서비스도 많이 늘었다. 그래서 바꿨더니 아직 하루도 되지 않았지만 상당한 성과가 있네..</p>
-
-<p>하는 김에 더 많이 넣어버렸다.</p>
-
-<pre><code>smtpd_client_restrictions = foo bar...
-        reject_rbl_client spamlist.or.kr
-        reject_rbl_client zen.spamhaus.org
-        reject_rbl_client cbl.abuseat.org
-        reject_rbl_client dnsbl.sorbs.net
-</code></pre>
-
-<p>5시간 정도 적용한 결과다..</p>
-
-<pre><code>$ grep spamhaus /var/log/maillog | wc -l
-      28
-$ grep spamlist /var/log/maillog | wc -l
-      78
- grep abuseat /var/log/maillog | wc -l
-       2
-$ grep sorbs /var/log/maillog | wc -l
-       3
-</code></pre>
-
-<p>(하루 지나니 보니 192, 99, 2, 7로 변했음) 이게 많은지 모르면.. 이 전날 통계를 보면&hellip;</p>
-
-<pre><code>$ bzgrep -E -o  'blocked using ([a-zA-Z\.]+)' /var/log/maillog.1.bz2 | sort | uniq -c
- 65 blocked using spamlist.or.kr
-</code></pre>
-
-<p>대략 괜찮은 듯..</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/21">&larr; Older</a>
@@ -603,7 +575,11 @@ $ grep sorbs /var/log/maillog | wc -l
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2015/04/06/kubernetes-summary/">Kubernetes-summary</a>
+        <a href="/blog/2015/04/07/cloud-computing-2-pic/">Cloud Computing 2 Pic</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/04/06/kubernetes-summary/">Kubernetes Review</a>
       </li>
     
       <li class="post">
@@ -616,10 +592,6 @@ $ grep sorbs /var/log/maillog | wc -l
     
       <li class="post">
         <a href="/blog/2015/03/25/neutron-default-security-group/">Neutron Default Security Group</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
       </li>
     
   </ul>

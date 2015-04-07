@@ -9,7 +9,9 @@
   <meta name="author" content="Choe, Cheng-Dae">
 
   
-  <meta name="description" content="git으로 작업하면서 야심차게 submodule을 도입해봤습니다. 그런데 서브모듈에서 커밋하는 순간부터 막히기 시작하네요. 원칙으로 한다면 submodule을 커밋 &amp; push하고 parent도 commit &amp; push 해 줘야하겠지요. 근데 &hellip;">
+  <meta name="description" content="$ sudo sysctl -w net.inet.ip.forwarding=1
+$ sudo natd -interface en0
+$ sudo ipfw add divert natd ip from any to any via en0 ">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -77,6 +79,38 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1253">Setup NAT on Mac OS X</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2013-05-02T00:00:00+09:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>2</span><span class='date-suffix'>nd</span>, <span class='date-year'>2013</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><pre><code>$ sudo sysctl -w net.inet.ip.forwarding=1
+$ sudo natd -interface en0
+$ sudo ipfw add divert natd ip from any to any via en0
+</code></pre>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -559,63 +593,6 @@ fi
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/archives/1211">Sublimetext 설정</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2013-02-20T00:00:00+09:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>20</span><span class='date-suffix'>th</span>, <span class='date-year'>2013</span></span> <span class='time'>12:00 am</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h3>폰트 설정</h3>
-
-<p>Preference > Settings - User</p>
-
-<pre><code>// Settings in here override those in "Default/Preferences.sublime-settings",
-// and are overridden in turn by file type specific settings.
-{
-  "font_face": "나눔고딕코딩",
-  "font_size": 16
-}
-</code></pre>
-
-<p>ref. <a href="http://docs.sublimetext.info/en/latest/reference/settings.html">http://docs.sublimetext.info/en/latest/reference/settings.html</a></p>
-
-<h3>Command line 설정</h3>
-
-<pre><code>$ ln -s "/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl" ~/bin/subl
-</code></pre>
-
-<h3>Package 설정</h3>
-
-<p><a href="http://wbond.net/sublime_packages/package_control">Sublime Package Control</a> 설치한 후에 아래 패키지 설치치</p>
-
-<ul>
-<li>Python Auto Complete</li>
-<li>Django Click</li>
-<li>Djanero</li>
-</ul>
-
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/7">&larr; Older</a>
@@ -633,7 +610,11 @@ fi
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2015/04/06/kubernetes-summary/">Kubernetes-summary</a>
+        <a href="/blog/2015/04/07/cloud-computing-2-pic/">Cloud Computing 2 Pic</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/04/06/kubernetes-summary/">Kubernetes Review</a>
       </li>
     
       <li class="post">
@@ -646,10 +627,6 @@ fi
     
       <li class="post">
         <a href="/blog/2015/03/25/neutron-default-security-group/">Neutron Default Security Group</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
       </li>
     
   </ul>

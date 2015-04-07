@@ -9,7 +9,7 @@
   <meta name="author" content="Choe, Cheng-Dae">
 
   
-  <meta name="description" content="screen을 여러 세션을 쓰다보면 현재 어떤 세션에 있는지 헷갈린다. 지금만 봐도 세션을 열어놓은게 5개정도이고, 거기서 한 4~5개씩 윈도우를 열어넣고 있으니&hellip; 그래서 세션 이름을 상태줄에다 표시하는 방법을 찾아봤다. screen이 실행하면 $STY &hellip;">
+  <meta name="description" content="Ubuntu에서 VMWare를 사용하고 있었습니다. 원래는 VirtualBox를 사용했었지만, 그녀석이 안의 가상머신에서는 가상화 기술(vmx or svm)을 지원해주지 않아서 말이죠.. 그런데 VMware에 Xen을 설치하고 재부팅하면 네트웍 카드를 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -77,6 +77,47 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/800">VMWare에서 Xen설치할때 Vmnet 어쩌구저쩌구..</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2011-12-16T00:00:00+09:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>16</span><span class='date-suffix'>th</span>, <span class='date-year'>2011</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Ubuntu에서 VMWare를 사용하고 있었습니다. 원래는 VirtualBox를 사용했었지만, 그녀석이 안의 가상머신에서는 가상화 기술(vmx or svm)을 지원해주지 않아서 말이죠..</p>
+
+<p>그런데 VMware에 Xen을 설치하고 재부팅하면 네트웍 카드를 promiscuous로 허용하지 않는다고 메시지가 뜹니다. 보안때문이라나.. 간단히 아래처럼 하면 됩니다.</p>
+
+<pre><code>$ chmod a+rw /dev/vmnet*
+</code></pre>
+
+<p>이렇게하면 되기는 하는데, 시스템을 리부팅하면 /dev/vmnet*의 권한이 다시 재설정됩니다. ㅡㅡ 그래서 또 권한을 주고 udev에 등록을.~</p>
+
+<pre><code>$ cp -a /dev/vmnet* /lib/udev/devices
+</code></pre>
+
+<p>삽질 끝~</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -538,62 +579,6 @@ IdentifyFile ~/.ssh/host.rsa
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/archives/759">Determine CPU Type on FreeBSD</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2011-10-07T00:00:00+09:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>7</span><span class='date-suffix'>th</span>, <span class='date-year'>2011</span></span> <span class='time'>12:00 am</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>/etc/make.conf에 CPUTYPE을 설정하려고 CPUTYPE을 정확하게 알고싶다면 sysutils/x86info를 사용하면 된다.</p>
-
-<pre><code># x86info
-x86info v1.27.  Dave Jones 2001-2010
-Feedback to &lt;davej@redhat.com&gt;.
-
-Found 2 CPUs
---------------------------------------------------------------------------
-CPU #1
-EFamily: 1 EModel: 0 Family: 15 Model: 10 Stepping: 0
-CPU Model: Unknown CPU
-Processor name string: AMD Phenom(tm) II X6 1055T Processor
-Monitor/Mwait: min/max line size 0/0
-Address Size: 48 bits virtual, 48 bits physical
-The physical package has 12 of 8 possible cores implemented.
---------------------------------------------------------------------------
-CPU #2
-EFamily: 1 EModel: 0 Family: 15 Model: 10 Stepping: 0
-CPU Model: Unknown CPU
-Processor name string: AMD Phenom(tm) II X6 1055T Processor
-Monitor/Mwait: min/max line size 0/0
-Address Size: 48 bits virtual, 48 bits physical
-The physical package has 12 of 8 possible cores implemented.
---------------------------------------------------------------------------
- running at an estimated 2.85GHz
-</code></pre>
-
-<p>그냥 athelon64로 설정했음.</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/14">&larr; Older</a>
@@ -611,7 +596,11 @@ The physical package has 12 of 8 possible cores implemented.
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2015/04/06/kubernetes-summary/">Kubernetes-summary</a>
+        <a href="/blog/2015/04/07/cloud-computing-2-pic/">Cloud Computing 2 Pic</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/04/06/kubernetes-summary/">Kubernetes Review</a>
       </li>
     
       <li class="post">
@@ -624,10 +613,6 @@ The physical package has 12 of 8 possible cores implemented.
     
       <li class="post">
         <a href="/blog/2015/03/25/neutron-default-security-group/">Neutron Default Security Group</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
       </li>
     
   </ul>

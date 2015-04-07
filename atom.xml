@@ -4,7 +4,7 @@
   <title><![CDATA[Your wish is my command]]></title>
   <link href="http://whitekid.github.io/atom.xml" rel="self"/>
   <link href="http://whitekid.github.io/"/>
-  <updated>2015-04-07T01:42:30+09:00</updated>
+  <updated>2015-04-07T11:50:01+09:00</updated>
   <id>http://whitekid.github.io/</id>
   <author>
     <name><![CDATA[Choe, Cheng-Dae]]></name>
@@ -14,7 +14,20 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Kubernetes-summary]]></title>
+    <title type="html"><![CDATA[Cloud Computing 2 Pic]]></title>
+    <link href="http://whitekid.github.io/blog/2015/04/07/cloud-computing-2-pic/"/>
+    <updated>2015-04-07T11:41:46+09:00</updated>
+    <id>http://whitekid.github.io/blog/2015/04/07/cloud-computing-2-pic</id>
+    <content type="html"><![CDATA[<p>클라우드 컴퓨팅을 이해하기 전에 받드시 한번쯤을 봐야할 이미지&hellip;</p>
+
+<p><img src="http://c179631.r31.cf0.rackcdn.com/cloudec5.png"></p>
+
+<p><img src="http://image.slidesharecdn.com/openstacksummitspring2014-openstackarchitectedlikeaws-2014-05-13-140514131951-phpapp02/95/openstack-architected-like-aws-and-gcp-9-638.jpg?cb=1400348606"></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Kubernetes Review]]></title>
     <link href="http://whitekid.github.io/blog/2015/04/06/kubernetes-summary/"/>
     <updated>2015-04-06T21:34:06+09:00</updated>
     <id>http://whitekid.github.io/blog/2015/04/06/kubernetes-summary</id>
@@ -984,25 +997,6 @@ def _weigh_object(self, host_state, weight_properties):
 EVENT_LIFECYCLE_STOPPED = 1
 EVENT_LIFECYCLE_PAUSED = 2
 EVENT_LIFECYCLE_RESUMED = 3
-</code></pre>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Openvswitch Bridge에 Vlan Port 추가]]></title>
-    <link href="http://whitekid.github.io/archives/1467"/>
-    <updated>2013-12-17T00:00:00+09:00</updated>
-    <id>http://whitekid.github.io/archives/openvswitch-bridge%ec%97%90-vlan-port-%ec%b6%94%ea%b0%80</id>
-    <content type="html"><![CDATA[<p>OpenVSwitch는 기본으로 trunk 모드로 동작한다. 이 경우 특정 vlan에 대한 interface를 추가하는 작업은.. 아래처럼.</p>
-
-<pre><code>$ ovs-vsctl add-port &lt;bridge&gt; &lt;port&gt; tag=&lt;vlan-id&gt; \
-    --- set Interface &lt;port&gt; type=internal
-</code></pre>
-
-<p>ex</p>
-
-<pre><code>$ ovs-vsctl add-port br0 vlan1000 tag=1000 \
-    --- set Interface vlan1000 type=internal
 </code></pre>
 ]]></content>
   </entry>

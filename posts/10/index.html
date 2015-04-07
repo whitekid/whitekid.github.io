@@ -9,7 +9,8 @@
   <meta name="author" content="Choe, Cheng-Dae">
 
   
-  <meta name="description" content="간단하게 작성해본 OpenStack with Quantum 환경에서 tenant-private network과 external network을 만들고 해당 네트워크 상에 가상머신을 생성하는 테스트 스크립트입니다. 테스트용이므로 실전에서는 사용할 수 없을 정도이고, &hellip;">
+  <meta name="description" content="
+">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -77,6 +78,35 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1002">OpenStack + Quantum Traffic Flow: From Kvm to Internet</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-10-23T00:00:00+09:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>23</span><span class='date-suffix'>rd</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><img src="https://docs.google.com/drawings/pub?id=1NVu1FHZ_eMeRdAB32ffsuNejN4RvuwWLXkwKbxtvGZU&w=960&h=720"></p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -749,74 +779,6 @@ pre-down route del default gw 10.100.0.1
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/archives/919">Screen Session 저장?</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2012-07-09T00:00:00+09:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>9</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>제목이 영 이상하긴 한데요.. screen으로 작업하다보면 가끔 난감한 경우가 있습니다.</p>
-
-<p>screen의 세션이 저 멀리 서버에 있어서 이 세션이 영원이 닫히지 않는다고 생각하면 별 문제 없을텐데, 이게 가끔 리부팅한다던가, 아니면 로컬에 있어서 리부팅하면 날라가는 경우.. .근데 이 세션들이 아주아주 자주 사용하는 경우 계속 세로운 세션 만드는 것 영 귀찮습니다.</p>
-
-<p>저같은 경우는 개발, 테스트하면서 여러 서버들을 동시에 봐야해서, screen으로 여러개 움직이면서 작업하는데, 이거 참 날아가니깐.. 귀찮습니다.</p>
-
-<p>뒤져보니 세션을 완전히 저장하고, 다시 살리는 방법은 없습니다. 하지만 가능한 방법은 screen.rc를 이용하여 그 서버에 연결되는 윈도우만 열어도 상당히 편리합니다.</p>
-
-<p>screen.rc 파일을 적당히 만들고 screen -c screen.rc 로 그 세션을 시작하면 되죠..</p>
-
-<p>screen.rc:</p>
-
-<pre><code>sessionname my-persistent-session
-
-screen -t 'server01&amp;' sshpass -p &lt;pass&gt; ssh &lt;server&gt;
-screen -t 'server01&amp;' sshpass -p &lt;pass&gt; ssh &lt;server&gt;
-</code></pre>
-
-<p>여기까지 하면 괜찮습니다. 그런데 사람의 욕심이라는게 말이죠. 위처럼하면 문제는 sshpass 명령이 종료되거나 ssh 연결이 안되면 해당 윈도우는 닫힌다는 것입니다. 이거 참 난감하죠.. 궁리해봤는데, screen 의 명령으로는 해결할 수 없고 아래처럼 ssh를 실행하는 스크립트를 만들어서 그걸로 연결하고, 해당 스크립트에서는 ssh 연결후 bash를 실행하면 됩니다.</p>
-
-<p>bin/sshpass.sh:</p>
-
-<pre><code>#!/bin/sh
-sshpass $1 $2 $3 $4
-$SHELL
-</code></pre>
-
-<p>그러면, screen.rc의 내용도 바뀌겠죠?</p>
-
-<p>screen.rc:</p>
-
-<pre><code>sessionname my-persistent-session
-
-screen -t 'server01&amp;' sshpass.sh -p &lt;pass&gt; ssh &lt;server&gt;
-screen -t 'server01&amp;' sshpass.sh -p &lt;pass&gt; ssh &lt;server&gt;
-</code></pre>
-
-<p>이제 screen -s screen.rc 하면 언제나 원하는 윈도우를 연 스크린으로&hellip; ㅎㅎ</p>
-
-<p>물론 더 좋은 방법 있으면 알려주삼~~</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/11">&larr; Older</a>
@@ -834,7 +796,11 @@ screen -t 'server01&amp;' sshpass.sh -p &lt;pass&gt; ssh &lt;server&gt;
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2015/04/06/kubernetes-summary/">Kubernetes-summary</a>
+        <a href="/blog/2015/04/07/cloud-computing-2-pic/">Cloud Computing 2 Pic</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/04/06/kubernetes-summary/">Kubernetes Review</a>
       </li>
     
       <li class="post">
@@ -847,10 +813,6 @@ screen -t 'server01&amp;' sshpass.sh -p &lt;pass&gt; ssh &lt;server&gt;
     
       <li class="post">
         <a href="/blog/2015/03/25/neutron-default-security-group/">Neutron Default Security Group</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
       </li>
     
   </ul>

@@ -9,10 +9,7 @@
   <meta name="author" content="Choe, Cheng-Dae">
 
   
-  <meta name="description" content="$ cat get_user_from_ip.sh
-#!/bin/bash
-ip=$1 port_id=$(quantum port-list | grep $ip | awk '{print $2}')
-device_id=$(quantum port-show $port_id | awk &hellip;">
+  <meta name="description" content="SecurityGroup은 인스턴스에 연결된 포트에 허용되는 트래픽을 제어하는 기능입니다. 처음 오픈스택 인스턴스 프로젝트를 할당받고 가장 먼저 하는 것이 22번 포트에 대한 접근을 허용하는 것이니.. 대부분 잘 알고 있을 겁니다. 그런데 기본으로 제공되는 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -80,6 +77,117 @@ device_id=$(quantum port-show $port_id | awk &hellip;">
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1413">Security Group: 인스턴스 그룹에 접근 허용하기</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2013-10-13T00:00:00+09:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>13</span><span class='date-suffix'>th</span>, <span class='date-year'>2013</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><a href="http://docs.openstack.org/network-admin/admin/content/securitygroups.html">SecurityGroup</a>은 인스턴스에 연결된 포트에 허용되는 트래픽을 제어하는 기능입니다.</p>
+
+<p>처음 오픈스택 인스턴스 프로젝트를 할당받고 가장 먼저 하는 것이 22번 포트에 대한 접근을 허용하는 것이니.. 대부분 잘 알고 있을 겁니다.</p>
+
+<p>그런데 기본으로 제공되는 default security group만 운영하다 보면(아마 대부분 그럴지도) 하나의 의문점이 생깁니다.</p>
+
+<p>아래처럼 인스턴스가 있다고 가정했을 때</p>
+
+<ul>
+<li>web</li>
+<li>mysql</li>
+</ul>
+
+
+<p>web 인스턴스는 80번 포트, mysql 포트는 3306 포트가 필요합니다. 그래서 별 생각없이 default security group에 80, 3306 포트를 열어줍니다. 하지만 여기서 생각해볼 것이..</p>
+
+<ul>
+<li>web에서는 3306 포트를 열 필요가 없습니다.</li>
+<li>mysql에서는 80번 포트를 열 필요가 없습니다. 그리고 db 접근은 web에서만 하니 web에서 접근하는 트래픽만 허용합니다.</li>
+</ul>
+
+
+<p>첫번째 경우는 큰 문제가 없습니다.  단순히 80번 포트만 여는 security group을 만들고 web 인스턴스에 적용하면 되니깐요.</p>
+
+<pre><code>$ nova secgroup-create web 'allow web access'
++--------------------------------------+------+------------------+
+| Id                                   | Name | Description      |
++--------------------------------------+------+------------------+
+| d60f5be1-8a60-4523-ba4e-3230edf5b444 | web  | allow web access |
++--------------------------------------+------+------------------+
+$ nova secgroup-add-rule web tcp 80 80 0.0.0/0
++-------------+-----------+---------+----------+--------------+
+| IP Protocol | From Port | To Port | IP Range | Source Group |
++-------------+-----------+---------+----------+--------------+
+| tcp         | 80        | 80      | 0.0.0/0  |              |
++-------------+-----------+---------+----------+--------------+
+$ nova add-secgroup web web
+$ nova show web
+$ nova show charlie-web | grep security
+| security_groups             | [{u'name': u'default'}, {u'name': u'web'}]                     |
+</code></pre>
+
+<p>자.. 이제 MySQL 인스턴스에 Security Group을 적용해야하는데&hellip; web에만 적용하면 되니깐.. security group을 만들려고 보는데..</p>
+
+<pre><code>$ nova secgroup-create mysql 'allow mysql access'
++--------------------------------------+-------+--------------------+
+| Id                                   | Name  | Description        |
++--------------------------------------+-------+--------------------+
+| 7d197716-501f-46fa-a6fb-bd4e0c9dd5bb | mysql | allow mysql access |
++--------------------------------------+-------+--------------------+
+</code></pre>
+
+<p>이제 rule을 추가하려는데.. web에서만 접근을 하용하는 것이니깐.. web 인스턴스 ip만 cidr로 허용합니다.</p>
+
+<pre><code>$ nova secgroup-add-rule mysql tcp 3306 3306 172.16.202.214/32
++-------------+-----------+---------+-------------------+--------------+
+| IP Protocol | From Port | To Port | IP Range          | Source Group |
++-------------+-----------+---------+-------------------+--------------+
+| tcp         | 3306      | 3306    | 172.16.202.214/32 |              |
++-------------+-----------+---------+-------------------+--------------+
+</code></pre>
+
+<p>문제없나요? 근데.. 뭔가 이상하지 않나요? 만일 web 인스턴스가 늘어난다면? 새로운 인스턴스에 대한 rule을 계속 추가해야될까요?.. 만일 그래야된다면&hellip; 이거 Security Group이 참 써 먹을 것이 못되는 것이 됩니다.</p>
+
+<p>역시나 예상하다시피 tenant 인스턴스 group에 대해서 traffic을 제어하는 기능이 있습니다. rule을 추가된 후에 나오는 source group이라는 것이 키워드입니다. nova에도 해당 명령이 있고.. 이에 대한 설명은 아래처럼 굉장히 불친절하게 되어있습니다.</p>
+
+<blockquote><p>secgroup-add-group-rule Add a source group rule to a security group.</p></blockquote>
+
+<p>설명을 봐도 무슨 말인지 쉽게 알 수 없습니다. 하지만 내용은 간단한 것으로 특정 cidr의 rule을 주는 것이 아니라 주어진 security group이 적용된 인스턴스에 대해서 secutiry group을 적용한다는 이이기 입니다.</p>
+
+<p>즉 mysql 접근을 web에서만 접근하려고 하고, web 인스턴스는 모두 web security group이 적용되어 있다고 한다면</p>
+
+<pre><code>$ nova secgroup-add-group-rule mysql web tcp 3306 3306
++-------------+-----------+---------+----------+--------------+
+| IP Protocol | From Port | To Port | IP Range | Source Group |
++-------------+-----------+---------+----------+--------------+
+| tcp         | 3306      | 3306    |          | web          |
++-------------+-----------+---------+----------+--------------+
+</code></pre>
+
+<p>source group을 web으로 지정하여 web 인스턴스에 대해서 mysql port에 대한 접근을 허용할 수 있습니다. 여기서 다른 인스턴스에 web security group을 적용하면 그 인스턴스도 바로 mysql에 접근이 가능합니다(물리 노드에서 보면 해당 인스턴스의 ip address가 iptables에 바로 추가됩니다). 물론 다른 녀석들은 mysql 포트에 접근이 제한되구요.</p>
+
+<p>그러므로 만일 source group을 default로 한다면 해당 tenant의 모든 인스턴스가 mysql에 접근할 수 있습니다</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1290,107 +1398,6 @@ session required        pam_unix.so
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/archives/1323">OpenStack: Block Migration</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2013-06-25T00:00:00+09:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>25</span><span class='date-suffix'>th</span>, <span class='date-year'>2013</span></span> <span class='time'>12:00 am</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>잘 알고 있다시피.. live migration을 하려면 shared storage(NFS, DFS&hellip;)가 필요합니다. 근데 share storage는 필연적으로 local storage에 비해서 느릴 수 밖에 없습니다. 그렇지요.</p>
-
-<p>그리고 live migration은 OpenStack 시스템 유지/ 보수를 위해서도 필요합니다. 호스트 머신의 업그레이드가 필요할 때, 호스트 머신에 뭔가 작업을 할 때, 해당 호스트에서 서비스되는 인스턴스를 다른 곳으로 옮기고 작업해야하니깐요&hellip;</p>
-
-<p>위에 언급했다시피, live migration은 shared storage가 필요하고, 이를 위해서는 IO를 일정부분 포기해야하는 경우가 생겨서, 이를 어떻게 만회할까하고 여기저기 뒤져보다가&hellip; block migration 기능이 있다는 것을 알았습니다.</p>
-
-<p>live migration은 다른 호스트로 메모리만 복사하는 반면에 block migration은 메모리와 블럭 디바이스(인스턴스 스토리지, 볼륨 스토리지)도 같이 대상 호스트로 복사합니다. 결국 live migration이 조금 느린 반면에 shared storage가 필요 없어서, 유지보수를 위한 migration에는 사용할 수 있을 것 같습니다. 물론 갑작스런 호스트 머신의 오류일 경우에는 해당 사항이 없겠습니다.</p>
-
-<p>사용방법은 간단합니다. 기존의 live migration 명령에 -block_migration 옵션만 붙이면 됩니다. 즉, 아래와 같죠.</p>
-
-<pre><code>$ nova live-migration -block_migrate
-</code></pre>
-
-<p>이를 위한 OpenStack 설정은 <a href="http://docs.openstack.org/trunk/openstack-compute/admin/content/configuring-live-migrations.html">live migration 문서처럼 설정</a>하고, 추가로 /etc/nova/nova.conf에 아래처럼 block_migration_flag를 설정합니다.</p>
-
-<pre><code>block_migration_flag= \
-    VIR_MIGRATE_UNDEFINE_SOURCE, \
-    VIR_MIGRATE_PEER2PEER, \
-    VIR_MIGRATE_NON_SHARED_INC, \
-    VIR_MIGRATE_LIVE
-</code></pre>
-
-<p>별 문제 없으면 잘 될겁니다. live migration이 필요했지만, shared storage가 준비되지 않으신 분들.. 한번 써 보세요~</p>
-
-<p>그리고 추가로 OpenStack에서 migration에 대해서 간단히 정리합니다.</p>
-
-<h3>(True) live migration</h3>
-
-<p>shared storage를 사용하는 경우, instance의 memory만 대상 호스트로 복사하여 live migration을 수행합니다. 당연히 shared storage(NFS, GlusterFS, CephFS&hellip;)가 필요합니다.</p>
-
-<p>메모리만 복사하므로 수초내에 migration이 완료됩니다.</p>
-
-<pre><code>$ nova live-migration &lt;instance&gt; &lt;dest host&gt;
-</code></pre>
-
-<p>참고) shared storage를 사용할 경우, live migration을 사용하기 위해서 disk cache를 disable 해야합니다. file 또는 ceph를 사용할 경우는 이 설정이 자동으로 들어가지만,  GlusterFS를 instance directory에 mount해서 사용할 경우 disk cache를 disable하는 것이 동작하지 않습니다. 따라서 glusterfs를 사용할 경우는 live_migration_flag를 아래처럼 VIR_MIGRATE_UNSAFE를 추가합니다.</p>
-
-<pre><code>live_migration_flag = \
-    VIR_MIGRATE_UNDEFINE_SOURCE, \
-    VIR_MIGRATE_PEER2PEER, \
-    VIR_MIGRATE_LIVE, \
-    VIR_MIGRATE_UNSAFE
-</code></pre>
-
-<h3>block migration</h3>
-
-<p>live migration에 추가로 스토리지도 복사합니다. 약간 느리지만 live migration의 장점과 local storage의 IO의 장점을 동시에 취할 수 있습니다. 그리고 qemu에서 제공되는 기능을 사용하기 때문에 별도의 설정은 필요 없습니다.</p>
-
-<pre><code>$ nova live-migration -block_migrate &lt;instance&gt; &lt;dest host&gt;
-</code></pre>
-
-<h3>migration</h3>
-
-<p>이건 live migration이 아니고, instance shutdown -> disk image copy -> instance boot 과정을 거침니다. 당연히 해당 호스트는 리부팅 됩니다. 그리고 migration이 되는 호스트는 scheduler에 의해서 자동으로 선택됩니다</p>
-
-<pre><code>$ nova migrate &lt;instance&gt;
-</code></pre>
-
-<p>block migration은 다른 호스트로 복사하는 기능을 qemu의 기능을 사용하므로 별도의 설정이 필요없었지만, migrate는 qemu나 libvirt의 기능을 사용하지 않고 수동(^^)으로 rsync+ssh를 이용하여 복사하기 때문에, 이동하려는 nova compute 노드에 nova 유저로 ssh login이 아무런 장애없이 되야됩니다. 또한 ubuntu로 설치했다면 nova 계정의 login shell이 /bin/false로 되어있는데 /bin/bash로 수정합니다. 결과적으로 compute에서 다른 compute로 아래 명령을 수행했을 때 오류가 없어야 합니다(아직까지 문서에 없음^^).</p>
-
-<pre><code>root@compute01:~# sudo -u nova ssh compute02 hostname
-compute02
-</code></pre>
-
-<ul>
-<li>ssh public key authentication</li>
-<li>ssh host key 등록</li>
-</ul>
-
-
-<p>ps. 예상대로라면 volume을 붙인 인스턴스에서는 볼륨은 굳이 복사할 필요가 없으므로 volume이 없는 인스턴스와 block migration 성능 차이가 없어야 하는데도, 이상하게 volume이 붙어있는 인스턴스는 느리군요.. 이거 왜 이럴까요?</p>
-
-<p>ps. 약간 알콜이 들어간 상태에서 쓴 글이라&hellip; 오타 작렬.. 논지도 왔다갔다&hellip; ㅎㅎ</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/5">&larr; Older</a>
@@ -1408,7 +1415,11 @@ compute02
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2015/04/06/kubernetes-summary/">Kubernetes-summary</a>
+        <a href="/blog/2015/04/07/cloud-computing-2-pic/">Cloud Computing 2 Pic</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/04/06/kubernetes-summary/">Kubernetes Review</a>
       </li>
     
       <li class="post">
@@ -1421,10 +1432,6 @@ compute02
     
       <li class="post">
         <a href="/blog/2015/03/25/neutron-default-security-group/">Neutron Default Security Group</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
       </li>
     
   </ul>

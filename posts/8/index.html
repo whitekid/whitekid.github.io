@@ -9,7 +9,7 @@
   <meta name="author" content="Choe, Cheng-Dae">
 
   
-  <meta name="description" content="openstack에서 가상머신을 생성하기는 했는데, nova에서는 생성이 되었다고 리포트되지만 Quantum 네트워크 문제로 가상머신이 연결되지 않은 경우가 있다. 이러한 경우 몇가지 체크할 포인트를 정리해본다. 물론 여기는 모두 folsom에서 OpenVSwitch &hellip;">
+  <meta name="description" content="quantum의 문제중에 하나인 overlapping_ip을 사용할 때 metadata service가 작동하지 않는 문제에 대해서 이전에 언급했었고, 이에 대한 패치가 저번주에 올라왔습니다. 오늘 이를 테스트 해봤는데 대략 잘 동작합니다. 간단한 구조는 다음과 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -77,6 +77,82 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/archives/1135">Quantum: Metadata Overlapping Patch 적용기</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-11-26T00:00:00+09:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>26</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>quantum의 문제중에 하나인 <a href="https://blueprints.launchpad.net/quantum/+spec/metadata-overlapping-networks">overlapping_ip을 사용할 때 metadata service가 작동하지 않는 문제</a>에 대해서 이전에 언급했었고, <a href="https://review.openstack.org/#/q/topic:bp/metadata-overlapping-networks,n,z">이에 대한 패치</a>가 저번주에 올라왔습니다.</p>
+
+<p>오늘 이를 테스트 해봤는데 대략 잘 동작합니다.</p>
+
+<p>간단한 구조는 다음과 같습니다.</p>
+
+<p><img src="https://docs.google.com/drawings/pub?id=1T4Iq8p2tjnfcqvmfeCxwDVfdlYx7CAOAXJub4TRTe1k&w=822&h=614""></p>
+
+<ol>
+<li>metadata request는 <a href="http://169.254.169.254/latest/metadata">http://169.254.169.254/latest/metadata</a> 형태로 router namespace로 들어온다.</li>
+<li>router namespace의 NAT rule에 의해서 localhost의 port 9697로 redirect 된다.</li>
+<li>9696에서 listen하는 process(quantum-ns-metadata-proxy)는 l3_agent에서 network 생성에 맞춰 관리되며, namespace당 하나씩 생성된다.</li>
+<li>quantum-ns-metadata-proxy는 파라미터로 router_id를 가지므로 자신이 담당하는 network을 알 수 있다.</li>
+<li>quantum-ns-metadata-proxy는 nova-metadata-agent가 필요한 정보를 모아서(instance-id, router-id, network-id) http header에 포함하여 quantum-metadata-agent로 proxy request를 보낸다.</li>
+<li>quantum-metadata-agent는 ns-metadata-proxy에서 넘어온 전보를 바탕으로 instance-id를 확인하고 이를 http header에 포함하여 nova-metadata-api에 보낸다.</li>
+<li>nova-metadata-api는 X-Instace-ID가 있으면 이 아이디를 기준으로 메타데이터를 넘긴다.</li>
+</ol>
+
+
+<p>대략 순서를 정리하면 이렇습니다. 마지막으로 quantum-metadata-agent를 upstart service로 등록하여 작업하는 것 까지하면 대략 쓸만할 것 같습니다.</p>
+
+<p>지금은 우선 테스트라 quantum-metadata-agent가 같은 서버로 들어갔지만, metadata_ip를 줄 수 있으므로 별도의 서버에 운영할 수 있겠습니다.</p>
+
+<h2>삽질기</h2>
+
+<p>위 패치는 nova/ quantum 2개로 구성이 되어있으며, 당연히도 master 소스를 기준으로 작성이 되어있습니다. 그런데 저는 테스트 환경을 ubuntu folsom cloud archive를 사용하기 때문에 folsom 용으로 만들어야 했지요.. git에서 작업하기 위해 몇 가지 삽질을..</p>
+
+<ol>
+<li>master에 patch 적용하고 patch</li>
+<li>stable/folsom 기준으로 branch를 하나 만들고&hellip;</li>
+<li>master의 commit를 cherry picking&hellip;</li>
+<li>다시 folsom에 맞게 소스 수정하고 commit&hellip;</li>
+<li>folsom과 변경된 부분으로 patch 생성&hellip;</li>
+</ol>
+
+
+<p>물론 nova/ quantum도 같이요&hellip;</p>
+
+<ul>
+<li>upstart-job service 등록</li>
+</ul>
+
+
+<h2>Side effect?</h2>
+
+<p>이전에 metadata 접속 방식은 l3 router namespace에서 metadata api로 요청하는 것이었습니다. 이 경우 l3 router namespace 부터는 public ip address이므로 결국 metadata api server의 주소도 public ip address를 가지게 됩니다.</p>
+
+<p>그런데 이 metadata api server는 굳이 외부에서 접속할 필요가 없으므로 public ip를 가질 필요가 없습니다. 따라서 뭔가 꺼림직 했었는데, 이번 패치를 적용하면, quantum-metadata-agent를 내부망에서 운영할 수 있으므로 metadata api server가 내부망에서 운영이 가능합니다.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -861,114 +937,6 @@ end
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/archives/1065">Chef Data_bag/ Cookbook Upload Script</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2012-11-02T00:00:00+09:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>2</span><span class='date-suffix'>nd</span>, <span class='date-year'>2012</span></span> <span class='time'>12:00 am</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>chef로 작업하다보면 참 불편한 것이 있다.</p>
-
-<pre><code>$ knife cookbook upload -a -o cookbook # ---- [1]
-$ knife data bag from file hosts default.json # ---- [2]
-</code></pre>
-
-<p>#1은 cookbook을 업로드하고 #2는 data bag을 업로드한다. 그런데 여기서 문제는 이 명령을 실행하는 디렉토리가 중요하다는 것이다. cookbook을 업로드 할 때는 -o로 cookbook 디렉토리를 지정해줘야하고, data bag을 업로드할 때는 chef-repository의 root에서 실행해야하는 것이다.</p>
-
-<p>작업하다보면 여기저기 디렉토리를 이동하게 되는데, 그에 따라서 명령이 다르단 말이지.. 이거 귀찮아서 간단히 스크립트 만들었다. 원리는 간단하다. chef-repository의 root 디레토리에는 .chef 디렉토리에서 해당 레포지트리의 chef-server를 관리하는데, 이 디렉토리를 찾아서 해당 명령을 수행하는 것이다. 단순히 아래처럼 하면 된다.</p>
-
-<pre><code>$ kup.sh
-$ bag.sh
-</code></pre>
-
-<p>이러면 자동으로 chef-repository root 디렉토리에서 cookbook, data bag upload를 수행한다.</p>
-
-<p>kup.sh</p>
-
-<pre><code>#!/bin/bash
-# upload all cookbooks
-set -e
-
-base_dir=`dirname $0`
-if [ -f $base_dir/cheflib.sh ]; then
-    source $base_dir/cheflib.sh
-fi
-
-chef_dir=$(find_chef_repo)
-
-knife cookbook upload -a -o $chef_dir/cookbooks
-</code></pre>
-
-<p>bag.sh</p>
-
-<pre><code>#!/bin/bash
-# upload all data bags
-
-set -e
-
-base_dir=`dirname $0`
-if [ -f $base_dir/cheflib.sh ]; then
-    source $base_dir/cheflib.sh
-fi
-
-chef_dir=$(find_chef_repo)
-
-cd $chef_dir
-
-for x in `(cd data_bags; find . -name '*.json' -type f)`; do
-    bag=$(echo $x | cut -d / -f 2)
-    item=$(echo $x | cut -d / -f 3)
-
-    knife data bag from file $bag $item
-done
-</code></pre>
-
-<p>cheflib.sh</p>
-
-<pre><code>#!/bin/bash
-
-function fatal() {
-    echo $@
-    exit
-}
-
-function find_chef_repo() {
-    pushd `pwd` &gt; /dev/null
-
-    # find .chef directory
-    until [ -d .chef ]; do
-        [ $(pwd) = '/' ] &amp;&amp; break
-        cd ..
-    done
-
-    [ `pwd` = '/' ] &amp;&amp; fatal "Can't find chef repository"
-
-    echo `pwd`
-    popd &gt; /dev/null
-}
-</code></pre>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/9">&larr; Older</a>
@@ -986,7 +954,11 @@ function find_chef_repo() {
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2015/04/06/kubernetes-summary/">Kubernetes-summary</a>
+        <a href="/blog/2015/04/07/cloud-computing-2-pic/">Cloud Computing 2 Pic</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/04/06/kubernetes-summary/">Kubernetes Review</a>
       </li>
     
       <li class="post">
@@ -999,10 +971,6 @@ function find_chef_repo() {
     
       <li class="post">
         <a href="/blog/2015/03/25/neutron-default-security-group/">Neutron Default Security Group</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/03/25/hello-octopress/">Hello Octopress</a>
       </li>
     
   </ul>

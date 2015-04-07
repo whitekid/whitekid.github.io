@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Security Group의 Rule이 어떤 순서로 적용되는지 보기 - Your wish is my command</title>
+  <title>Cloud Computing 2 Pic - Your wish is my command</title>
   <meta name="author" content="Choe, Cheng-Dae">
 
   
-  <meta name="description" content="iptables의 chain이 적용되는 순서를 쉽게 보고싶다면 http://atoato88.hatenablog.com/entry/2014/01/25/133852 를 참조~ +--------------------------------+ | v &hellip;">
+  <meta name="description" content="클라우드 컴퓨팅을 이해하기 전에 받드시 한번쯤을 봐야할 이미지&hellip; ">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://whitekid.github.io/blog/2015/03/30/visualize-iptable-rules/">
+  <link rel="canonical" href="http://whitekid.github.io/blog/2015/04/07/cloud-computing-2-pic/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Your wish is my command" type="application/atom+xml">
@@ -80,7 +80,7 @@
   
   <header>
     
-      <h1 class="entry-title">Security Group의 Rule이 어떤 순서로 적용되는지 보기</h1>
+      <h1 class="entry-title">Cloud Computing 2 Pic</h1>
     
     
       <p class="meta">
@@ -89,56 +89,18 @@
 
 
 
-<time class='entry-date' datetime='2015-03-30T16:56:41+09:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>30</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>4:56 pm</span></time>
+<time class='entry-date' datetime='2015-04-07T11:41:46+09:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>7</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>11:41 am</span></time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>iptables의 chain이 적용되는 순서를 쉽게 보고싶다면 <a href="http://atoato88.hatenablog.com/entry/2014/01/25/133852">http://atoato88.hatenablog.com/entry/2014/01/25/133852</a> 를 참조~</p>
+<div class="entry-content"><p>클라우드 컴퓨팅을 이해하기 전에 받드시 한번쯤을 봐야할 이미지&hellip;</p>
 
-<pre><code>                                  +--------------------------------+
-                                  |                                v
-+-------------------------+     +--------------------------+     +------------------------------+     +------------------------------+     +------------------------------+
-|         FORWARD         | --&gt; | neutron-openvswi-FORWARD | --&gt; |  neutron-openvswi-sg-chain   | --&gt; | neutron-openvswi-i286a46e9-d | --&gt; | neutron-openvswi-sg-fallback |
-+-------------------------+     +--------------------------+     +------------------------------+     +------------------------------+     +------------------------------+
-  |                                                                                                                                          ^
-  +-------------------------------+                                                                                                          |
-                                  v                                                                                                          |
-+-------------------------+     +--------------------------+     +------------------------------+                                            |
-|         OUTPUT          | --&gt; |    neutron-filter-top    | --&gt; |    neutron-openvswi-local    |                                            |
-+-------------------------+     +--------------------------+     +------------------------------+                                            |
-  |                                                                                                                                          |
-  |                                                                                                                                          |
-  v                                                                                                                                          |
-+-------------------------+                                                                                                                  |
-| neutron-openvswi-OUTPUT |                                                                                                                  |
-+-------------------------+                                                                                                                  |
-+-------------------------+     +--------------------------+     +------------------------------+                                            |
-|          INPUT          | --&gt; |  neutron-openvswi-INPUT  | --&gt; | neutron-openvswi-o286a46e9-d | -------------------------------------------+
-+-------------------------+     +--------------------------+     +------------------------------+
-                                                                   |
-                                                                   |
-                                                                   v
-+-------------------------+                                      +------------------------------+
-|    nova-api-FORWARD     |                                      | neutron-openvswi-s286a46e9-d |
-+-------------------------+                                      +------------------------------+
-+-------------------------+
-|     nova-api-INPUT      |
-+-------------------------+
-+-------------------------+
-|     nova-api-OUTPUT     |
-+-------------------------+
-+-------------------------+
-|     nova-api-local      |
-+-------------------------+
-+-------------------------+
-|     nova-filter-top     |
-+-------------------------+
-</code></pre>
+<p><img src="http://c179631.r31.cf0.rackcdn.com/cloudec5.png"></p>
 
-<p>thanks rick</p>
+<p><img src="http://image.slidesharecdn.com/openstacksummitspring2014-openstackarchitectedlikeaws-2014-05-13-140514131951-phpapp02/95/openstack-architected-like-aws-and-gcp-9-638.jpg?cb=1400348606"></p>
 </div>
 
 
@@ -154,7 +116,7 @@
 
 
 
-<time class='entry-date' datetime='2015-03-30T16:56:41+09:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>30</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>4:56 pm</span></time>
+<time class='entry-date' datetime='2015-04-07T11:41:46+09:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>7</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>11:41 am</span></time>
       
 
 
@@ -162,7 +124,7 @@
     
       <div class="sharing">
   
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://whitekid.github.io/blog/2015/03/30/visualize-iptable-rules/" data-via="kiddtm" data-counturl="http://whitekid.github.io/blog/2015/03/30/visualize-iptable-rules/" >Tweet</a>
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://whitekid.github.io/blog/2015/04/07/cloud-computing-2-pic/" data-via="kiddtm" data-counturl="http://whitekid.github.io/blog/2015/04/07/cloud-computing-2-pic/" >Tweet</a>
   
   
   
@@ -173,10 +135,8 @@
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2015/03/25/keystone-bootstrap/" title="Previous Post: keystone bootstrap">&laquo; keystone bootstrap</a>
+        <a class="basic-alignment left" href="/blog/2015/04/06/kubernetes-summary/" title="Previous Post: kubernetes review">&laquo; kubernetes review</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2015/04/06/kubernetes-summary/" title="Next Post: kubernetes review">kubernetes review &raquo;</a>
       
     </p>
   </footer>
@@ -242,8 +202,8 @@
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://whitekid.github.io/blog/2015/03/30/visualize-iptable-rules/';
-        var disqus_url = 'http://whitekid.github.io/blog/2015/03/30/visualize-iptable-rules/';
+        var disqus_identifier = 'http://whitekid.github.io/blog/2015/04/07/cloud-computing-2-pic/';
+        var disqus_url = 'http://whitekid.github.io/blog/2015/04/07/cloud-computing-2-pic/';
         var disqus_script = 'embed.js';
       
     (function () {
