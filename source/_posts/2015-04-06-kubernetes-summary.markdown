@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "kubernetes-summary"
+title: "kubernetes review"
 date: 2015-04-06 21:34:06 +0900
 comments: true
 categories:
